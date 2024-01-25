@@ -42,10 +42,10 @@ def pca_plot():
     fig = px.scatter(finalDf, x='PC1', y='PC2', color='target_names')
 
     # Convert the plot to JSON
-    plot_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    plot_json = plotly.io.to_json(fig, pretty=True)
 
-    return jsonify({'plot': plot_json})
+    return plot_json
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=True)
