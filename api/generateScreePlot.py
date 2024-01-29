@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from flask import Blueprint, jsonify, request
 from sklearn import preprocessing
@@ -19,55 +20,46 @@ def generate_scree_plot():
     pca = PCA()
     pcaDataForDrawingPlot = pca.fit_transform(data)
 
-    # Separate the PCA data for 'wt' and 'ko' conditions
-    wt_data = pcaDataForDrawingPlot[:5]
-    ko_data = pcaDataForDrawingPlot[5:]
+    # Calculate the percentage of explained variance per principal component
+    per_var = np.round(pca.explained_variance_ratio_ * 100, decimals=1)
+    labels = ['PC' + str(x) for x in range(1, len(per_var)+1)]
 
     # Prepare the result in the format that Plotly expects
     result = {
         'data': [
             {
-                'type': 'scatter',
-                'mode': 'markers',
-                'x': wt_data[:, 0].tolist(),
-                'y': wt_data[:, 1].tolist(),
-                'text': generatedData['columns'][:5],
+                'type': 'bar',
+                'x': labels,
+                'y': per_var.tolist(),
+                # Display the percentage on top of each bar
+                'text': [f'{value}%' for value in per_var.tolist()],
+                'textposition': 'auto',  # Position the text on top of each bar
                 'marker': {
-                    'size': 12,
-                    'color': 'blue'
-                },
-                'name': 'wt'
-            },
-            {
-                'type': 'scatter',
-                'mode': 'markers',
-                'x': ko_data[:, 0].tolist(),
-                'y': ko_data[:, 1].tolist(),
-                'text': generatedData['columns'][5:],
-                'marker': {
-                    'size': 12,
-                    'color': 'red'
-                },
-                'name': 'ko'
+                    'color': 'lightblue',
+                    'line': {
+                        'color': 'black',
+                        'width': 2,
+                    },
+                }
             }
         ],
         'layout': {
             'title': {
-                'text': 'PCA Plot',
+                'text': 'Scree Plot',
                 'font': {
                     'size': 30,
                     'color': 'black',
                 },
             },
             'xaxis': {
-                'title': 'PC1',
+                'title': 'Principal component',
                 'titlefont': {
                     'size': 20,
                     'color': 'black',
                 },
             },
             'yaxis': {
-                'title': 'PC2',
+                'title': 'Explained variance (%)',
                 'titlefont': {
                     'size': 20,
                     'color': 'black',
@@ -75,7 +67,7 @@ def generate_scree_plot():
             },
             'autosize': True,
             'hovermode': 'closest',
-            'showlegend': True,
+            'showlegend': False,
             'height': 400,
         }
     }
