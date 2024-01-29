@@ -4,11 +4,11 @@ from sklearn import preprocessing
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
-bp = Blueprint('generatePCA', __name__)
+bp = Blueprint('generateScreePlot', __name__)
 
 
-@bp.route('/api/generate_pca', methods=['POST'])
-def generate_pca():
+@bp.route('/api/generate_scree_plot', methods=['POST'])
+def generate_scree_plot():
     generatedData = request.json
 
     data = pd.DataFrame(data=generatedData['data'],
