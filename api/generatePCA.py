@@ -34,7 +34,7 @@ def generate_pca():
                 'text': generatedData['columns'][:5],
                 'marker': {
                     'size': 12,
-                    'color': 'purple',
+                    'color': 'blue',
                     'line': {
                         'color': 'black',
                         'width': 2,
@@ -50,7 +50,7 @@ def generate_pca():
                 'text': generatedData['columns'][5:],
                 'marker': {
                     'size': 12,
-                    'color': 'orange',
+                    'color': 'red',
                     'line': {
                         'color': 'black',
                         'width': 2,
