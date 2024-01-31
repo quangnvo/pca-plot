@@ -1,29 +1,24 @@
 import pandas as pd
 from flask import Blueprint, jsonify, request
 from sklearn import preprocessing
-from sklearn.datasets import load_iris
 from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
 
-bp = Blueprint('generatePCA', __name__)
+bp = Blueprint('generatePCA_ver2', __name__)
 
 
-@bp.route('/api/generate_pca', methods=['POST'])
+@bp.route('/api/generate_pca_ver2', methods=['POST'])
 def generate_pca():
     generatedData = request.json
 
     data = pd.DataFrame(data=generatedData['data'],
                         index=generatedData['index'], columns=generatedData['columns'])
 
-    data = preprocessing.scale(data.T)
-    # data = preprocessing.scale(X)
+    # Scale the data
+    data = preprocessing.scale(data)
 
+    # Perform PCA
     pca = PCA()
     pcaDataForDrawingPlot = pca.fit_transform(data)
-
-    # Separate the PCA data for 'wt' and 'ko' conditions
-    wt_data = pcaDataForDrawingPlot[:5]
-    ko_data = pcaDataForDrawingPlot[5:]
 
     # Prepare the result in the format that Plotly expects
     result = {
@@ -31,9 +26,9 @@ def generate_pca():
             {
                 'type': 'scatter',
                 'mode': 'markers',
-                'x': wt_data[:, 0].tolist(),
-                'y': wt_data[:, 1].tolist(),
-                'text': generatedData['columns'][:5],
+                'x': pcaDataForDrawingPlot[:, 0].tolist(),
+                'y': pcaDataForDrawingPlot[:, 1].tolist(),
+                'text': generatedData['index'],
                 'marker': {
                     'size': 12,
                     'color': 'blue',
@@ -42,23 +37,7 @@ def generate_pca():
                         'width': 2,
                     }
                 },
-                'name': 'wt'
-            },
-            {
-                'type': 'scatter',
-                'mode': 'markers',
-                'x': ko_data[:, 0].tolist(),
-                'y': ko_data[:, 1].tolist(),
-                'text': generatedData['columns'][5:],
-                'marker': {
-                    'size': 12,
-                    'color': 'red',
-                    'line': {
-                        'color': 'black',
-                        'width': 2,
-                    }
-                },
-                'name': 'ko'
+                'name': 'Data'
             }
         ],
         'layout': {

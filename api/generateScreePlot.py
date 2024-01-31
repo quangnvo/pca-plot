@@ -16,17 +16,21 @@ def generate_scree_plot():
 
     # preprocessing.scale() will do the standardization for the data, as PCA is sensitive to the scale of the data.
     # If one feature has a large variance and another has a small variance, the PCA might load heavily on the feature with large variance, so it may lead to the bias result.
-    data = preprocessing.scale(data.T)
+    dataAfterStandardization = preprocessing.scale(data.T)
 
-    # Create a PCA instance and name it pca
-    pca = PCA()
+    # Create a PCA instance and name it pcaModel
+    # pcaModel now is still an empty model
+    pcaModel = PCA()
 
-    # The fit_transform method of pca apply the fit() and transform() methods to data
-    pcaDataForDrawingPlot = pca.fit_transform(data)
+    # Add the dataAfterStandardization to the pcaModel, meanwhile use the fit_transform() method to fit the model with data and apply the dimensionality reduction on data.
+    pcaModel.fit_transform(dataAfterStandardization)
 
     # Calculate the percentage of explained variance per principal component
-    per_var = np.round(pca.explained_variance_ratio_ * 100, decimals=1)
-    labels = ['PC' + str(x) for x in range(1, len(per_var)+1)]
+    percentageOfVariance = np.round(
+        pcaModel.explained_variance_ratio_ * 100, decimals=1)
+
+    # Create labels for the scree plot, like "PC1", "PC2", etc.
+    labels = ['PC' + str(x) for x in range(1, len(percentageOfVariance)+1)]
 
     # Prepare the result in the format that Plotly expects
     result = {
@@ -34,9 +38,9 @@ def generate_scree_plot():
             {
                 'type': 'bar',
                 'x': labels,
-                'y': per_var.tolist(),
+                'y': percentageOfVariance.tolist(),
                 # Display the percentage on top of each bar
-                'text': [f'{value}%' for value in per_var.tolist()],
+                'text': [f'{value}%' for value in percentageOfVariance.tolist()],
                 'textposition': 'auto',
                 'marker': {
                     'color': 'yellow',

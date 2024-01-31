@@ -1,4 +1,5 @@
 import generatePCA
+import generatePCA_ver2
 import generateSampleData
 import generateScreePlot
 from flask import Flask
@@ -18,6 +19,7 @@ def home():
 app.register_blueprint(generateSampleData.bp)
 app.register_blueprint(generatePCA.bp)
 app.register_blueprint(generateScreePlot.bp)
+app.register_blueprint(generatePCA_ver2.bp)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=PORT, debug=True)
