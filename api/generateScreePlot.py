@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
 from flask import Blueprint, jsonify, request
-from sklearn import preprocessing
 from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
 
 bp = Blueprint('generateScreePlot', __name__)
 
@@ -11,12 +11,34 @@ bp = Blueprint('generateScreePlot', __name__)
 def generate_scree_plot():
     generatedData = request.json
 
-    data = pd.DataFrame(data=generatedData['data'],
-                        index=generatedData['index'], columns=generatedData['columns'])
+    print("❗❗❗")
+    print(generatedData)
+
+    # data = pd.DataFrame(data=generatedData['data'],
+    #                     index=generatedData['index'], columns=generatedData['columns'])
+
+    data = pd.DataFrame(data=generatedData)
+
+    # Drop the 'locus tag' column
+    data = data.drop('locus tag', axis=1)
+
+    # Replace commas with periods in the DataFrame
+    data = data.replace(',', '.', regex=True)
+
+    # Convert string values to float
+    data = data.astype(float)
+
+    # Remove rows with NaN values
+    data = data.dropna()
+
+    print("📖📖📖")
+    print(data)
 
     # preprocessing.scale() will do the standardization for the data, as PCA is sensitive to the scale of the data.
     # If one feature has a large variance and another has a small variance, the PCA might load heavily on the feature with large variance, so it may lead to the bias result.
-    dataAfterStandardization = preprocessing.scale(data.T)
+    scaling = StandardScaler()
+    dataAfterStandardization = scaling.fit_transform(data.T)
+    # dataAfterStandardization = preprocessing.scale(data.T)
 
     # Create a PCA instance and name it pcaModel
     # pcaModel now is still an empty model

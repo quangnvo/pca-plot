@@ -1,6 +1,7 @@
 import generatePCA
 import generatePCA_ver2
 import generateSampleData
+import generateSampleData_ver2
 import generateScreePlot
 from flask import Flask
 from flask_cors import CORS
@@ -17,6 +18,7 @@ def home():
 
 
 app.register_blueprint(generateSampleData.bp)
+app.register_blueprint(generateSampleData_ver2.bp)
 app.register_blueprint(generatePCA.bp)
 app.register_blueprint(generateScreePlot.bp)
 app.register_blueprint(generatePCA_ver2.bp)
