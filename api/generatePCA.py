@@ -42,7 +42,7 @@ def generate_pca():
 
     # Generate a color map with the same number of colors as columns
     # The color map can be found here (https://matplotlib.org/stable/users/explain/colors/colormaps.html)
-    cmap = plt.get_cmap("Spectral")
+    cmap = plt.get_cmap("magma")
     colors = [cmap(i) for i in np.linspace(0, 1, len(data.columns))]
     # colors = [cmap(i) for i in range(len(data.columns))]
 
