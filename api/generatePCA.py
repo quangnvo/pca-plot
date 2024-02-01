@@ -40,23 +40,23 @@ def generate_pca():
     pca = PCA()
     pcaData = pca.fit_transform(dataAfterStandardization)
 
-    print("🚀🚀🚀")
-    print("pcaData", pcaData)
-
     # Generate a color map with the same number of colors as columns
-    cmap = plt.get_cmap('nipy_spectral')
+    # The color map can be found here (https://matplotlib.org/stable/users/explain/colors/colormaps.html)
+    cmap = plt.get_cmap("Spectral")
     colors = [cmap(i) for i in np.linspace(0, 1, len(data.columns))]
+    # colors = [cmap(i) for i in range(len(data.columns))]
+
 
     # Convert RGB colors to hex
-    colors_hex = [mcolors.rgb2hex(color) for color in colors]
+    colors_hex = [mcolors.rgb2hex(color[:3]) for color in colors]
 
     # Create an array of scatter plot objects
     scatter_plots = [
         {
             'type': 'scatter',
             'mode': 'markers',
-            'x': pcaData[:, i].tolist(),
-            'y': pcaData[:, i+1].tolist() if i+1 < len(data.columns) else pcaData[:, i].tolist(),
+            'x': [pcaData[i, 0]],
+            'y': [pcaData[i, 1]],
             'marker': {
                 'size': 12,
                 'color': colors_hex[i],
@@ -72,36 +72,38 @@ def generate_pca():
     print("🧬🧬🧬")
     print(scatter_plots)
 
+    layoutPCAPlot = {
+        'title': {
+            'text': 'PCA Plot',
+            'font': {
+                'size': 30,
+                'color': 'black',
+            },
+        },
+        'xaxis': {
+            'title': 'PC1',
+            'titlefont': {
+                'size': 20,
+                'color': 'black',
+            },
+        },
+        'yaxis': {
+            'title': 'PC2',
+            'titlefont': {
+                'size': 20,
+                'color': 'black',
+            },
+        },
+        'autosize': True,
+        'hovermode': 'closest',
+        'showlegend': True,
+        'height': 400,
+    }
+
     # Prepare the result in the format that Plotly expects
     result = {
         'data': scatter_plots,
-        'layout': {
-            'title': {
-                'text': 'PCA Plot',
-                'font': {
-                    'size': 30,
-                    'color': 'black',
-                },
-            },
-            'xaxis': {
-                'title': 'PC1',
-                'titlefont': {
-                    'size': 20,
-                    'color': 'black',
-                },
-            },
-            'yaxis': {
-                'title': 'PC2',
-                'titlefont': {
-                    'size': 20,
-                    'color': 'black',
-                },
-            },
-            'autosize': True,
-            'hovermode': 'closest',
-            'showlegend': True,
-            'height': 400,
-        }
+        'layout': layoutPCAPlot
     }
 
     return jsonify(result)
