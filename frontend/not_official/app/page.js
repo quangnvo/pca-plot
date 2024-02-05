@@ -1,12 +1,12 @@
 "use client"
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Plot from 'react-plotly.js';
 import axios from 'axios';
 import Papa from 'papaparse';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Switch, Table } from 'antd';
+import { Table } from 'antd';
 
 
 
