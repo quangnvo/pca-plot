@@ -20,7 +20,13 @@ def generate_pca():
     # data = pd.DataFrame(data=generatedData['data'],
     #                     index=generatedData['index'], columns=generatedData['columns'])
 
+    print("🚀🚀🚀")
+    print(generatedData)
+
     data = pd.DataFrame(data=generatedData)
+
+    print("🚀🚀🚀 data frameeeeeee")
+    print(data)
 
     # Drop the 'locus tag' column
     data = data.drop('locus tag', axis=1)
@@ -33,6 +39,9 @@ def generate_pca():
 
     # Remove rows with NaN values
     data = data.dropna()
+
+    print("🚀🚀🚀 data frameeeeeee sau khi làm tùm lum")
+    print(data)
 
     scaling = StandardScaler()
     dataAfterStandardization = scaling.fit_transform(data.T)
