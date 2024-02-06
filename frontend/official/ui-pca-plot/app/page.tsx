@@ -3,13 +3,8 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useState } from 'react';
 
-import Plot from 'react-plotly.js';
-import axios from 'axios';
 import Papa from 'papaparse';
-
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Table } from 'antd';
 
 import DataTable from "@/components/DataTable";
 import ScreeButton from "@/components/ScreeButton";
@@ -97,21 +92,6 @@ export default function Home() {
 
       <ScreePlot />
       <PCAPlot />
-
-      <div>
-        {pcaPlotData && pcaPlotData.data ? <div>
-          aaaaaaaa111
-        </div> : null}
-        {pcaPlotData && pcaPlotData.data ?
-          <div className='p-3 border border-gray-200 rounded-lg'>
-            <Plot
-              useResizeHandler
-              style={{ width: "100%", height: "100%" }}
-              data={pcaPlotData.data}
-              layout={pcaPlotData.layout}
-            />
-          </div> : null}
-      </div>
 
       {/* Number of samples */}
       <div>

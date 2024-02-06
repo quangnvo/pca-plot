@@ -1,5 +1,5 @@
 import React from 'react'
-import { useAppSelector, useAppDispatch } from "@/redux/hooks";
+import { useAppSelector } from "@/redux/hooks";
 import Plot from 'react-plotly.js';
 
 const ScreePlot = () => {
