@@ -8,8 +8,8 @@ type PlotState = {
 
 const initialState: PlotState = {
 	csvData: [],
-	screePlotData: [],
-	pcaPlotData: [],
+	screePlotData: {},
+	pcaPlotData: {},
 }
 
 export const plot = createSlice({
@@ -19,6 +19,10 @@ export const plot = createSlice({
 		setCsvData: (state, action: PayloadAction<any>) => {
 			state.csvData = action.payload
 		},
+		setScreePlotData: (state, action: PayloadAction<any>) => {
+			console.log('đã vào setScreePlotData')
+			state.screePlotData = action.payload
+		},
 		setPCAPlotData: (state, action: PayloadAction<any>) => {
 			console.log('đã vào setPCAPlotData')
 			state.pcaPlotData = action.payload
@@ -26,5 +30,5 @@ export const plot = createSlice({
 	},
 })
 
-export const { setCsvData, setPCAPlotData } = plot.actions
+export const { setCsvData, setPCAPlotData, setScreePlotData } = plot.actions
 export default plot.reducer

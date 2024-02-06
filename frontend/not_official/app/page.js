@@ -51,17 +51,51 @@ export default function Home() {
   }
 
   // Parse CSV data & store it in the component state
+  // const handleCSVFileUpload = (e) => {
+  //   const file = e.target.files[0];
+  //   Papa.parse(file, {
+  //     header: true,
+  //     complete: (results) => {
+  //       setCsvData(results.data);
+  //     },
+  //   });
+  // };
 
-  const handleCSVFileUpload = (e) => {
+  // const handleFileUpload = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file.type === 'text/csv') {
+  //     Papa.parse(file, {
+  //       header: true,
+  //       complete: (results) => {
+  //         setCsvData(results.data);
+  //       },
+  //     });
+  //   } else if (file.type === 'text/plain') {
+  //     let reader = new FileReader();
+  //     reader.readAsText(file);
+  //     reader.onload = function () {
+  //       let txtData = reader.result;
+  //       console.log(txtData);
+  //     };
+  //     reader.onerror = function () {
+  //       console.log(reader.error);
+  //     };
+  //   }
+  // };
+
+  const handleFileUpload = (e) => {
     const file = e.target.files[0];
-    Papa.parse(file, {
-      header: true,
-      complete: (results) => {
-        setCsvData(results.data);
-      },
-    });
+    if (file.type === 'text/csv' || file.type === 'text/plain') {
+      Papa.parse(file, {
+        header: true,
+        complete: (results) => {
+          setCsvData(results.data);
+        },
+      });
+    }
   };
-  console.log("🚀🚀🚀", csvData)
+
+
 
   // Convert csvData to the format required by Ant Design Table
   const tableData = csvData.map((row, index) => ({
@@ -86,10 +120,11 @@ export default function Home() {
 
         <Input
           type='file'
-          accept='.csv'
-          onChange={handleCSVFileUpload}
+          accept='.csv,.txt'
+          onChange={handleFileUpload}
           className="w-1/3"
         />
+
 
         <Button onClick={generateScreePlot} >
           Generate scree plot
@@ -136,7 +171,7 @@ export default function Home() {
         </p>
 
         <p>
-          Number of samples in CSV file: <strong>{csvData ? csvData.length : "0"}</strong>
+          Number of samples: <strong>{csvData ? csvData.length : "0"}</strong>
         </p>
       </div>
 

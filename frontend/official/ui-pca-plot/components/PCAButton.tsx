@@ -1,4 +1,5 @@
-import React from 'react'
+"use client"
+
 import { Button } from './ui/button'
 import axios from 'axios'
 import { useAppSelector, useAppDispatch } from '../redux/hooks'

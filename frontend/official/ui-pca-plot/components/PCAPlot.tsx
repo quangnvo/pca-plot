@@ -7,6 +7,7 @@ const PCAPlot = () => {
     const { pcaPlotData } = useAppSelector<any>((state) => state.plotReducer);
 
     console.log("pcaPlotData ne aaaaaaa", pcaPlotData)
+    console.log("pcaPlotData.data ne aaaaaaa", pcaPlotData.data)
 
     return (
         <div>

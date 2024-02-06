@@ -11,16 +11,13 @@ bp = Blueprint('generateScreePlot', __name__)
 def generate_scree_plot():
     generatedData = request.json
 
-    print("❗❗❗")
-    print(generatedData)
-
     # data = pd.DataFrame(data=generatedData['data'],
     #                     index=generatedData['index'], columns=generatedData['columns'])
 
     data = pd.DataFrame(data=generatedData)
 
-    # Drop the 'locus tag' column
-    data = data.drop('locus tag', axis=1)
+    # Drop the first column
+    data = data.drop(data.columns[0], axis=1)
 
     # Replace commas with periods in the DataFrame
     data = data.replace(',', '.', regex=True)
@@ -30,9 +27,6 @@ def generate_scree_plot():
 
     # Remove rows with NaN values
     data = data.dropna()
-
-    print("📖📖📖")
-    print(data)
 
     # preprocessing.scale() will do the standardization for the data, as PCA is sensitive to the scale of the data.
     # If one feature has a large variance and another has a small variance, the PCA might load heavily on the feature with large variance, so it may lead to the bias result.
@@ -101,5 +95,8 @@ def generate_scree_plot():
             'height': 400,
         }
     }
+
+    print("📊📊📊 result from the generateScreePlot")
+    print(result)
 
     return jsonify(result)

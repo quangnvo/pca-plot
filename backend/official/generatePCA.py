@@ -20,16 +20,13 @@ def generate_pca():
     # data = pd.DataFrame(data=generatedData['data'],
     #                     index=generatedData['index'], columns=generatedData['columns'])
 
-    print("🚀🚀🚀")
-    print(generatedData)
-
     data = pd.DataFrame(data=generatedData)
 
-    print("🚀🚀🚀 data frameeeeeee")
-    print(data)
-
     # Drop the 'locus tag' column
-    data = data.drop('locus tag', axis=1)
+    # data = data.drop('locus tag', axis=1)
+
+    # Drop the first column
+    data = data.drop(data.columns[0], axis=1)
 
     # Replace commas with periods in the DataFrame
     data = data.replace(',', '.', regex=True)
@@ -40,9 +37,6 @@ def generate_pca():
     # Remove rows with NaN values
     data = data.dropna()
 
-    print("🚀🚀🚀 data frameeeeeee sau khi làm tùm lum")
-    print(data)
-
     scaling = StandardScaler()
     dataAfterStandardization = scaling.fit_transform(data.T)
 
@@ -51,10 +45,9 @@ def generate_pca():
 
     # Generate a color map with the same number of colors as columns
     # The color map can be found here (https://matplotlib.org/stable/users/explain/colors/colormaps.html)
-    cmap = plt.get_cmap("magma")
+    cmap = plt.get_cmap("hsv")
     colors = [cmap(i) for i in np.linspace(0, 1, len(data.columns))]
     # colors = [cmap(i) for i in range(len(data.columns))]
-
 
     # Convert RGB colors to hex
     colors_hex = [mcolors.rgb2hex(color[:3]) for color in colors]
