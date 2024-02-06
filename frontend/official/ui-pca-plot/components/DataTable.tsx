@@ -7,6 +7,7 @@ const DataTable = () => {
 
     const { csvData } = useAppSelector((state) => state.plotReducer)
 
+    // Convert csvData to the format required by Ant Design Table
     const tableData = csvData.map((row: any, index: any) => ({
         key: index,
         ...row as any,

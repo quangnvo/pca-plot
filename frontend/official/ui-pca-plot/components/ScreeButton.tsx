@@ -2,6 +2,10 @@
 
 import { Button } from "./ui/button"
 
+{/* <Button onClick={generateScreePlot} >
+          Generate scree plot
+        </Button> */}
+
 const ScreeButton = () => {
     return (
         <Button>
