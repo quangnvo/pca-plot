@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from flask import Blueprint, jsonify, request
-from sklearn import preprocessing
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
@@ -12,73 +11,78 @@ bp = Blueprint('generatePCA', __name__)
 
 @bp.route('/api/generate_pca', methods=['POST'])
 def generate_pca():
-    generatedData = request.json
+    # Get the data from the request
+    initialData = request.json
 
-    data = pd.DataFrame(data=generatedData)
+    # Convert the data into a DataFrame
+    convertedData = pd.DataFrame(data=initialData)
 
-    # Drop the first column
-    data = data.drop(data.columns[0], axis=1)
+    # Drop the first column of the DataFrame
+    # convertedData = convertedData.drop(convertedData.columns[0], axis=1)
 
-    # Replace commas with periods in the DataFrame
-    data = data.replace(',', '.', regex=True)
+    # index_col_name = initialData[0].keys()[0]
+    # print("index_col_name 🚀🚀🚀", index_col_name)
+    convertedData.set_index("geneName", inplace=True)
 
-    # Convert string values to float
-    data = data.astype(float)
-
-    # Remove rows with NaN values
-    data = data.dropna()
+    # Three things done here:
+    # 1. Replace commas with periods in the DataFrame
+    # 2. Convert string values to float
+    # 3. Remove rows with NaN values
+    convertedData = convertedData.replace(',', '.', regex=True)
+    convertedData = convertedData.astype(float)
+    convertedData = convertedData.dropna()
 
     #########################
-    #
     # Standardize the data
-    #
     #########################
 
-    # Create a StandardScaler object
+    # Two things done here:
+    # 1. Create a StandardScaler object
+    # 2. Pass the data into the scaling object
     standardScalerObject = StandardScaler()
-
-    # Pass the data into the scaling object
-    dataAfterStandardization = standardScalerObject.fit_transform(data.T)
+    dataAfterStandardization = standardScalerObject.fit_transform(
+        convertedData.T)
 
     #########################
-    #
     # Do the PCA
-    #
     #########################
 
-    # Create a PCA object
+    # Two things done here:
+    # 1. Create a PCA object
+    # 2. Pass the standardized data into the PCA object
     pcaObject = PCA()
-
-    # Pass the standardized data into the PCA object
     pcaData = pcaObject.fit_transform(dataAfterStandardization)
 
+    print("pcaData ❗❗❗", pcaData)
+
     #########################
-    #
     # Check which one is the most contribute
-    #
     #########################
 
-    loading_scores = pd.Series(
-        data=pca.components_[0],
-        index=data.index
-    )
+    # loading_scores = pd.Series(
+    #     data=pca.components_[0],
+    #     index=data.index
+    # )
+    # sorted_loading_scores = loading_scores.abs().sort_values(ascending=False)
+    # top_10_genes = sorted_loading_scores[0:10].index.values
+    # print("top 10 genes aaaaaa", loading_scores[top_10_genes])
 
-    sorted_loading_scores = loading_scores.abs().sort_values(ascending=False)
+    #########################
+    # Generate the color map
+    #########################
 
-    top_10_genes = sorted_loading_scores[0:10].index.values
-    print("top 10 genes aaaaaa", loading_scores[top_10_genes])
-
-    # Generate a color map with the same number of colors as columns
-    # The color map can be found here (https://matplotlib.org/stable/users/explain/colors/colormaps.html)
+    # The color map can be found here:
+    # (https://matplotlib.org/stable/users/explain/colors/colormaps.html)
     cmap = plt.get_cmap("hsv")
-    colors = [cmap(i) for i in np.linspace(0, 1, len(data.columns))]
-    # colors = [cmap(i) for i in range(len(data.columns))]
+    colors = [cmap(i) for i in np.linspace(0, 1, len(convertedData.columns))]
 
     # Convert RGB colors to hex
     colors_hex = [mcolors.rgb2hex(color[:3]) for color in colors]
 
-    # Create an array of scatter plot objects
-    scatter_plots = [
+    #########################
+    # Prepare the result for Plotly
+    #########################
+    pcaScatterCoordinates = [
         {
             'type': 'scatter',
             'mode': 'markers',
@@ -92,14 +96,11 @@ def generate_pca():
                     'width': 2,
                 }
             },
-            'name': data.columns[i]
-        } for i in range(len(data.columns))
+            'name': convertedData.columns[i]
+        } for i in range(len(convertedData.columns))
     ]
 
-    print("🧬🧬🧬")
-    print(scatter_plots)
-
-    layoutPCAPlot = {
+    layoutPCAPlotForReact = {
         'title': {
             'text': 'PCA Plot',
             'font': {
@@ -127,10 +128,12 @@ def generate_pca():
         'height': 400,
     }
 
-    # Prepare the result in the format that Plotly expects
     result = {
-        'data': scatter_plots,
-        'layout': layoutPCAPlot
+        'data': pcaScatterCoordinates,
+        'layout': layoutPCAPlotForReact
     }
 
+    #########################
+    # Return the result
+    #########################
     return jsonify(result)

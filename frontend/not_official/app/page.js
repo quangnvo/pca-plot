@@ -33,8 +33,8 @@ export default function Home() {
 
   const generatePCAPlot = async () => {
     try {
-      // const response = await axios.post(`http://localhost:${PORT}/api/generate_pca`, csvData);
-      const response = await axios.post(`http://localhost:${PORT}/api/generate_pca`, randomData);
+      const response = await axios.post(`http://localhost:${PORT}/api/generate_pca`, csvData);
+      // const response = await axios.post(`http://localhost:${PORT}/api/generate_pca`, randomData);
       setPlotData(response.data);
     } catch (error) {
       console.error(error);
@@ -50,39 +50,6 @@ export default function Home() {
     }
   }
 
-  // Parse CSV data & store it in the component state
-  // const handleCSVFileUpload = (e) => {
-  //   const file = e.target.files[0];
-  //   Papa.parse(file, {
-  //     header: true,
-  //     complete: (results) => {
-  //       setCsvData(results.data);
-  //     },
-  //   });
-  // };
-
-  // const handleFileUpload = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file.type === 'text/csv') {
-  //     Papa.parse(file, {
-  //       header: true,
-  //       complete: (results) => {
-  //         setCsvData(results.data);
-  //       },
-  //     });
-  //   } else if (file.type === 'text/plain') {
-  //     let reader = new FileReader();
-  //     reader.readAsText(file);
-  //     reader.onload = function () {
-  //       let txtData = reader.result;
-  //       console.log(txtData);
-  //     };
-  //     reader.onerror = function () {
-  //       console.log(reader.error);
-  //     };
-  //   }
-  // };
-
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (file.type === 'text/csv' || file.type === 'text/plain') {
@@ -94,8 +61,6 @@ export default function Home() {
       });
     }
   };
-
-
 
   // Convert csvData to the format required by Ant Design Table
   const tableData = csvData.map((row, index) => ({
