@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input"
 import { Table } from 'antd';
 
 
-
 export default function Home() {
 
   const PORT = 8080
@@ -34,7 +33,8 @@ export default function Home() {
 
   const generatePCAPlot = async () => {
     try {
-      const response = await axios.post(`http://localhost:${PORT}/api/generate_pca`, csvData);
+      // const response = await axios.post(`http://localhost:${PORT}/api/generate_pca`, csvData);
+      const response = await axios.post(`http://localhost:${PORT}/api/generate_pca`, randomData);
       setPlotData(response.data);
     } catch (error) {
       console.error(error);
@@ -113,6 +113,7 @@ export default function Home() {
 
   return (
     <div className='container my-4 flex flex-col gap-5'>
+
       <div className="flex gap-2 py-3 sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
         <Button onClick={generateRandomData} >
           Generate random data 🧬

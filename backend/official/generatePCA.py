@@ -14,16 +14,7 @@ bp = Blueprint('generatePCA', __name__)
 def generate_pca():
     generatedData = request.json
 
-    # data = pd.DataFrame(data=generatedData['data'],
-    #                     index=generatedData['index'], columns=generatedData['columns'])
-
-    # data = pd.DataFrame(data=generatedData['data'],
-    #                     index=generatedData['index'], columns=generatedData['columns'])
-
     data = pd.DataFrame(data=generatedData)
-
-    # Drop the 'locus tag' column
-    # data = data.drop('locus tag', axis=1)
 
     # Drop the first column
     data = data.drop(data.columns[0], axis=1)
@@ -37,11 +28,45 @@ def generate_pca():
     # Remove rows with NaN values
     data = data.dropna()
 
-    scaling = StandardScaler()
-    dataAfterStandardization = scaling.fit_transform(data.T)
+    #########################
+    #
+    # Standardize the data
+    #
+    #########################
 
-    pca = PCA()
-    pcaData = pca.fit_transform(dataAfterStandardization)
+    # Create a StandardScaler object
+    standardScalerObject = StandardScaler()
+
+    # Pass the data into the scaling object
+    dataAfterStandardization = standardScalerObject.fit_transform(data.T)
+
+    #########################
+    #
+    # Do the PCA
+    #
+    #########################
+
+    # Create a PCA object
+    pcaObject = PCA()
+
+    # Pass the standardized data into the PCA object
+    pcaData = pcaObject.fit_transform(dataAfterStandardization)
+
+    #########################
+    #
+    # Check which one is the most contribute
+    #
+    #########################
+
+    loading_scores = pd.Series(
+        data=pca.components_[0],
+        index=data.index
+    )
+
+    sorted_loading_scores = loading_scores.abs().sort_values(ascending=False)
+
+    top_10_genes = sorted_loading_scores[0:10].index.values
+    print("top 10 genes aaaaaa", loading_scores[top_10_genes])
 
     # Generate a color map with the same number of colors as columns
     # The color map can be found here (https://matplotlib.org/stable/users/explain/colors/colormaps.html)
