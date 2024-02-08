@@ -1,25 +1,23 @@
-import random as rd
+import random
+import string
 
-import numpy as np
-import pandas as pd
-from flask import Blueprint
+from flask import Blueprint, jsonify
 
 bp = Blueprint('generateSampleData', __name__)
 
 
 @bp.route('/api/generate_data', methods=['GET'])
 def generate_data():
-    conditions = ['condition' + str(i) for i in range(1, 6)]
-    samples = ['gene' + str(i) for i in range(1, 1001)]
+    data = []
+    for _ in range(300):
+        sample = {
+            'locus tag': ''.join(random.choices(string.ascii_uppercase + string.digits, k=10)),
+            'logFC': f"{random.uniform(-2, 2):.2f}",
+            'logCPM': f"{random.uniform(3, 7):.2f}",
+            'PValue': f"{random.uniform(0, 1):.2f}",
+            'FDR': f"{random.uniform(0, 1):.2f}"
+        }
+        data.append(sample)
 
-    data = pd.DataFrame(columns=samples, index=conditions)
-
-    for condition in data.index:
-        data.loc[condition, 'gene1':'gene500'] = np.random.poisson(
-            lam=rd.randrange(10, 1000), size=500)
-        data.loc[condition, 'gene501':'gene1000'] = np.random.poisson(
-            lam=rd.randrange(10, 1000), size=500)
-
-    data = data.T
-
-    return data.to_json(orient='split')
+        print("generated data: 🚀🚀🚀 \n", data)
+    return jsonify(data)

@@ -17,15 +17,10 @@ export default function Home() {
   const [plotData, setPlotData] = useState(null);
   const [screePlotData, setScreePlotData] = useState(null);
 
-  const onChange = (pagination, filters, sorter, extra) => {
-    console.log('params', pagination, filters, sorter, extra);
-  };
-
-
   const generateRandomData = async () => {
     try {
       const response = await axios.get(`http://localhost:${PORT}/api/generate_data`);
-      setRandomData(response.data);
+      setCsvData(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -34,7 +29,6 @@ export default function Home() {
   const generatePCAPlot = async () => {
     try {
       const response = await axios.post(`http://localhost:${PORT}/api/generate_pca`, csvData);
-      // const response = await axios.post(`http://localhost:${PORT}/api/generate_pca`, randomData);
       setPlotData(response.data);
     } catch (error) {
       console.error(error);
@@ -63,10 +57,11 @@ export default function Home() {
   };
 
   // Convert csvData to the format required by Ant Design Table
-  const tableData = csvData.map((row, index) => ({
+  const tableData = csvData.map((eachRow, index) => ({
     key: index,
-    ...row,
+    ...eachRow,
   }));
+  console.log("tableData aaaaaaa", tableData)
 
   // Create columns dynamically based on csvData
   const columns = csvData.length > 0 ? Object.keys(csvData[0]).map(key => ({
@@ -81,7 +76,7 @@ export default function Home() {
 
       <div className="flex gap-2 py-3 sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
         <Button onClick={generateRandomData} >
-          Generate random data 🧬
+          Generate random data
         </Button>
 
         <Input
@@ -90,7 +85,6 @@ export default function Home() {
           onChange={handleFileUpload}
           className="w-1/3"
         />
-
 
         <Button onClick={generateScreePlot} >
           Generate scree plot
@@ -133,49 +127,9 @@ export default function Home() {
       {/* Number of samples */}
       <div>
         <p>
-          Number of random samples: <strong>{randomData ? randomData.data.length : "0"}</strong>
-        </p>
-
-        <p>
           Number of samples: <strong>{csvData ? csvData.length : "0"}</strong>
         </p>
       </div>
-
-      {/* Table */}
-      {randomData && (
-        <table className="min-w-full divide-y divide-gray-200  rounded-lg shadow-sm">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-
-              </th>
-              {randomData.columns.map((column, index) => (
-                <th key={index} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {column}
-                </th>
-              ))}
-            </tr>
-          </thead>
-
-          <tbody className="bg-white divide-y divide-gray-200">
-            {randomData.data.map((row, index) => (
-              <tr key={index}>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {randomData.index[index]}
-                </td>
-                {row.map((cell, cellIndex) => (
-                  <td
-                    key={cellIndex}
-                    className="px-6 py-4 whitespace-nowrap"
-                  >
-                    {cell}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
 
       {/* Antd table */}
       <Table
