@@ -20,6 +20,7 @@ export default function Home() {
   const generateRandomData = async () => {
     try {
       const response = await axios.get(`http://localhost:${PORT}/api/generate_data`);
+      console.log("data random neeeeeeee", response.data)
       setCsvData(response.data);
     } catch (error) {
       console.error(error);
