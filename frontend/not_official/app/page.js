@@ -11,93 +11,141 @@ import { Table } from 'antd';
 
 export default function Home() {
 
-  const PORT = 8080
-  const [randomData, setRandomData] = useState(null);
+  /*####################
+  # Define the backend port
+  ####################*/
+  const BACKEND_PORT = 8080
+
+  /*####################
+  # Setup initial variables
+  # We have "csvData", "setCsvData" ; "plotData", "setPlotData" ;  etc.
+  # The "setSomething" function is used to update the "something" 
+  # For example, at the beginning, something = "123", then setSomething("abcdef") will update something, then something = "abcdef"
+  # The "useState" function is a React hook function that is used to create the combo of "something" and "setSomething"
+  ####################*/
   const [csvData, setCsvData] = useState([]);
   const [plotData, setPlotData] = useState(null);
   const [screePlotData, setScreePlotData] = useState(null);
 
+  /*####################
+  # Generate random data function
+  ####################*/
   const generateRandomData = async () => {
     try {
-      const response = await axios.get(`http://localhost:${PORT}/api/generate_data`);
-      console.log("data random neeeeeeee", response.data)
+      // Send a GET request to the backend to generate random data, then backend will return the random data, then put the random generated data to the "csvData"
+      const response = await axios.get(`http://localhost:${BACKEND_PORT}/api/generate_data`);
       setCsvData(response.data);
     } catch (error) {
       console.error(error);
     }
   }
 
-  const generatePCAPlot = async () => {
-    try {
-      const response = await axios.post(`http://localhost:${PORT}/api/generate_pca`, csvData);
-      setPlotData(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
+  /*####################
+  # Generate scree plot function
+  ####################*/
   const generateScreePlot = async () => {
     try {
-      const response = await axios.post(`http://localhost:${PORT}/api/generate_scree_plot`, csvData);
+      const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_scree_plot`, csvData);
       setScreePlotData(response.data);
     } catch (error) {
       console.error(error);
     }
   }
 
+  /*####################
+  # Generate PCA plot function
+  ####################*/
+  const generatePCAPlot = async () => {
+    try {
+      const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca`, csvData);
+      setPlotData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  /*####################
+  # Handle file upload function
+  ####################*/
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
+    // Checking if the file is a csv file or the txt file
+    // If .csv or .txt file, then continue
     if (file.type === 'text/csv' || file.type === 'text/plain') {
+      // Using PapaParse, a library used for parsing, to parse the file
       Papa.parse(file, {
         header: true,
         complete: (results) => {
+          // Then set the parsed data to the csvData
           setCsvData(results.data);
         },
       });
     }
   };
 
-  // Convert csvData to the format required by Ant Design Table
-  const tableData = csvData.map((eachRow, index) => ({
+  /*####################
+  # Convert the data from the csv file that user uploaded to the format required by Ant Design Table
+  # The Ant Design Table belongs to the library "antd" which is used for UI design
+  # https://ant.design/components/table
+  # In the following code, two things are done:
+  # 1. Convert csvData to the tableDataForAntdTable format required by Ant Design Table
+  # 2. Set the columns for the Ant Design Table
+  ####################*/
+
+  const tableDataForAntdTable = csvData.map((eachRow, index) => ({
     key: index,
     ...eachRow,
   }));
-  console.log("tableData aaaaaaa", tableData)
 
-  // Create columns dynamically based on csvData
-  const columns = csvData.length > 0 ? Object.keys(csvData[0]).map(key => ({
+  const columnsForAntdTable = csvData.length > 0 ? Object.keys(csvData[0]).map(key => ({
     title: key,
     dataIndex: key,
     key: key,
     width: 150,
   })) : [];
 
+
+  /*####################
+  # Return the UI
+  ####################*/
   return (
     <div className='container my-4 flex flex-col gap-5'>
 
-      <div className="flex gap-2 py-3 sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
-        <Button onClick={generateRandomData} >
-          Generate random data
-        </Button>
+      <div className="flex py-3 justify-between sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
+        <div className='flex gap-2'>
 
-        <Input
-          type='file'
-          accept='.csv,.txt'
-          onChange={handleFileUpload}
-          className="w-1/3"
-        />
+          {/* Button generate random data */}
+          <Button onClick={generateRandomData} >
+            Generate random data
+          </Button>
 
-        <Button onClick={generateScreePlot} >
-          Generate scree plot
-        </Button>
+          {/* Button upload file */}
+          <Input
+            type='file'
+            accept='.csv,.txt'
+            onChange={handleFileUpload}
+          />
+        </div>
 
-        <Button onClick={generatePCAPlot}>
-          Generate PCA plot
-        </Button>
+        <div className='flex gap-2'>
+          {/* Button generate scree plot */}
+          <Button onClick={generateScreePlot} >
+            Generate scree plot
+          </Button>
+
+          {/* Button generate PCA plot */}
+          <Button onClick={generatePCAPlot}>
+            Generate PCA plot
+          </Button>
+        </div>
       </div>
 
-
       {/* Scree plot */}
+      {/* 
+        The {something && (plot)} means that if something is not null, then render (plot) 
+        At the beginning, screePlotData is null, so (plot) is not rendered
+        After the user clicks the "Generate scree plot" button, then screePlotData will have value, so (plot) will be rendered
+      */}
       <div>
         {screePlotData && (
           <div className='p-3 border border-gray-200 rounded-lg'>
@@ -132,14 +180,13 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Antd table */}
+      {/* Table */}
       <Table
-        columns={columns}
-        dataSource={tableData}
+        columns={columnsForAntdTable}
+        dataSource={tableDataForAntdTable}
         scroll={{
           x: 1500,
         }}
-        // antd site header height
         sticky={{
           offsetHeader: 64,
         }}

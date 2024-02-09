@@ -20,11 +20,9 @@ export const plot = createSlice({
 			state.csvData = action.payload
 		},
 		setScreePlotData: (state, action: PayloadAction<any>) => {
-			console.log('đã vào setScreePlotData')
 			state.screePlotData = action.payload
 		},
 		setPCAPlotData: (state, action: PayloadAction<any>) => {
-			console.log('đã vào setPCAPlotData')
 			state.pcaPlotData = action.payload
 		},
 	},

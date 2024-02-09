@@ -9,94 +9,118 @@ bp = Blueprint('generateScreePlot', __name__)
 
 @bp.route('/api/generate_scree_plot', methods=['POST'])
 def generate_scree_plot():
-    generatedData = request.json
+    #########################
+    # Get the initial data and do some initial preparation
+    #########################
 
-    # data = pd.DataFrame(data=generatedData['data'],
-    #                     index=generatedData['index'], columns=generatedData['columns'])
+    # Two things done in the following code:
+    # 1. Get the data from the request
+    # 2. Convert the data into a DataFrame
+    initialData = request.json
+    convertedData = pd.DataFrame(data=initialData)
 
-    data = pd.DataFrame(data=generatedData)
+    # Assume that the first column is the column that contains the names of the genes (like gene1, gene2, etc.), so here we set the first column as the index of the DataFrame
+    # ==> so the Dataframe will not use it for the calculations
+    # Two things done in the following code:
+    # 1. Take the name of the first column in the DataFrame
+    # 2. Based on that name, let the first column be the index of the DataFrame
+    nameOfTheFirstColumn = list(initialData[0].keys())[0]
+    convertedData.set_index(nameOfTheFirstColumn, inplace=True)
 
-    # Drop the first column
-    data = data.drop(data.columns[0], axis=1)
+    # Three things done in the following code:
+    # 1. Replace comma with dot in the DataFrame
+    # 2. Convert string values to float
+    # 3. Remove rows with NaN values
+    convertedData = convertedData.replace(',', '.', regex=True)
+    convertedData = convertedData.astype(float)
+    convertedData = convertedData.dropna()
 
-    # Replace commas with periods in the DataFrame
-    data = data.replace(',', '.', regex=True)
+    #########################
+    # Standardize the data
+    #########################
 
-    # Convert string values to float
-    data = data.astype(float)
+    # Two things done in the following code:
+    # 1. Create a StandardScaler object by using StandardScaler() of scikit-learn
+    # 2. Pass the data into the scaling object ==> data will be standardized
+    standardScalerObject = StandardScaler()
+    dataAfterStandardization = standardScalerObject.fit_transform(
+        convertedData.T)
 
-    # Remove rows with NaN values
-    data = data.dropna()
+    #########################
+    # Do the PCA
+    #########################
 
-    # preprocessing.scale() will do the standardization for the data, as PCA is sensitive to the scale of the data.
-    # If one feature has a large variance and another has a small variance, the PCA might load heavily on the feature with large variance, so it may lead to the bias result.
-    scaling = StandardScaler()
-    dataAfterStandardization = scaling.fit_transform(data.T)
-    # dataAfterStandardization = preprocessing.scale(data.T)
-
-    # Create a PCA instance and name it pcaModel
-    # pcaModel now is still an empty model
-    pcaModel = PCA()
-
-    # Add the dataAfterStandardization to the pcaModel, meanwhile use the fit_transform() method to fit the model with data and apply the dimensionality reduction on data.
-    pcaModel.fit_transform(dataAfterStandardization)
+    # Two things done in the following code:
+    # 1. Create a PCA object by using PCA() of scikit-learn
+    # 2. Pass the standardized data into the PCA object
+    pcaObject = PCA()
+    pcaObject.fit_transform(dataAfterStandardization)
 
     # Calculate the percentage of explained variance per principal component
     percentageOfVariance = np.round(
-        pcaModel.explained_variance_ratio_ * 100, decimals=1)
+        pcaObject.explained_variance_ratio_ * 100, decimals=1)
 
-    # Create labels for the scree plot, like "PC1", "PC2", etc.
+    #########################
+    # Prepare the result following the Plotly format
+    #########################
+
+    # Four things done in the following code:
+    # 1. Create labels for the scree plot, like "PC1", "PC2", etc.
+    # 2. Prepare the data for the scree plot
+    # 3. Prepare the layout for the scree plot
+    # 4. Combine the data and the layout into a dictionary and return it as a JSON object
+
     labels = ['PC' + str(x) for x in range(1, len(percentageOfVariance)+1)]
 
-    # Prepare the result in the format that Plotly expects
-    result = {
-        'data': [
-            {
-                'type': 'bar',
-                'x': labels,
-                'y': percentageOfVariance.tolist(),
-                # Display the percentage on top of each bar
-                'text': [f'{value}%' for value in percentageOfVariance.tolist()],
-                'textposition': 'auto',
-                'marker': {
+    screePlotFormatData = [
+        {
+            'type': 'bar',
+            'x': labels,
+            'y': percentageOfVariance.tolist(),
+            # Display the percentage on top of each bar
+            'text': [f'{value}%' for value in percentageOfVariance.tolist()],
+            'textposition': 'auto',
+            'marker': {
                     'color': 'yellow',
                     'line': {
                         'color': 'black',
                         'width': 2,
                     },
-                }
             }
-        ],
-        'layout': {
-            'title': {
-                'text': 'Scree Plot',
-                'font': {
+        }
+    ]
+
+    layoutScreePlotForReact = {
+        'title': {
+            'text': 'Scree Plot',
+            'font': {
                     'size': 30,
                     'color': 'black',
-                },
             },
-            'xaxis': {
-                'title': 'Principal component',
-                'titlefont': {
-                    'size': 20,
-                    'color': 'black',
-                },
+        },
+        'xaxis': {
+            'title': 'Principal component',
+            'titlefont': {
+                'size': 20,
+                'color': 'black',
             },
-            'yaxis': {
-                'title': 'Explained variance (%)',
-                'titlefont': {
-                    'size': 20,
-                    'color': 'black',
-                },
+        },
+        'yaxis': {
+            'title': 'Explained variance (%)',
+            'titlefont': {
+                'size': 20,
+                'color': 'black',
             },
-            'autosize': True,
-            'hovermode': 'closest',
-            'showlegend': False,
-            'height': 400,
-        }
+        },
+        'autosize': True,
+        'hovermode': 'closest',
+        'showlegend': False,
+        'height': 400,
     }
 
-    print("📊📊📊 result from the generateScreePlot")
-    print(result)
+    result = {
+        'data': screePlotFormatData,
+        'layout': layoutScreePlotForReact
+    }
 
     return jsonify(result)
