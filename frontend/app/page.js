@@ -32,7 +32,9 @@ export default function Home() {
   ####################*/
   const generateRandomData = async () => {
     try {
-      // Send a GET request to the backend to generate random data, then backend will return the random data, then put the random generated data to the "csvData"
+      // Send a GET request to the backend to generate random data
+      // then backend will return the random data
+      // then put the random generated data to the "csvData" by using "setCsvData"
       const response = await axios.get(`http://localhost:${BACKEND_PORT}/api/generate_data`);
       setCsvData(response.data);
     } catch (error) {
@@ -45,6 +47,9 @@ export default function Home() {
   ####################*/
   const generateScreePlot = async () => {
     try {
+      // Send a POST request with the "csvData" to the backend
+      // then backend will return the scree plot data
+      // then put the scree plot data to the "screePlotData" by using "setScreePlotData"
       const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_scree_plot`, csvData);
       setScreePlotData(response.data);
     } catch (error) {
@@ -85,8 +90,7 @@ export default function Home() {
 
   /*####################
   # Convert the data from the csv file that user uploaded to the format required by Ant Design Table
-  # The Ant Design Table belongs to the library "antd" which is used for UI design
-  # https://ant.design/components/table
+  # The Ant Design Table belongs to the library "antd" which is used for the UI. Link: https://ant.design/components/table
   # In the following code, two things are done:
   # 1. Convert csvData to the tableDataForAntdTable format required by Ant Design Table
   # 2. Set the columns for the Ant Design Table
@@ -142,9 +146,9 @@ export default function Home() {
 
       {/* Scree plot */}
       {/* 
-        The {something && (plot)} means that if something is not null, then render (plot) 
-        At the beginning, screePlotData is null, so (plot) is not rendered
-        After the user clicks the "Generate scree plot" button, then screePlotData will have value, so (plot) will be rendered
+        - The {something && (plot)} means that if "something" is not null, then (plot) will be rendered 
+        - At the beginning, screePlotData is null, so (plot) is not rendered
+        - After a user clicks the "Generate scree plot" button, then screePlotData will have value, then (plot) will be rendered
       */}
       <div>
         {screePlotData && (
