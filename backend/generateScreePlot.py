@@ -72,6 +72,27 @@ def generate_scree_plot():
 
     labels = ['PC' + str(x) for x in range(1, len(percentageOfVariance)+1)]
 
+    # screePlotFormatData = [
+    #     {
+    #         'type': 'bar',
+    #         'x': labels,
+    #         'y': percentageOfVariance.tolist(),
+    #         # Display the percentage on top of each bar
+    #         'text': [f'{value}%' for value in percentageOfVariance.tolist()],
+    #         'textposition': 'auto',
+    #         'marker': {
+    #                 'color': 'yellow',
+    #                 'line': {
+    #                     'color': 'black',
+    #                     'width': 2,
+    #                 },
+    #         }
+    #     }
+    # ]
+
+    # Calculate the cumulative explained variance
+    cumulativeVariance = np.cumsum(percentageOfVariance)
+
     screePlotFormatData = [
         {
             'type': 'bar',
@@ -81,12 +102,27 @@ def generate_scree_plot():
             'text': [f'{value}%' for value in percentageOfVariance.tolist()],
             'textposition': 'auto',
             'marker': {
-                    'color': 'yellow',
-                    'line': {
-                        'color': 'black',
-                        'width': 2,
-                    },
-            }
+                'color': 'yellow',
+                'line': {
+                    'color': 'black',
+                    'width': 2,
+                },
+            },
+            'name': 'Individual'
+        },
+        {
+            'type': 'scatter',
+            'x': labels,
+            'y': cumulativeVariance.tolist(),
+            'mode': 'lines+markers',
+            'name': 'Cumulative',
+            'line': {
+                'color': 'black',
+                'width': 2,
+            },
+            'marker': {
+                'size': 7,
+            },
         }
     ]
 

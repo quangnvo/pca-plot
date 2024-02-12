@@ -56,9 +56,21 @@ def generate_scree_plot():
     pcaObject = PCA()
     pcaObject.fit_transform(dataAfterStandardization)
 
-    # Calculate the percentage of explained variance per principal component
-    percentageOfVariance = np.round(
-        pcaObject.explained_variance_ratio_ * 100, decimals=1)
+    print("🚀🚀🚀 PCA OBJECT \n")
+    print(pcaObject)
+
+    # Get the pca components (loadings)
+    loadings = pcaObject.components_
+
+    # Create a DataFrame from the loadings
+    labelPrincipalComponents = [
+        'PC' + str(i+1) for i in range(loadings.shape[0])]
+
+    loadings_df = pd.DataFrame(
+        loadings.T,
+        index=convertedData.index, columns=labelPrincipalComponents)
+    print("🚀🚀🚀 LOADINGS_DF \n")
+    print(loadings_df)
 
     #########################
     # Prepare the result following the Plotly format
@@ -70,27 +82,25 @@ def generate_scree_plot():
     # 3. Prepare the layout for the scree plot
     # 4. Combine the data and the layout into a dictionary and return it as a JSON object
 
-    labels = ['PC' + str(x) for x in range(1, len(percentageOfVariance)+1)]
+    # loadingsPlotFormatData = [
+    #     {
+    #         'type': 'bar',
+    #         'x': labels,
+    #         'y': percentageOfVariance.tolist(),
+    #         # Display the percentage on top of each bar
+    #         'text': [f'{value}%' for value in percentageOfVariance.tolist()],
+    #         'textposition': 'auto',
+    #         'marker': {
+    #                 'color': 'yellow',
+    #                 'line': {
+    #                     'color': 'black',
+    #                     'width': 2,
+    #                 },
+    #         }
+    #     }
+    # ]
 
-    screePlotFormatData = [
-        {
-            'type': 'bar',
-            'x': labels,
-            'y': percentageOfVariance.tolist(),
-            # Display the percentage on top of each bar
-            'text': [f'{value}%' for value in percentageOfVariance.tolist()],
-            'textposition': 'auto',
-            'marker': {
-                    'color': 'yellow',
-                    'line': {
-                        'color': 'black',
-                        'width': 2,
-                    },
-            }
-        }
-    ]
-
-    layoutScreePlotForReact = {
+    layoutLoadingslotForReact = {
         'title': {
             'text': 'Scree Plot',
             'font': {
@@ -118,9 +128,9 @@ def generate_scree_plot():
         'height': 400,
     }
 
-    result = {
-        'data': screePlotFormatData,
-        'layout': layoutScreePlotForReact
-    }
+    # result = {
+    #     'data': screePlotFormatData,
+    #     'layout': layoutScreePlotForReact
+    # }
 
-    return jsonify(result)
+    return jsonify("")

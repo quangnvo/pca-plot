@@ -26,6 +26,7 @@ export default function Home() {
   const [csvData, setCsvData] = useState([]);
   const [plotData, setPlotData] = useState(null);
   const [screePlotData, setScreePlotData] = useState(null);
+  const [loadingsPlotData, setLoadingsPlotData] = useState(null)
 
   /*####################
   # Generate random data function
@@ -189,6 +190,20 @@ export default function Home() {
               style={{ width: "100%", height: "100%" }}
               data={plotData.data}
               layout={plotData.layout}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Loadings plot */}
+      <div>
+        {loadingsPlotData && (
+          <div className='p-3 border border-gray-200 rounded-lg'>
+            <Plot
+              useResizeHandler
+              style={{ width: "100%", height: "100%" }}
+              data={loadingsPlotData.data}
+              layout={loadingsPlotData.layout}
             />
           </div>
         )}
