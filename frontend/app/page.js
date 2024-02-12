@@ -43,7 +43,7 @@ export default function Home() {
   }
 
   /*####################
-  # Generate scree plot function
+  # Generate Scree plot function
   ####################*/
   const generateScreePlot = async () => {
     try {
@@ -63,6 +63,18 @@ export default function Home() {
   const generatePCAPlot = async () => {
     try {
       const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca`, csvData);
+      setPlotData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  /*####################
+  # Generate Loadings plot
+  ####################*/
+  const generateLoadingsPlot = async () => {
+    try {
+      const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_loadings_plot`, csvData);
       setPlotData(response.data);
     } catch (error) {
       console.error(error);
@@ -134,12 +146,17 @@ export default function Home() {
         <div className='flex gap-2'>
           {/* Button generate scree plot */}
           <Button onClick={generateScreePlot} >
-            Generate scree plot
+            Generate Scree plot
           </Button>
 
           {/* Button generate PCA plot */}
           <Button onClick={generatePCAPlot}>
             Generate PCA plot
+          </Button>
+
+          {/* Button generate PCA plot */}
+          <Button onClick={generateLoadingsPlot}>
+            Generate Loadings plot
           </Button>
         </div>
       </div>

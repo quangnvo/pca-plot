@@ -18,7 +18,7 @@ def generate_data():
             # Generate a random 10-character string of uppercase letters and digits (to make it as a name)
             'Gene': ''.join(random.choices(string.ascii_uppercase + string.digits, k=10)),
 
-            # Generate random values for the 4 conditions
+            # Generate random values for conditions
             # f"" is a string formatting method that is used to insert the value into a string
             'condition 1': f"{random.uniform(-2, 2):.2f}",
             'condition 2': f"{random.uniform(3, 7):.2f}",
