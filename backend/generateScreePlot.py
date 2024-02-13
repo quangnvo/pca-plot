@@ -31,9 +31,11 @@ def generate_scree_plot():
     # 1. Replace comma with dot in the DataFrame
     # 2. Convert string values to float
     # 3. Remove rows with NaN values
+    # 4. Transpose the DataFrame
     convertedData = convertedData.replace(',', '.', regex=True)
     convertedData = convertedData.astype(float)
     convertedData = convertedData.dropna()
+    convertedData = convertedData.T
 
     #########################
     # Standardize the data
