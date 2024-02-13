@@ -13,7 +13,7 @@ def generate_scree_plot():
     # Get the initial data and do some initial preparation
     #########################
 
-    # Two things done in the following code:
+    # Things done in the following code:
     # 1. Get the data from the request
     # 2. Convert the data into a DataFrame
     initialData = request.json
@@ -21,13 +21,13 @@ def generate_scree_plot():
 
     # Assume that the first column is the column that contains the names of the genes (like gene1, gene2, etc.), so here we set the first column as the index of the DataFrame
     # ==> so the Dataframe will not use it for the calculations
-    # Two things done in the following code:
+    # Things done in the following code:
     # 1. Take the name of the first column in the DataFrame
     # 2. Based on that name, let the first column be the index of the DataFrame
     nameOfTheFirstColumn = list(initialData[0].keys())[0]
     convertedData.set_index(nameOfTheFirstColumn, inplace=True)
 
-    # Three things done in the following code:
+    # Things done in the following code:
     # 1. Replace comma with dot in the DataFrame
     # 2. Convert string values to float
     # 3. Remove rows with NaN values
@@ -39,18 +39,18 @@ def generate_scree_plot():
     # Standardize the data
     #########################
 
-    # Two things done in the following code:
+    # Things done in the following code:
     # 1. Create a StandardScaler object by using StandardScaler() of scikit-learn
     # 2. Pass the data into the scaling object ==> data will be standardized
     standardScalerObject = StandardScaler()
     dataAfterStandardization = standardScalerObject.fit_transform(
-        convertedData.T)
+        convertedData)
 
     #########################
-    # Do the PCA
+    # Calculate the percentage of explained variance per principal component
     #########################
 
-    # Two things done in the following code:
+    # Things done in the following code:
     # 1. Create a PCA object by using PCA() of scikit-learn
     # 2. Pass the standardized data into the PCA object
     pcaObject = PCA()
@@ -64,33 +64,15 @@ def generate_scree_plot():
     # Prepare the result following the Plotly format
     #########################
 
-    # Four things done in the following code:
+    # Things done in the following code:
     # 1. Create labels for the scree plot, like "PC1", "PC2", etc.
-    # 2. Prepare the data for the scree plot
-    # 3. Prepare the layout for the scree plot
-    # 4. Combine the data and the layout into a dictionary and return it as a JSON object
+    # 2. Calculate the cumulative explained variance
+    # 3. Prepare the data for the scree plot
+    # 4. Prepare the layout for the scree plot
+    # 5. Combine the data and the layout into a dictionary and return it as a JSON object
 
     labels = ['PC' + str(x) for x in range(1, len(percentageOfVariance)+1)]
 
-    # screePlotFormatData = [
-    #     {
-    #         'type': 'bar',
-    #         'x': labels,
-    #         'y': percentageOfVariance.tolist(),
-    #         # Display the percentage on top of each bar
-    #         'text': [f'{value}%' for value in percentageOfVariance.tolist()],
-    #         'textposition': 'auto',
-    #         'marker': {
-    #                 'color': 'yellow',
-    #                 'line': {
-    #                     'color': 'black',
-    #                     'width': 2,
-    #                 },
-    #         }
-    #     }
-    # ]
-
-    # Calculate the cumulative explained variance
     cumulativeVariance = np.cumsum(percentageOfVariance)
 
     screePlotFormatData = [

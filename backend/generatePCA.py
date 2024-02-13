@@ -15,7 +15,7 @@ def generate_pca():
     # Get the initial data and do some initial preparation
     #########################
 
-    # Two things done in the following code:
+    # Things done in the following code:
     # 1. Get the data from the request
     # 2. Convert the data into a DataFrame
     initialData = request.json
@@ -23,13 +23,13 @@ def generate_pca():
 
     # Assume that the first column is the column that contains the names of the genes (like gene1, gene2, etc.), so here we set the first column as the index of the DataFrame
     # ==> so the Dataframe will not use it for the calculations
-    # Two things done in the following code:
+    # Things done in the following code:
     # 1. Take the name of the first column in the DataFrame
     # 2. Based on that name, let the first column be the index of the DataFrame
     nameOfTheFirstColumn = list(initialData[0].keys())[0]
     convertedData.set_index(nameOfTheFirstColumn, inplace=True)
 
-    # Three things done in the following code:
+    # Things done in the following code:
     # 1. Replace comma with dot in the DataFrame
     # 2. Convert string values to float
     # 3. Remove rows with NaN values
@@ -41,7 +41,7 @@ def generate_pca():
     # Standardize the data
     #########################
 
-    # Two things done in the following code:
+    # Things done in the following code:
     # 1. Create a StandardScaler object by using StandardScaler() of scikit-learn
     # 2. Pass the data into the scaling object ==> data will be standardized
     standardScalerObject = StandardScaler()
@@ -52,7 +52,7 @@ def generate_pca():
     # Do the PCA
     #########################
 
-    # Two things done in the following code:
+    # Things done in the following code:
     # 1. Create a PCA object by using PCA() of scikit-learn
     # 2. Pass the standardized data into the PCA object
     pcaObject = PCA()
@@ -62,7 +62,7 @@ def generate_pca():
     # Generate the color map to make the plot colorful
     #########################
 
-    # Two things done in the following code:
+    # Things done in the following code:
     # 1. Get the color map from matplotlib
     # 2. Generate colors based on the color map and the number of columns in the DataFrame
     # 3. Convert RGB colors to hexadecimal colors
@@ -77,7 +77,7 @@ def generate_pca():
     # Prepare the result following the Plotly format
     #########################
 
-    # Three things done in the following code:
+    # Things done in the following code:
     # 1. Prepare the data for the PCA plot
     # 2. Prepare the layout for the PCA plot
     # 3. Combine the data and the layout into a dictionary and return it as a JSON object

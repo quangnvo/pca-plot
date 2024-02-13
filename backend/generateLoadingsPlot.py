@@ -35,6 +35,9 @@ def generate_scree_plot():
     convertedData = convertedData.astype(float)
     convertedData = convertedData.dropna()
 
+    print("🚀🚀🚀 CONVERTED DATA \n")
+    print(convertedData)
+
     #########################
     # Standardize the data
     #########################
@@ -44,7 +47,10 @@ def generate_scree_plot():
     # 2. Pass the data into the scaling object ==> data will be standardized
     standardScalerObject = StandardScaler()
     dataAfterStandardization = standardScalerObject.fit_transform(
-        convertedData.T)
+        convertedData)
+
+    print("🚀🚀🚀 DATA AFTER STANDARDIZATION \n")
+    print(dataAfterStandardization)
 
     #########################
     # Do the PCA
@@ -53,24 +59,28 @@ def generate_scree_plot():
     # Two things done in the following code:
     # 1. Create a PCA object by using PCA() of scikit-learn
     # 2. Pass the standardized data into the PCA object
-    pcaObject = PCA()
+    pcaObject = PCA(n_components=2)
     pcaObject.fit_transform(dataAfterStandardization)
-
-    print("🚀🚀🚀 PCA OBJECT \n")
-    print(pcaObject)
 
     # Get the pca components (loadings)
     loadings = pcaObject.components_
 
-    # Create a DataFrame from the loadings
-    labelPrincipalComponents = [
-        'PC' + str(i+1) for i in range(loadings.shape[0])]
+    print("🚀🚀🚀 LOADINGS \n")
+    print(loadings)
 
-    loadings_df = pd.DataFrame(
-        loadings.T,
-        index=convertedData.index, columns=labelPrincipalComponents)
-    print("🚀🚀🚀 LOADINGS_DF \n")
-    print(loadings_df)
+    # Number of features before PCA
+    n_features = pcaObject.n_features_in_
+    print("n_features: \n", n_features)
+
+    # Create a DataFrame from the loadings
+    # labelPrincipalComponents = [
+    #     'PC' + str(i+1) for i in range(loadings.shape[0])]
+
+    # loadings_df = pd.DataFrame(
+    #     loadings.T,
+    #     index=convertedData.index, columns=labelPrincipalComponents)
+    # print("🚀🚀🚀 LOADINGS_DF \n")
+    # print(loadings_df)
 
     #########################
     # Prepare the result following the Plotly format
