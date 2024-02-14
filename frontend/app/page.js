@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Plot from 'react-plotly.js';
 import axios from 'axios';
 import Papa from 'papaparse';
@@ -27,6 +27,31 @@ export default function Home() {
   const [screePlotData, setScreePlotData] = useState(null);
   const [pcaPlotData, setPcaPlotData] = useState(null);
   const [loadingsPlotData, setLoadingsPlotData] = useState(null)
+
+  const colorGroup = [
+    {
+      group: "1",
+      colorCode: "#1f77b4",
+      names: ["H2O_30m_A", "H2O_30m_B", "H2O_30m_C"]
+    },
+    {
+      group: "2",
+      colorCode: "#ff7f0e",
+      names: ["H2O_16h_A", "H2O_16h_B", "H2O_16h_C"]
+    },
+  ]
+
+  useEffect(() => {
+    if (pcaPlotData !== null) {
+      pcaPlotData.data.forEach((d) => {
+        colorGroup.forEach((group) => {
+          if (group.names.includes(d.name)) {
+            d.marker.color = group.colorCode;
+          }
+        });
+      });
+    }
+  }, [pcaPlotData]);
 
   /*####################
   # Generate random data function
@@ -64,7 +89,7 @@ export default function Home() {
   const generatePCAPlot = async () => {
     try {
       const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca`, csvData);
-      pcaPlotData(response.data);
+      setPcaPlotData(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -76,7 +101,7 @@ export default function Home() {
   const generateLoadingsPlot = async () => {
     try {
       const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_loadings_plot`, csvData);
-      pcaPlotData(response.data);
+      setPcaPlotData(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -123,7 +148,7 @@ export default function Home() {
 
   console.log('tableDataForAntdTable', tableDataForAntdTable)
   console.log('columnsForAntdTable', columnsForAntdTable)
-  console.log("🚀🚀🚀 pca plot data",)
+  console.log("🚀🚀🚀 pca plot data", pcaPlotData)
 
   /*####################
   # Return the UI

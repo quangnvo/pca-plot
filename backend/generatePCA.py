@@ -73,6 +73,10 @@ def generate_pca():
     # colors = [cmap(i) for i in np.linspace(0, 1, len(convertedData.columns))]
     # colors_hex = [mcolors.rgb2hex(color[:3]) for color in colors]
 
+    # Get the explained variance ratio
+    pcaVariancePercentage = pcaObject.explained_variance_ratio_
+
+
     #########################
     # Prepare the result following the Plotly format
     #########################
@@ -91,7 +95,7 @@ def generate_pca():
             'marker': {
                 'size': 12,
                 # 'color': colors_hex[i],
-                "color": "orange",
+                "color": "#fa8072",
                 'line': {
                     'color': 'black',
                     'width': 2,
@@ -110,14 +114,14 @@ def generate_pca():
             },
         },
         'xaxis': {
-            'title': 'PC1',
+            'title': f'PC1 ({pcaVariancePercentage[0]*100:.2f}%)',
             'titlefont': {
                 'size': 20,
                 'color': 'black',
             },
         },
         'yaxis': {
-            'title': 'PC2',
+            'title': f'PC2 ({pcaVariancePercentage[1]*100:.2f}%)',
             'titlefont': {
                 'size': 20,
                 'color': 'black',
