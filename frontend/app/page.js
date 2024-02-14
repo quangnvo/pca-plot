@@ -7,6 +7,14 @@ import Papa from 'papaparse';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table } from 'antd';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
 
 export default function Home() {
@@ -27,8 +35,9 @@ export default function Home() {
   const [screePlotData, setScreePlotData] = useState(null);
   const [pcaPlotData, setPcaPlotData] = useState(null);
   const [loadingsPlotData, setLoadingsPlotData] = useState(null)
+  const [color, setColor] = useState("#fa8072");
 
-  const colorGroup = [
+  const initialColorGroup = [
     {
       group: "1",
       colorCode: "#1f77b4",
@@ -39,7 +48,15 @@ export default function Home() {
       colorCode: "#ff7f0e",
       names: ["H2O_16h_A", "H2O_16h_B", "H2O_16h_C"]
     },
-  ]
+  ];
+
+  const [colorGroup, setColorGroup] = useState(initialColorGroup);
+
+  const handleColorChange = (index, newColor) => {
+    setColorGroup(colorGroup.map((group, i) =>
+      i === index ? { ...group, colorCode: newColor } : group
+    ));
+  };
 
   useEffect(() => {
     if (pcaPlotData !== null) {
@@ -150,101 +167,108 @@ export default function Home() {
   console.log('columnsForAntdTable', columnsForAntdTable)
   console.log("🚀🚀🚀 pca plot data", pcaPlotData)
 
-  /*####################
-  # Return the UI
-  ####################*/
-  return (
-    <div className='container my-4 flex flex-col gap-5'>
 
-      <div className="flex py-3 justify-between sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
-        <div className='flex gap-2'>
-
-          {/* Button generate random data */}
-          <Button onClick={generateRandomData} >
-            Generate random data
-          </Button>
-
-          {/* Button upload file */}
-          <Input
-            type='file'
-            accept='.csv,.txt'
-            onChange={handleFileUpload}
+  const renderScreePlot = () => {
+    if (screePlotData) {
+      return (
+        <div className='p-3 border border-gray-200 rounded-lg'>
+          <Plot
+            useResizeHandler
+            style={{ width: "100%", height: "100%" }}
+            data={screePlotData.data}
+            layout={screePlotData.layout}
           />
         </div>
+      )
+    }
+  }
 
-        <div className='flex gap-2'>
-          {/* Button generate scree plot */}
-          <Button onClick={generateScreePlot} >
-            Generate Scree plot
-          </Button>
-
-          {/* Button generate PCA plot */}
-          <Button onClick={generatePCAPlot}>
-            Generate PCA plot
-          </Button>
-
-          {/* Button generate PCA plot */}
-          <Button onClick={generateLoadingsPlot}>
-            Generate Loadings plot
-          </Button>
+  const renderPCAPlot = () => {
+    if (pcaPlotData) {
+      return (
+        <div className='p-3 border border-gray-200 rounded-lg'>
+          <Plot
+            useResizeHandler
+            style={{ width: "100%", height: "100%" }}
+            data={pcaPlotData.data}
+            layout={pcaPlotData.layout}
+          />
         </div>
-      </div>
+      )
+    }
+  }
 
-      {/* Scree plot */}
-      {/* 
-        - The {something && (plot)} means that if "something" is not null, then (plot) will be rendered 
-        - At the beginning, screePlotData is null, so (plot) is not rendered
-        - After a user clicks the "Generate scree plot" button, then screePlotData will have value, then (plot) will be rendered
-      */}
-      <div>
-        {screePlotData && (
-          <div className='p-3 border border-gray-200 rounded-lg'>
-            <Plot
-              useResizeHandler
-              style={{ width: "100%", height: "100%" }}
-              data={screePlotData.data}
-              layout={screePlotData.layout}
-            />
-          </div>
-        )}
+  const renderCardColor = () => {
+    return (
+      <div className='grid grid-cols-12 gap-3'>
+        {colorGroup.map((group, index) => (
+          <Card key={index} className="col-span-3 p-5">
+            <div className='flex justify-between'>
+              <p>{group.group}</p>
+              <input
+                type="color"
+                value={group.colorCode}
+                onChange={(e) => handleColorChange(index, e.target.value)}
+              />
+            </div>
+          </Card>
+        ))}
       </div>
+    )
+  }
 
-      {/* PCA plot */}
-      <div>
-        {pcaPlotData && (
-          <div className='p-3 border border-gray-200 rounded-lg'>
-            <Plot
-              useResizeHandler
-              style={{ width: "100%", height: "100%" }}
-              data={pcaPlotData.data}
-              layout={pcaPlotData.layout}
-            />
-          </div>
-        )}
-      </div>
+  const renderButtonGenerateRandomData = () => {
+    return (
+      <Button onClick={generateRandomData} >
+        Generate random data
+      </Button>
+    )
+  }
 
-      {/* Loadings plot */}
-      <div>
-        {loadingsPlotData && (
-          <div className='p-3 border border-gray-200 rounded-lg'>
-            <Plot
-              useResizeHandler
-              style={{ width: "100%", height: "100%" }}
-              data={loadingsPlotData.data}
-              layout={loadingsPlotData.layout}
-            />
-          </div>
-        )}
-      </div>
+  const renderButtonUploadFile = () => {
+    return (
+      <Input
+        type='file'
+        accept='.csv,.txt'
+        onChange={handleFileUpload}
+      />
+    )
+  }
 
-      {/* Number of samples */}
-      <div>
-        <p>
-          Number of samples: <strong>{csvData ? csvData.length : "0"}</strong>
-        </p>
-      </div>
+  const renderButtonGenerateScreePlot = () => {
+    return (
+      <Button onClick={generateScreePlot} >
+        Generate Scree plot
+      </Button>
+    )
+  }
 
-      {/* Table */}
+  const renderButtonGeneratePCAPlot = () => {
+    return (
+      <Button onClick={generatePCAPlot}>
+        Generate PCA plot
+      </Button>
+    )
+  }
+
+  const renderButtonGenerateLoadingsPlot = () => {
+    return (
+      <Button onClick={generateLoadingsPlot}>
+        Generate Loadings plot
+      </Button>
+    )
+  }
+
+  const renderNumberSamples = () => {
+    return (
+      <p>
+        Number of samples: <strong>{csvData ? csvData.length : "0"}</strong>
+      </p>
+    )
+  }
+
+  const renderDataTable = () => {
+    return (
       <Table
         columns={columnsForAntdTable}
         dataSource={tableDataForAntdTable}
@@ -255,7 +279,34 @@ export default function Home() {
           offsetHeader: 64,
         }}
       />
+    )
+  }
 
+  /*####################
+  # Return the UI
+  ####################*/
+  return (
+    <div className='container my-4 flex flex-col gap-5'>
+
+      <div className="flex py-3 justify-between sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
+        <div className='flex gap-2'>
+          {renderButtonGenerateRandomData()}
+          {renderButtonUploadFile()}
+        </div>
+
+        <div className='flex gap-2'>
+          {renderButtonGenerateScreePlot()}
+          {renderButtonGeneratePCAPlot()}
+          {renderButtonGenerateLoadingsPlot()}
+        </div>
+      </div>
+
+      {renderScreePlot()}
+      {renderCardColor()}
+      {renderPCAPlot()}
+
+      {renderNumberSamples()}
+      {renderDataTable()}
     </div>
   );
 }

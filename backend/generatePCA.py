@@ -14,7 +14,6 @@ def generate_pca():
     #########################
     # Get the initial data and do some initial preparation
     #########################
-
     # Things done in the following code:
     # 1. Get the data from the request
     # 2. Convert the data into a DataFrame
@@ -40,7 +39,6 @@ def generate_pca():
     #########################
     # Standardize the data
     #########################
-
     # Things done in the following code:
     # 1. Create a StandardScaler object by using StandardScaler() of scikit-learn
     # 2. Pass the data into the scaling object ==> data will be standardized
@@ -51,7 +49,6 @@ def generate_pca():
     #########################
     # Do the PCA
     #########################
-
     # Things done in the following code:
     # 1. Create a PCA object by using PCA() of scikit-learn
     # 2. Pass the standardized data into the PCA object
@@ -59,28 +56,13 @@ def generate_pca():
     pcaData = pcaObject.fit_transform(dataAfterStandardization)
 
     #########################
-    # Generate the color map to make the plot colorful
+    # Get the % of variance explained by each PC
     #########################
-
-    # Things done in the following code:
-    # 1. Get the color map from matplotlib
-    # 2. Generate colors based on the color map and the number of columns in the DataFrame
-    # 3. Convert RGB colors to hexadecimal colors
-    # Note:
-    # - The color map can be found here: https://matplotlib.org/stable/users/explain/colors/colormaps.html
-    # - The "hsv" can be replaced with any other color map, such as "viridis", "plasma", "inferno", etc. (see the link above)
-    # cmap = plt.get_cmap("hsv")
-    # colors = [cmap(i) for i in np.linspace(0, 1, len(convertedData.columns))]
-    # colors_hex = [mcolors.rgb2hex(color[:3]) for color in colors]
-
-    # Get the explained variance ratio
     pcaVariancePercentage = pcaObject.explained_variance_ratio_
-
 
     #########################
     # Prepare the result following the Plotly format
     #########################
-
     # Things done in the following code:
     # 1. Prepare the data for the PCA plot
     # 2. Prepare the layout for the PCA plot
