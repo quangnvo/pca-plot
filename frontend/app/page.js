@@ -7,14 +7,8 @@ import Papa from 'papaparse';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table } from 'antd';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
 
 
 export default function Home() {
@@ -39,36 +33,43 @@ export default function Home() {
 
   const initialColorGroup = [
     {
-      group: "1",
+      group: "Group 1",
       colorCode: "#1f77b4",
-      names: ["H2O_30m_A", "H2O_30m_B", "H2O_30m_C"]
+      names: []
     },
     {
-      group: "2",
+      group: "Group 2",
       colorCode: "#ff7f0e",
-      names: ["H2O_16h_A", "H2O_16h_B", "H2O_16h_C"]
+      names: []
     },
   ];
 
   const [colorGroup, setColorGroup] = useState(initialColorGroup);
 
-  const handleColorChange = (index, newColor) => {
-    setColorGroup(colorGroup.map((group, i) =>
-      i === index ? { ...group, colorCode: newColor } : group
-    ));
+
+
+
+
+
+
+  const addGroup = () => {
+    setColorGroup([
+      ...colorGroup,
+      {
+        group: `Group ${colorGroup.length + 1}`,
+        colorCode: "#000000",
+        names: []
+      }
+    ]);
   };
 
-  useEffect(() => {
-    if (pcaPlotData !== null) {
-      pcaPlotData.data.forEach((d) => {
-        colorGroup.forEach((group) => {
-          if (group.names.includes(d.name)) {
-            d.marker.color = group.colorCode;
-          }
-        });
-      });
-    }
-  }, [pcaPlotData]);
+  const removeGroup = (index) => {
+    const newColorGroup = [...colorGroup];
+    newColorGroup.splice(index, 1);
+    setColorGroup(newColorGroup);
+  };
+
+
 
   /*####################
   # Generate random data function
@@ -167,56 +168,6 @@ export default function Home() {
   console.log('columnsForAntdTable', columnsForAntdTable)
   console.log("🚀🚀🚀 pca plot data", pcaPlotData)
 
-
-  const renderScreePlot = () => {
-    if (screePlotData) {
-      return (
-        <div className='p-3 border border-gray-200 rounded-lg'>
-          <Plot
-            useResizeHandler
-            style={{ width: "100%", height: "100%" }}
-            data={screePlotData.data}
-            layout={screePlotData.layout}
-          />
-        </div>
-      )
-    }
-  }
-
-  const renderPCAPlot = () => {
-    if (pcaPlotData) {
-      return (
-        <div className='p-3 border border-gray-200 rounded-lg'>
-          <Plot
-            useResizeHandler
-            style={{ width: "100%", height: "100%" }}
-            data={pcaPlotData.data}
-            layout={pcaPlotData.layout}
-          />
-        </div>
-      )
-    }
-  }
-
-  const renderCardColor = () => {
-    return (
-      <div className='grid grid-cols-12 gap-3'>
-        {colorGroup.map((group, index) => (
-          <Card key={index} className="col-span-3 p-5">
-            <div className='flex justify-between'>
-              <p>{group.group}</p>
-              <input
-                type="color"
-                value={group.colorCode}
-                onChange={(e) => handleColorChange(index, e.target.value)}
-              />
-            </div>
-          </Card>
-        ))}
-      </div>
-    )
-  }
-
   const renderButtonGenerateRandomData = () => {
     return (
       <Button onClick={generateRandomData} >
@@ -258,6 +209,79 @@ export default function Home() {
       </Button>
     )
   }
+
+  const renderScreePlot = () => {
+    if (screePlotData) {
+      return (
+        <div className='p-3 border border-gray-200 rounded-lg'>
+          <Plot
+            useResizeHandler
+            style={{ width: "100%", height: "100%" }}
+            data={screePlotData.data}
+            layout={screePlotData.layout}
+          />
+        </div>
+      )
+    }
+  }
+
+  const renderPCAPlot = () => {
+    if (pcaPlotData) {
+      return (
+        <div className='p-3 border border-gray-200 rounded-lg'>
+          <Plot
+            useResizeHandler
+            style={{ width: "100%", height: "100%" }}
+            data={pcaPlotData.data}
+            layout={pcaPlotData.layout}
+          />
+        </div>
+      )
+    }
+  }
+
+  const renderColorCards = () => {
+    if (pcaPlotData) {
+      return (
+        <div className='grid grid-cols-12 gap-3'>
+          {colorGroup.map((group, index) => (
+            <Card key={index} className="col-span-3 p-5">
+              <div className='flex justify-between gap-2 mb-5'>
+
+                <Input
+                  type="color"
+                  value={group.colorCode}
+                  onChange={(e) => handleColorChange(index, e.target.value)}
+                />
+
+                <Button
+                  onClick={() => removeGroup(index)}
+                  variant="secondary"
+                >
+                  Remove
+                </Button>
+              </div>
+
+              <div className="overflow-auto h-64">
+                {pcaPlotData.data.map((item, index) => (
+                  <div key={index} className={`flex items-center space-x-2 mb-2`}>
+                    <Checkbox id={`checkbox-${index}`} />
+                    <label
+                      htmlFor={`checkbox-${index}`}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      {item.name}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          ))}
+        </div>
+      )
+    }
+  }
+
 
   const renderNumberSamples = () => {
     return (
@@ -302,7 +326,8 @@ export default function Home() {
       </div>
 
       {renderScreePlot()}
-      {renderCardColor()}
+      {renderColorCards()}
+      <button onClick={addGroup}>Add Group</button>
       {renderPCAPlot()}
 
       {renderNumberSamples()}
