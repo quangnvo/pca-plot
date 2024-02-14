@@ -18,14 +18,14 @@ export default function Home() {
 
   /*####################
   # Setup initial variables
-  # We have "csvData", "setCsvData" ; "plotData", "setPlotData" ;  etc.
+  # We have "csvData", "setCsvData" ; "pcaPlotData", "setPcaPlotData" ;  etc.
   # The "setSomething" function is used to update the "something" 
   # For example, at the beginning, something = "123", then setSomething("abcdef") will update something, then something = "abcdef"
   # The "useState" function is a React hook function that is used to create the combo of "something" and "setSomething"
   ####################*/
   const [csvData, setCsvData] = useState([]);
-  const [plotData, setPlotData] = useState(null);
   const [screePlotData, setScreePlotData] = useState(null);
+  const [pcaPlotData, setPcaPlotData] = useState(null);
   const [loadingsPlotData, setLoadingsPlotData] = useState(null)
 
   /*####################
@@ -64,7 +64,7 @@ export default function Home() {
   const generatePCAPlot = async () => {
     try {
       const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca`, csvData);
-      setPlotData(response.data);
+      pcaPlotData(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -76,7 +76,7 @@ export default function Home() {
   const generateLoadingsPlot = async () => {
     try {
       const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_loadings_plot`, csvData);
-      setPlotData(response.data);
+      pcaPlotData(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -121,6 +121,9 @@ export default function Home() {
     width: 150,
   })) : [];
 
+  console.log('tableDataForAntdTable', tableDataForAntdTable)
+  console.log('columnsForAntdTable', columnsForAntdTable)
+  console.log("🚀🚀🚀 pca plot data",)
 
   /*####################
   # Return the UI
@@ -183,13 +186,13 @@ export default function Home() {
 
       {/* PCA plot */}
       <div>
-        {plotData && (
+        {pcaPlotData && (
           <div className='p-3 border border-gray-200 rounded-lg'>
             <Plot
               useResizeHandler
               style={{ width: "100%", height: "100%" }}
-              data={plotData.data}
-              layout={plotData.layout}
+              data={pcaPlotData.data}
+              layout={pcaPlotData.layout}
             />
           </div>
         )}

@@ -35,7 +35,9 @@ def generate_scree_plot():
     convertedData = convertedData.replace(',', '.', regex=True)
     convertedData = convertedData.astype(float)
     convertedData = convertedData.dropna()
-    convertedData = convertedData.T
+
+    print("🚀🚀🚀 CONVERTED DATA")
+    print(convertedData)
 
     #########################
     # Standardize the data
@@ -43,10 +45,13 @@ def generate_scree_plot():
 
     # Things done in the following code:
     # 1. Create a StandardScaler object by using StandardScaler() of scikit-learn
-    # 2. Pass the data into the scaling object ==> data will be standardized
+    # 2. Pass the data into the scaling object ==> data will be standardized (centered and scaled)
     standardScalerObject = StandardScaler()
     dataAfterStandardization = standardScalerObject.fit_transform(
-        convertedData)
+        convertedData.T)
+
+    # print("🚀🚀🚀 DATA AFTER STANDARDIZATION")
+    # print(dataAfterStandardization)
 
     #########################
     # Calculate the percentage of explained variance per principal component
@@ -55,7 +60,7 @@ def generate_scree_plot():
     # Things done in the following code:
     # 1. Create a PCA object by using PCA() of scikit-learn
     # 2. Pass the standardized data into the PCA object
-    pcaObject = PCA()
+    pcaObject = PCA(n_components=8)
     pcaObject.fit_transform(dataAfterStandardization)
 
     # Calculate the percentage of explained variance per principal component

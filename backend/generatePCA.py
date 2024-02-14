@@ -69,9 +69,9 @@ def generate_pca():
     # Note:
     # - The color map can be found here: https://matplotlib.org/stable/users/explain/colors/colormaps.html
     # - The "hsv" can be replaced with any other color map, such as "viridis", "plasma", "inferno", etc. (see the link above)
-    cmap = plt.get_cmap("hsv")
-    colors = [cmap(i) for i in np.linspace(0, 1, len(convertedData.columns))]
-    colors_hex = [mcolors.rgb2hex(color[:3]) for color in colors]
+    # cmap = plt.get_cmap("hsv")
+    # colors = [cmap(i) for i in np.linspace(0, 1, len(convertedData.columns))]
+    # colors_hex = [mcolors.rgb2hex(color[:3]) for color in colors]
 
     #########################
     # Prepare the result following the Plotly format
@@ -90,7 +90,8 @@ def generate_pca():
             'y': [pcaData[i, 1]],
             'marker': {
                 'size': 12,
-                'color': colors_hex[i],
+                # 'color': colors_hex[i],
+                "color": "orange",
                 'line': {
                     'color': 'black',
                     'width': 2,
