@@ -19,58 +19,21 @@ export default function Home() {
   const BACKEND_PORT = 8080
 
   /*####################
-  # Setup initial variables
-  # We have "csvData", "setCsvData" ; "pcaPlotData", "setPcaPlotData" ;  etc.
-  # The "setSomething" function is used to update the "something" 
-  # For example, at the beginning, something = "123", then setSomething("abcdef") will update something, then something = "abcdef"
-  # The "useState" function is a React hook function that is used to create the combo of "something" and "setSomething"
+  # The following code is used to setup initial variables
   ####################*/
+  // We have "csvData", "setCsvData" ; "pcaPlotData", "setPcaPlotData" ;  etc.
+  // The "setSomething" function is used to update the "something"
+  // For example, at the beginning, something = "123", then setSomething("abcdef") will update something, then something = "abcdef"
+  // The "useState" function is a React hook function that is used to create the combo of "something" and "setSomething"
   const [csvData, setCsvData] = useState([]);
   const [screePlotData, setScreePlotData] = useState(null);
   const [pcaPlotData, setPcaPlotData] = useState(null);
-  const [loadingsPlotData, setLoadingsPlotData] = useState(null)
-  const [color, setColor] = useState("#fa8072");
-
-  const { colorAAA } = useSelector(state => state.plotReducer)
-
-  console.log("colorAAA", colorAAA)
-
-  const initialColorGroup = [
-    {
-      group: "Group 1",
-      colorCode: "#FFFF00",
-      names: []
-    },
-    {
-      group: "Group 2",
-      colorCode: "#272E3F",
-      names: []
-    },
-  ];
-
-  const [colorGroup, setColorGroup] = useState(initialColorGroup);
-
-  const addGroup = () => {
-    setColorGroup([
-      ...colorGroup,
-      {
-        group: `Group ${colorGroup.length + 1}`,
-        colorCode: "#000000",
-        names: []
-      }
-    ]);
-  };
-
-  const removeGroup = (index) => {
-    const newColorGroup = [...colorGroup];
-    newColorGroup.splice(index, 1);
-    setColorGroup(newColorGroup);
-  };
-
 
   /*####################
-  # Generate random data function
+  # The following code is about generating data: generateRandomData, generateScreePlot, generatePCAPlot, etc.
   ####################*/
+
+  //  Generate random data function
   const generateRandomData = async () => {
     try {
       // Send a GET request to the backend to generate random data
@@ -83,9 +46,7 @@ export default function Home() {
     }
   }
 
-  /*####################
-  # Generate Scree plot function
-  ####################*/
+  // Generate Scree plot function
   const generateScreePlot = async () => {
     try {
       // Send a POST request with the "csvData" to the backend
@@ -98,9 +59,7 @@ export default function Home() {
     }
   }
 
-  /*####################
-  # Generate PCA plot function
-  ####################*/
+  //  Generate PCA plot function
   const generatePCAPlot = async () => {
     try {
       const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca`, csvData);
@@ -110,9 +69,7 @@ export default function Home() {
     }
   }
 
-  /*####################
-  # Generate Loadings plot
-  ####################*/
+  // Generate Loadings plot
   const generateLoadingsPlot = async () => {
     try {
       const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_loadings_plot`, csvData);
@@ -123,7 +80,7 @@ export default function Home() {
   }
 
   /*####################
-  # Handle file upload function
+  # The following code is used to handle the the file that user uploaded
   ####################*/
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
@@ -142,18 +99,15 @@ export default function Home() {
   };
 
   /*####################
-  # Convert the data from the csv file that user uploaded to the format required by Ant Design Table
-  # The Ant Design Table belongs to the library "antd" which is used for the UI. Link: https://ant.design/components/table
-  # In the following code, two things are done:
-  # 1. Convert csvData to the tableDataForAntdTable format required by Ant Design Table
-  # 2. Set the columns for the Ant Design Table
+  # The following code is to convert the data from the csv file that user uploaded to the format required by Ant Design Table
   ####################*/
-
+  //  The Ant Design Table belongs to the library "antd" which is used for the UI. Link: https://ant.design/components/table
+  // Convert csvData to the tableDataForAntdTable format required by Ant Design Table
   const tableDataForAntdTable = csvData.map((eachRow, index) => ({
     key: index,
     ...eachRow,
   }));
-
+  // Set the columns for the Ant Design Table
   const columnsForAntdTable = csvData.length > 0 ? Object.keys(csvData[0]).map(key => ({
     title: key,
     dataIndex: key,
@@ -165,6 +119,9 @@ export default function Home() {
   console.log('columnsForAntdTable', columnsForAntdTable)
   console.log("🚀🚀🚀 pca plot data", pcaPlotData)
 
+  /*####################
+  # The following code is only about function used to render the UI: renderButtonGenerateRandomData, renderButtonUploadFile, etc.
+  ####################*/
   const renderButtonGenerateRandomData = () => {
     return (
       <Button onClick={generateRandomData} >
@@ -237,68 +194,6 @@ export default function Home() {
     }
   }
 
-  const handleCheckboxChange = (name, color, checked, groupIndex) => {
-    // Update colorGroup
-    const newColorGroup = [...colorGroup];
-    console.log("da vao day", name, color, checked, groupIndex)
-    if (checked) {
-      newColorGroup[groupIndex].names.push(name);
-    } else {
-      newColorGroup[groupIndex].names = newColorGroup[groupIndex].names.filter(n => n !== name);
-    }
-    setColorGroup(newColorGroup);
-  };
-
-
-  const renderColorCards = () => {
-    if (pcaPlotData) {
-      return (
-        <div className='grid grid-cols-12 gap-3'>
-          {colorGroup.map((group, index) => (
-            <Card key={index} className="col-span-3 p-5">
-              <div className='flex justify-between gap-2 mb-5'>
-
-                <Input
-                  type="color"
-                  value={group.colorCode}
-                  onChange={(e) => handleColorChange(index, e.target.value)}
-                />
-
-                <Button
-                  onClick={() => removeGroup(index)}
-                  variant="secondary"
-                >
-                  Remove
-                </Button>
-              </div>
-
-              <div className="overflow-auto h-64">
-                {pcaPlotData.data.map((item, index) => (
-                  <div key={index} className={`flex items-center space-x-2 mb-2`}>
-                    <Checkbox
-                      id={`checkbox-${index}`}
-                      checked={group.names.includes(item.name)}
-                      // disabled={group.names.includes(item.name)}
-                      onChange={(e) => handleCheckboxChange(item.name, group.colorCode, e.target.checked, index)}
-                    />
-                    <label
-                      htmlFor={`checkbox-${index}`}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      {item.name}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </Card>
-          ))}
-        </div>
-      )
-    }
-  }
-
-
-
   const renderNumberSamples = () => {
     return (
       <p>
@@ -323,7 +218,42 @@ export default function Home() {
   }
 
   /*####################
-  # Return the UI
+  # The following code is only about COLORS, such as renderColorCardsForPCAPlot, handleColorChange, etc.
+  ####################*/
+
+  const { colorGroupsForPCAPlot, nameOfSamplesInPCAPlot } = useSelector((state) => state.plotReducer)
+
+  const renderColorCardsForPCAPlot = () => {
+    if (pcaPlotData) {
+      return (
+        <div className='grid grid-cols-12 gap-3'>
+          {colorGroupsForPCAPlot.map((group, index) => (
+            <Card key={index} className="col-span-3 p-5">
+              <div className='flex justify-between gap-2 mb-5'>
+
+                <Input
+                  type="color"
+                  value={group.colorCode}
+                  onChange={(e) => handleColorChange(index, e.target.value)}
+                />
+
+                <Button
+                  onClick={() => { }}
+                  variant="secondary"
+                >
+                  Remove
+                </Button>
+              </div>
+            </Card>
+          ))}
+        </div>
+      )
+    }
+  }
+
+
+  /*####################
+  # The following code is to render the final UI of the page
   ####################*/
   return (
     <div className='container my-4 flex flex-col gap-5'>
@@ -342,8 +272,7 @@ export default function Home() {
       </div>
 
       {renderScreePlot()}
-      {renderColorCards()}
-      <button onClick={addGroup}>Add Group</button>
+      {renderColorCardsForPCAPlot()}
       {renderPCAPlot()}
 
       {renderNumberSamples()}
