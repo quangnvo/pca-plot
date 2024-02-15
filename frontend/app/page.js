@@ -223,17 +223,18 @@ export default function Home() {
 
   const { colorGroupsForPCAPlot, nameOfSamplesInPCAPlot } = useSelector((state) => state.plotReducer)
 
+  console.log("nameOfSamplesInPCAPlot", nameOfSamplesInPCAPlot)
+
   const renderColorCardsForPCAPlot = () => {
     if (pcaPlotData) {
       return (
         <div className='grid grid-cols-12 gap-3'>
-          {colorGroupsForPCAPlot.map((group, index) => (
+          {colorGroupsForPCAPlot.map((eachColorGroup, index) => (
             <Card key={index} className="col-span-3 p-5">
               <div className='flex justify-between gap-2 mb-5'>
-
                 <Input
                   type="color"
-                  value={group.colorCode}
+                  value={eachColorGroup.colorCode}
                   onChange={(e) => handleColorChange(index, e.target.value)}
                 />
 
@@ -244,6 +245,12 @@ export default function Home() {
                   Remove
                 </Button>
               </div>
+
+              {nameOfSamplesInPCAPlot.filter(sample => sample.groupId === eachColorGroup.groupId).map(sample => (
+                <p key={sample.name}>
+                  {sample.name}
+                </p>
+              ))}
             </Card>
           ))}
         </div>

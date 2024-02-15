@@ -17,11 +17,75 @@ const initialState = {
     ],
     nameOfSamplesInPCAPlot: [
         {
-            name: "Sample 1",
+            name: "H2O_30m_A",
             groupId: "1"
         },
         {
-            name: "Sample 2",
+            name: "H2O_30m_B",
+            groupId: "1"
+        },
+        {
+            name: "H2O_30m_C",
+            groupId: "1"
+        },
+        {
+            name: "PNA79_30m_A",
+            groupId: "2"
+        },
+        {
+            name: "PNA79_30m_B",
+            groupId: "2"
+        },
+        {
+            name: "PNA79_30m_C",
+            groupId: "2"
+        },
+        {
+            name: "PNAscr_30m_A",
+            groupId: "1"
+        },
+        {
+            name: "PNAscr_30m_B",
+            groupId: "1"
+        },
+        {
+            name: "PNAscr_30m_C",
+            groupId: "1"
+        },
+        {
+            name: "H2O_16h_A",
+            groupId: "1"
+        },
+        {
+            name: "H2O_16h_B",
+            groupId: "1"
+        },
+        {
+            name: "H2O_16h_C",
+            groupId: "1"
+        },
+        {
+            name: "PNA79_16h_A",
+            groupId: "1"
+        },
+        {
+            name: "PNA79_16h_B",
+            groupId: "1"
+        },
+        {
+            name: "PNA79_16h_C",
+            groupId: "1"
+        },
+        {
+            name: "PNAscr_16h_A",
+            groupId: "1"
+        },
+        {
+            name: "PNAscr_16h_B",
+            groupId: "1"
+        },
+        {
+            name: "PNAscr_16h_C",
             groupId: "1"
         }
     ],
