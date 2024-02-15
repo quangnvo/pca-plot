@@ -34,23 +34,17 @@ export default function Home() {
   const initialColorGroup = [
     {
       group: "Group 1",
-      colorCode: "#1f77b4",
+      colorCode: "#FFFF00",
       names: []
     },
     {
       group: "Group 2",
-      colorCode: "#ff7f0e",
+      colorCode: "#272E3F",
       names: []
     },
   ];
 
   const [colorGroup, setColorGroup] = useState(initialColorGroup);
-
-
-
-
-
-
 
   const addGroup = () => {
     setColorGroup([
@@ -68,7 +62,6 @@ export default function Home() {
     newColorGroup.splice(index, 1);
     setColorGroup(newColorGroup);
   };
-
 
 
   /*####################
@@ -240,6 +233,19 @@ export default function Home() {
     }
   }
 
+  const handleCheckboxChange = (name, color, checked, groupIndex) => {
+    // Update colorGroup
+    const newColorGroup = [...colorGroup];
+    console.log("da vao day", name, color, checked, groupIndex)
+    if (checked) {
+      newColorGroup[groupIndex].names.push(name);
+    } else {
+      newColorGroup[groupIndex].names = newColorGroup[groupIndex].names.filter(n => n !== name);
+    }
+    setColorGroup(newColorGroup);
+  };
+
+
   const renderColorCards = () => {
     if (pcaPlotData) {
       return (
@@ -265,7 +271,12 @@ export default function Home() {
               <div className="overflow-auto h-64">
                 {pcaPlotData.data.map((item, index) => (
                   <div key={index} className={`flex items-center space-x-2 mb-2`}>
-                    <Checkbox id={`checkbox-${index}`} />
+                    <Checkbox
+                      id={`checkbox-${index}`}
+                      checked={group.names.includes(item.name)}
+                      // disabled={group.names.includes(item.name)}
+                      onChange={(e) => handleCheckboxChange(item.name, group.colorCode, e.target.checked, index)}
+                    />
                     <label
                       htmlFor={`checkbox-${index}`}
                       className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -281,6 +292,7 @@ export default function Home() {
       )
     }
   }
+
 
 
   const renderNumberSamples = () => {
