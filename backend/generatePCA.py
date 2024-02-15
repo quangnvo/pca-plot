@@ -72,6 +72,7 @@ def generate_pca():
         {
             'type': 'scatter',
             'mode': 'markers',
+            'name': convertedData.columns[i],
             'x': [pcaData[i, 0]],
             'y': [pcaData[i, 1]],
             'marker': {
@@ -83,7 +84,6 @@ def generate_pca():
                     'width': 2,
                 }
             },
-            'name': convertedData.columns[i]
         } for i in range(len(convertedData.columns))
     ]
 

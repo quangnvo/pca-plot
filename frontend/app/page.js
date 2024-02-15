@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Table } from 'antd';
 import { Card } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
-
+import { useDispatch, useSelector } from 'react-redux'
 
 export default function Home() {
 
@@ -30,6 +30,10 @@ export default function Home() {
   const [pcaPlotData, setPcaPlotData] = useState(null);
   const [loadingsPlotData, setLoadingsPlotData] = useState(null)
   const [color, setColor] = useState("#fa8072");
+
+  const { colorAAA } = useSelector(state => state.plotReducer)
+
+  console.log("colorAAA", colorAAA)
 
   const initialColorGroup = [
     {
