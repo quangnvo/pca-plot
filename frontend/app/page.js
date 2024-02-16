@@ -1,15 +1,19 @@
 "use client"
 
 import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux'
+
 import Plot from 'react-plotly.js';
 import axios from 'axios';
 import Papa from 'papaparse';
+
+import { Table } from 'antd';
+import { Checkbox } from 'antd';
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Table } from 'antd';
 import { Card } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
-import { useDispatch, useSelector } from 'react-redux'
+
 
 export default function Home() {
 
@@ -223,6 +227,10 @@ export default function Home() {
 
   const { colorGroupsForPCAPlot, nameOfSamplesInPCAPlot } = useSelector((state) => state.plotReducer)
 
+  const onChange = (e) => {
+    console.log(`checked = ${e.target.checked}`);
+  };
+
   console.log("nameOfSamplesInPCAPlot", nameOfSamplesInPCAPlot)
 
   const renderColorCardsForPCAPlot = () => {
@@ -238,12 +246,14 @@ export default function Home() {
                   onChange={(e) => handleColorChange(index, e.target.value)}
                 />
 
-                <Button
-                  onClick={() => { }}
-                  variant="secondary"
-                >
-                  Remove
-                </Button>
+                {eachColorGroup.groupId !== "1" && (
+                  <Button
+                    onClick={() => { }}
+                    variant="secondary"
+                  >
+                    Remove
+                  </Button>
+                )}
               </div>
 
               {nameOfSamplesInPCAPlot.filter(sample => sample.groupId === eachColorGroup.groupId).map(sample => (
@@ -281,6 +291,8 @@ export default function Home() {
       {renderScreePlot()}
       {renderColorCardsForPCAPlot()}
       {renderPCAPlot()}
+
+      <Checkbox onChange={onChange}>Checkbox</Checkbox>
 
       {renderNumberSamples()}
       {renderDataTable()}

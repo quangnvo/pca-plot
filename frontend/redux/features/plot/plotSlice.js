@@ -6,12 +6,12 @@ const initialState = {
     colorGroupsForPCAPlot: [
         {
             groupId: "1",
-            colorCode: "#000000",
+            colorCode: "#ffffff",
             names: []
         },
         {
             groupId: "2",
-            colorCode: "#ffffff",
+            colorCode: "##272E3F",
             names: []
         }
     ],
@@ -30,15 +30,15 @@ const initialState = {
         },
         {
             name: "PNA79_30m_A",
-            groupId: "2"
+            groupId: "1"
         },
         {
             name: "PNA79_30m_B",
-            groupId: "2"
+            groupId: "1"
         },
         {
             name: "PNA79_30m_C",
-            groupId: "2"
+            groupId: "1"
         },
         {
             name: "PNAscr_30m_A",

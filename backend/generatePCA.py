@@ -78,7 +78,7 @@ def generate_pca():
             'marker': {
                 'size': 12,
                 # 'color': colors_hex[i],
-                "color": "#fa8072",
+                "color": "#FFFFFF",
                 'line': {
                     'color': 'black',
                     'width': 2,
