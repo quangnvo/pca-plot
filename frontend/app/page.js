@@ -1,19 +1,17 @@
 "use client"
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 
 import Plot from 'react-plotly.js';
 import axios from 'axios';
 import Papa from 'papaparse';
 
-import { Table } from 'antd';
-import { Checkbox } from 'antd';
+import { Table, Select } from 'antd';
+const { Option } = Select;
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card } from "@/components/ui/card"
-
 
 export default function Home() {
 
@@ -32,6 +30,30 @@ export default function Home() {
   const [csvData, setCsvData] = useState([]);
   const [screePlotData, setScreePlotData] = useState(null);
   const [pcaPlotData, setPcaPlotData] = useState(null);
+
+  const [nameOfSamplesInPCAPlot, setNameOfSamplesInPCAPlot]
+    = useState([]);
+  const [colorGroupsOfPcaPlot, setColorGroupsOfPcaPlot] = useState([
+    {
+      name: "Group 1",
+      colorCode: "#272E3F",
+    },
+    {
+      name: "Group 2",
+      colorCode: "#FFFF00",
+    },
+  ]);
+  // This option is the required format to use <Select> of antd library
+  const [options, setOptions] = useState([
+    {
+      label: "Group 1",
+      value: "#272E3F",
+    },
+    {
+      label: "Group 2",
+      value: "#FFFF00",
+    },
+  ]);
 
   /*####################
   # The following code is about generating data: generateRandomData, generateScreePlot, generatePCAPlot, etc.
@@ -68,6 +90,15 @@ export default function Home() {
     try {
       const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca`, csvData);
       setPcaPlotData(response.data);
+      // Extract the names of the samples in the PCA plot
+      const names = []
+      response.data.data.forEach((eachItem, index) => {
+        names.push({
+          name: eachItem.name,
+          groupId: ""
+        })
+      })
+      setNameOfSamplesInPCAPlot(names);
     } catch (error) {
       console.error(error);
     }
@@ -119,9 +150,8 @@ export default function Home() {
     width: 150,
   })) : [];
 
-  console.log('tableDataForAntdTable', tableDataForAntdTable)
-  console.log('columnsForAntdTable', columnsForAntdTable)
   console.log("🚀🚀🚀 pca plot data", pcaPlotData)
+  console.log("nameOfSamplesInPCAPlot", nameOfSamplesInPCAPlot)
 
   /*####################
   # The following code is only about function used to render the UI: renderButtonGenerateRandomData, renderButtonUploadFile, etc.
@@ -192,6 +222,8 @@ export default function Home() {
             style={{ width: "100%", height: "100%" }}
             data={pcaPlotData.data}
             layout={pcaPlotData.layout}
+            // key={Math.random()} is very important here, because it will force the Plot to re-render when the data is changed. Otherwise, the Plot will not re-render, so the color of the samples will not be updated.
+            key={Math.random()}
           />
         </div>
       )
@@ -225,49 +257,87 @@ export default function Home() {
   # The following code is only about COLORS, such as renderColorCardsForPCAPlot, handleColorChange, etc.
   ####################*/
 
-  const { colorGroupsForPCAPlot, nameOfSamplesInPCAPlot } = useSelector((state) => state.plotReducer)
 
-  const onChange = (e) => {
-    console.log(`checked = ${e.target.checked}`);
+
+  const handleColorGroupChange = (index, newColor) => {
+    // Copy the 'colorGroupsOfPcaPlot' array
+    const updatedGroups = [...colorGroupsOfPcaPlot];
+    // Update the 'colorCode' of the respective group
+    updatedGroups[index].colorCode = newColor;
+    // Update the state with the modified array
+    setColorGroupsOfPcaPlot(updatedGroups);
   };
 
-  console.log("nameOfSamplesInPCAPlot", nameOfSamplesInPCAPlot)
 
-  const renderColorCardsForPCAPlot = () => {
+  const renderColorGroups = () => {
     if (pcaPlotData) {
       return (
-        <div className='grid grid-cols-12 gap-3'>
-          {colorGroupsForPCAPlot.map((eachColorGroup, index) => (
-            <Card key={index} className="col-span-3 p-5">
-              <div className='flex justify-between gap-2 mb-5'>
-                <Input
-                  type="color"
-                  value={eachColorGroup.colorCode}
-                  onChange={(e) => handleColorChange(index, e.target.value)}
-                />
-
-                {eachColorGroup.groupId !== "1" && (
-                  <Button
-                    onClick={() => { }}
-                    variant="secondary"
-                  >
-                    Remove
-                  </Button>
-                )}
-              </div>
-
-              {nameOfSamplesInPCAPlot.filter(sample => sample.groupId === eachColorGroup.groupId).map(sample => (
-                <p key={sample.name}>
-                  {sample.name}
-                </p>
-              ))}
-            </Card>
+        <div className='grid grid-cols-4 gap-4'>
+          {colorGroupsOfPcaPlot.map((eachColorGroup, indexOfEachColorGroup) => (
+            <div
+              key={indexOfEachColorGroup}
+              className='flex gap-4 items-center'
+            >
+              <h3>{eachColorGroup.name}</h3>
+              <Input
+                type="color"
+                className='cursor-pointer w-1/3'
+                value={eachColorGroup.colorCode}
+                onChange={(e) => handleColorGroupChange(indexOfEachColorGroup, e.target.value)}
+              />
+            </div>
           ))}
         </div>
-      )
+      );
     }
   }
 
+  const handleSampleGroupChange = (sampleName, colorCode) => {
+    // Log the sample name and color code
+    console.log("🚀🚀🚀 sampleName", sampleName)
+    console.log("🚀🚀🚀 e", colorCode)
+
+    const newPcaPlotData = { ...pcaPlotData }
+    console.log("🚀🚀🚀 newPcaPlotData", newPcaPlotData)
+
+    // Find the index of the sample in the pcaPlotData array
+    const index = newPcaPlotData.data.findIndex(sample => sample.name === sampleName);
+
+    console.log("🚀🚀🚀 index", index)
+
+    // If the sample is found in the array
+    if (index !== -1) {
+      // Update the color field of the sample
+      newPcaPlotData.data[index].marker.color = colorCode;
+    }
+
+    console.log("🚀🚀🚀 newPcaPlotData", newPcaPlotData)
+
+    // Update the state with the new array
+    setPcaPlotData(newPcaPlotData);
+  }
+
+
+  const renderNameOfSamplesInPCAPlotWithGroupColorChoice = () => {
+    return (
+      <div className='grid grid-cols-3 gap-x-6 gap-y-3'>
+        {nameOfSamplesInPCAPlot.map((sample, index) => {
+          return <div
+            key={index}
+            className='grid grid-cols-2 items-center'
+          >
+            <p>{sample.name}</p>
+
+            <Select
+              onChange={(colorCode) => handleSampleGroupChange(sample.name, colorCode)}
+              className='w-3/5'
+              options={options}
+            />
+          </div>
+        })}
+      </div>
+    )
+  }
 
   /*####################
   # The following code is to render the final UI of the page
@@ -289,10 +359,10 @@ export default function Home() {
       </div>
 
       {renderScreePlot()}
-      {renderColorCardsForPCAPlot()}
-      {renderPCAPlot()}
 
-      <Checkbox onChange={onChange}>Checkbox</Checkbox>
+      {renderColorGroups()}
+      {renderNameOfSamplesInPCAPlotWithGroupColorChoice()}
+      {renderPCAPlot()}
 
       {renderNumberSamples()}
       {renderDataTable()}
