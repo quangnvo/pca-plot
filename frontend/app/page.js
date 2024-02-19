@@ -1,17 +1,19 @@
 "use client"
 
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux'
+import { useState, useRef } from 'react';
 
 import Plot from 'react-plotly.js';
 import axios from 'axios';
 import Papa from 'papaparse';
 
-import { Table, Select } from 'antd';
-const { Option } = Select;
+import { Table, Select, Input as InputAntd, Space } from 'antd';
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+
+import { SearchOutlined } from '@ant-design/icons';
+
+import Highlighter from 'react-highlight-words';
 
 export default function Home() {
 
@@ -21,7 +23,7 @@ export default function Home() {
   const BACKEND_PORT = 8080
 
   /*####################
-  # The following code is used to setup initial variables
+  # The following code is used to only setup INITIAL VARIABLES
   ####################*/
   // We have "csvData", "setCsvData" ; "pcaPlotData", "setPcaPlotData" ;  etc.
   // The "setSomething" function is used to update the "something"
@@ -31,6 +33,12 @@ export default function Home() {
   const [csvData, setCsvData] = useState([]);
   const [screePlotData, setScreePlotData] = useState(null);
   const [pcaPlotData, setPcaPlotData] = useState(null);
+  const [loadingsTableData, setLoadingsTableData] = useState([]);
+
+  const [isScreePlotVisible, setIsScreePlotVisible] = useState(false);
+  const [isPcaPlotVisible, setIsPcaPlotVisible] = useState(false);
+  const [isLoadingsPlotVisible, setIsLoadingsPlotVisible] = useState(false);
+  const [isLoadingsTableVisible, setIsLoadingsTableVisible] = useState(false);
 
   const [nameOfSamplesInPCAPlot, setNameOfSamplesInPCAPlot]
     = useState([]);
@@ -79,35 +87,43 @@ export default function Home() {
 
   // Generate Scree plot function
   const generateScreePlot = async () => {
-    try {
-      // Send a POST request with the "csvData" to the backend
-      // then backend will return the scree plot data
-      // then put the scree plot data to the "screePlotData" by using "setScreePlotData"
-      const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_scree_plot`, csvData);
-      setScreePlotData(response.data);
-    } catch (error) {
-      console.error(error);
+    if (!isScreePlotVisible) {
+      try {
+        // Send a POST request with the "csvData" to the backend
+        // then backend will return the scree plot data
+        // then put the scree plot data to the "screePlotData" by using "setScreePlotData"
+        const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_scree_plot`, csvData);
+        setScreePlotData(response.data);
+      } catch (error) {
+        console.error(error);
+      }
     }
+    setIsScreePlotVisible(!isScreePlotVisible);
   }
+
 
   //  Generate PCA plot function
   const generatePCAPlot = async () => {
-    try {
-      const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca`, csvData);
-      setPcaPlotData(response.data);
-      // Extract the names of the samples in the PCA plot
-      const names = []
-      response.data.data.forEach((eachItem, index) => {
-        names.push({
-          name: eachItem.name,
-          groupId: ""
+    if (!isPcaPlotVisible) {
+      try {
+        const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca`, csvData);
+        setPcaPlotData(response.data);
+        // Extract the names of the samples in the PCA plot
+        const names = []
+        response.data.data.forEach((eachItem, index) => {
+          names.push({
+            name: eachItem.name,
+            groupId: ""
+          })
         })
-      })
-      setNameOfSamplesInPCAPlot(names);
-    } catch (error) {
-      console.error(error);
+        setNameOfSamplesInPCAPlot(names);
+      } catch (error) {
+        console.error(error);
+      }
     }
+    setIsPcaPlotVisible(!isPcaPlotVisible);
   }
+
 
   // Generate Loadings plot
   const generateLoadingsPlot = async () => {
@@ -119,8 +135,23 @@ export default function Home() {
     }
   }
 
+  // Generate Loadings table
+  const generateLoadingsTable = async () => {
+    if (!isLoadingsTableVisible) {
+      try {
+        const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_loadings_table`, csvData);
+        console.log("🚀🚀🚀 loading table data", response)
+        setLoadingsTableData(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    setIsLoadingsTableVisible(!isLoadingsTableVisible);
+  }
+
+
   /*####################
-  # The following code is used to handle the the file that user uploaded
+  # The following code is only about FILE UPLOAD
   ####################*/
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
@@ -137,34 +168,18 @@ export default function Home() {
       });
     }
   };
-
   /*####################
-  # The following code is to convert the data from the csv file that user uploaded to the format required by Ant Design Table
+  # End of the code for FILE UPLOAD
   ####################*/
-  //  The Ant Design Table belongs to the library "antd" which is used for the UI. Link: https://ant.design/components/table
-  // Convert csvData to the tableDataForAntdTable format required by Ant Design Table
-  const tableDataForAntdTable = csvData.map((eachRow, index) => ({
-    key: index,
-    ...eachRow,
-  }));
-  // Set the columns for the Ant Design Table
-  const columnsForAntdTable = csvData.length > 0 ? Object.keys(csvData[0]).map(key => ({
-    title: key,
-    dataIndex: key,
-    key: key,
-    width: 150,
-  })) : [];
 
-  console.log("🚀🚀🚀 pca plot data", pcaPlotData)
-  console.log("nameOfSamplesInPCAPlot", nameOfSamplesInPCAPlot)
 
   /*####################
-  # The following code is only about function used to render the UI: renderButtonGenerateRandomData, renderButtonUploadFile, etc.
+  # The following code is only about function used to render BUTTONS, such as renderButtonGenerateRandomData, renderButtonUploadFile, etc.
   ####################*/
   const renderButtonGenerateRandomData = () => {
     return (
       <Button onClick={generateRandomData} >
-        Generate random data
+        Random data
       </Button>
     )
   }
@@ -181,69 +196,120 @@ export default function Home() {
 
   const renderButtonGenerateScreePlot = () => {
     return (
-      <Button onClick={generateScreePlot} >
-        Generate Scree plot
+      <Button
+        onClick={generateScreePlot}
+        variant={isScreePlotVisible ? "default" : "outline"}
+      >
+        Scree plot
       </Button>
     )
   }
 
   const renderButtonGeneratePCAPlot = () => {
     return (
-      <Button onClick={generatePCAPlot}>
-        Generate PCA plot
+      <Button
+        onClick={generatePCAPlot}
+        variant={isPcaPlotVisible ? "default" : "outline"}
+      >
+        PCA plot
       </Button>
     )
   }
 
   const renderButtonGenerateLoadingsPlot = () => {
     return (
-      <Button onClick={generateLoadingsPlot}>
-        Generate Loadings plot
+      <Button
+        onClick={generateLoadingsPlot}
+        variant={isLoadingsPlotVisible ? "default" : "outline"}
+      >
+        Loadings plot
       </Button>
     )
   }
 
+  const renderButtonGenerateLoadingsTable = () => {
+    return (
+      <Button
+        onClick={generateLoadingsTable}
+        variant={isLoadingsTableVisible ? "default" : "outline"}
+      >
+        Loadings table
+      </Button>
+    )
+  }
+  /*####################
+  # End of the code for BUTTONS
+  ####################*/
+
+
+  /*####################
+  # The following code is only about function used to render PLOTS, such as renderScreePlot, renderPCAPlot, etc.
+  ####################*/
   const renderScreePlot = () => {
-    if (screePlotData) {
-      return (
-        <div className='p-3 border border-gray-200 rounded-lg'>
-          <Plot
-            useResizeHandler
-            style={{ width: "100%", height: "100%" }}
-            data={screePlotData.data}
-            layout={screePlotData.layout}
-          />
-        </div>
-      )
+    if (isScreePlotVisible) {
+      if (screePlotData) {
+        return (
+          <div className='p-3 border border-gray-200 rounded-lg'>
+            <Plot
+              useResizeHandler
+              style={{ width: "100%", height: "100%" }}
+              data={screePlotData.data}
+              layout={screePlotData.layout}
+            />
+          </div>
+        )
+      }
     }
+    return <></>
   }
 
   const renderPCAPlot = () => {
-    if (pcaPlotData) {
-      return (
-        <div className='p-3 border border-gray-200 rounded-lg'>
-          <Plot
-            useResizeHandler
-            style={{ width: "100%", height: "100%" }}
-            data={pcaPlotData.data}
-            layout={pcaPlotData.layout}
-            // key={Math.random()} is very important here, because it will force the Plot to re-render when the data is changed. Otherwise, the Plot will not re-render, so the color of the samples on the plot will not be updated.
-            key={Math.random()}
-          />
-        </div>
-      )
+    if (isPcaPlotVisible) {
+      if (pcaPlotData) {
+        return (
+          <div className='p-3 border border-gray-200 rounded-lg'>
+            <Plot
+              useResizeHandler
+              style={{ width: "100%", height: "100%" }}
+              data={pcaPlotData.data}
+              layout={pcaPlotData.layout}
+              // key={Math.random()} is very important here, because it will force the Plot to re-render when the data is changed. Otherwise, the Plot will not re-render, so the color of the samples on the plot will not be updated.
+              key={Math.random()}
+            />
+          </div>
+        )
+      }
     }
   }
+  /*####################
+  # End of the code for PLOTS
+  ####################*/
 
-  const renderNumberSamples = () => {
-    return (
-      <p>
-        Number of samples: <strong>{csvData ? csvData.length : "0"}</strong>
-      </p>
-    )
-  }
 
+  /*####################
+  # The following code is only about function used to render TABLE, such as renderDataTable, renderLoadingsTable, etc.
+  ####################*/
+
+  // Convert the data from the csv file that user uploaded to the format required by "Ant Design" (antd). The Ant Design Table belongs to the library "antd" which is used for the UI. Link: https://ant.design/components/table
+
+  // Convert csvData to the "tableDataForAntdTable" format required by antd
+  const tableDataForAntdTable = csvData.map((eachRow, index) => ({
+    key: index,
+    ...eachRow,
+  }));
+  // Set the columns for the antd table
+  const columnsForAntdTable = csvData.length > 0 ? Object.keys(csvData[0]).map(key => ({
+    title: key,
+    dataIndex: key,
+    key: key,
+    width: 150,
+  })) : [];
+
+  // Render the data table from the csv file that user uploaded
   const renderDataTable = () => {
+    if (csvData.length === 0) {
+      return null;
+    }
     return (
       <Table
         columns={columnsForAntdTable}
@@ -257,6 +323,173 @@ export default function Home() {
       />
     )
   }
+
+
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
+  const searchInput = useRef(null);
+
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText('');
+  };
+
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <InputAntd
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          {/* <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Search
+          </Button> */}
+
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: false,
+              });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Search
+          </Button>
+
+
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Clear
+          </Button>
+
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1677ff' : undefined,
+        }}
+      />
+    ),
+
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: '#ffc069',
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ''}
+        />
+      ) : (
+        text
+      ),
+  });
+
+
+  const loadingsDataForAntdTable = loadingsTableData.map((eachRow, index) => ({
+    key: index,
+    ...eachRow,
+  }));
+
+  const columnsForLoadingsTableInAntd = loadingsTableData.length > 0
+    ? Object.keys(loadingsTableData[0]).map((key) => {
+      let column = {
+        title: key,
+        dataIndex: key,
+        key: key,
+        width: 100,
+        sortDirections: ['descend', 'ascend'],
+      };
+      if (!key.includes("PC")) {
+        column = {
+          ...column,
+          ...getColumnSearchProps(key),
+        };
+      } else {
+        column = {
+          ...column,
+          sorter: (a, b) => a[key] - b[key],
+        };
+      }
+      return column;
+    })
+    : [];
+
+
+  // Render the loadings table to show that which features contribute how much to the principal components
+  const renderLoadingsTable = () => {
+    if (!isLoadingsTableVisible) {
+      return null;
+    }
+    if (loadingsTableData.length === 0) {
+      return null;
+    }
+    return (
+      <Table
+        columns={columnsForLoadingsTableInAntd}
+        dataSource={loadingsDataForAntdTable}
+        scroll={{
+          x: 1000,
+        }}
+        sticky={{
+          offsetHeader: 64,
+        }}
+      />
+    )
+  }
+
+  /*####################
+  # End of the code for TABLE
+  ####################*/
+
 
   /*####################
   # The following code is only about COLORS, such as renderColorCardsForPCAPlot, handleColorChange, etc.
@@ -295,6 +528,9 @@ export default function Home() {
 
 
   const renderColorGroups = () => {
+    if (!isPcaPlotVisible) {
+      return null;
+    }
     if (pcaPlotData) {
       return (
         <div>
@@ -373,6 +609,9 @@ export default function Home() {
 
 
   const renderNameOfSamplesInPCAPlotWithGroupColorChoice = () => {
+    if (!isPcaPlotVisible) {
+      return null;
+    }
     return (
       <div className='grid grid-cols-3 gap-x-6 gap-y-3 my-7'>
         {nameOfSamplesInPCAPlot.map((sample, index) => {
@@ -392,6 +631,23 @@ export default function Home() {
       </div>
     )
   }
+  /*####################
+  # End of the code for COLORS
+  ####################*/
+
+
+  // Render the number of samples
+  const renderNumberSamples = () => {
+    if (csvData.length === 0) {
+      return null;
+    }
+    return (
+      <p>
+        Number of samples: <strong>{csvData ? csvData.length : "0"}</strong>
+      </p>
+    )
+  }
+  // End of the code for the number of samples
 
   /*####################
   # The following code is to render the final UI of the page
@@ -399,9 +655,20 @@ export default function Home() {
   return (
     <div className='container my-4 flex flex-col gap-5'>
 
+      <div className='mb-10'>
+        <h1 className='font-bold mb-3'>Things</h1>
+        <ul className='list-disc list-inside'>
+          <li className='text-blue-500'>UI - Change color of the button - DONE</li>
+          <li className='text-red-500'>Fix bug - group color of PCA plot</li>
+          <li className='text-red-500'>Task - Add loadings plot</li>
+          <li className='text-red-500'>Task - Make vertical line in the PCA plot, like elbow, horn, etc.</li>
+        </ul>
+      </div>
+
+
       <div className="flex py-3 justify-between sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
         <div className='flex gap-2'>
-          {renderButtonGenerateRandomData()}
+          {/* {renderButtonGenerateRandomData()} */}
           {renderButtonUploadFile()}
         </div>
 
@@ -409,6 +676,7 @@ export default function Home() {
           {renderButtonGenerateScreePlot()}
           {renderButtonGeneratePCAPlot()}
           {renderButtonGenerateLoadingsPlot()}
+          {renderButtonGenerateLoadingsTable()}
         </div>
       </div>
 
@@ -418,8 +686,13 @@ export default function Home() {
       {renderNameOfSamplesInPCAPlotWithGroupColorChoice()}
       {renderPCAPlot()}
 
+      {renderLoadingsTable()}
+
       {renderNumberSamples()}
       {renderDataTable()}
     </div>
   );
+  /*####################
+  # End of the code to render the final UI of the page
+  ####################*/
 }
