@@ -27,6 +27,7 @@ export default function Home() {
   // The "setSomething" function is used to update the "something"
   // For example, at the beginning, something = "123", then setSomething("abcdef") will update something, then something = "abcdef"
   // The "useState" function is a React hook function that is used to create the combo of "something" and "setSomething"
+  // The "useState" is used to trigger the re-render of the UI when the "something" is updated
   const [csvData, setCsvData] = useState([]);
   const [screePlotData, setScreePlotData] = useState(null);
   const [pcaPlotData, setPcaPlotData] = useState(null);
@@ -35,23 +36,27 @@ export default function Home() {
     = useState([]);
   const [colorGroupsOfPcaPlot, setColorGroupsOfPcaPlot] = useState([
     {
+      groupId: "1",
       name: "Group 1",
       colorCode: "#272E3F",
+      sampleNames: []
     },
     {
+      groupId: "2",
       name: "Group 2",
       colorCode: "#FFFF00",
+      sampleNames: []
     },
   ]);
   // This option is the required format to use <Select> of antd library
   const [options, setOptions] = useState([
     {
       label: "Group 1",
-      value: "#272E3F",
+      value: "1, #272E3F"
     },
     {
       label: "Group 2",
-      value: "#FFFF00",
+      value: "2, #FFFF00"
     },
   ]);
 
@@ -222,7 +227,7 @@ export default function Home() {
             style={{ width: "100%", height: "100%" }}
             data={pcaPlotData.data}
             layout={pcaPlotData.layout}
-            // key={Math.random()} is very important here, because it will force the Plot to re-render when the data is changed. Otherwise, the Plot will not re-render, so the color of the samples will not be updated.
+            // key={Math.random()} is very important here, because it will force the Plot to re-render when the data is changed. Otherwise, the Plot will not re-render, so the color of the samples on the plot will not be updated.
             key={Math.random()}
           />
         </div>
@@ -257,45 +262,94 @@ export default function Home() {
   # The following code is only about COLORS, such as renderColorCardsForPCAPlot, handleColorChange, etc.
   ####################*/
 
+  const handleColorGroupChange = (indexOfTheGroup, newColor) => {
+    console.log("🚀🚀🚀 index", indexOfTheGroup)
+    console.log("🚀🚀🚀 newColor", newColor)
 
+    // Find the group in the colorGroupsOfPcaPlot array
+    const newColorGroupsOfPcaPlot = [...colorGroupsOfPcaPlot];
+    newColorGroupsOfPcaPlot[indexOfTheGroup].colorCode = newColor;
+    setColorGroupsOfPcaPlot(newColorGroupsOfPcaPlot);
 
-  const handleColorGroupChange = (index, newColor) => {
-    // Copy the 'colorGroupsOfPcaPlot' array
-    const updatedGroups = [...colorGroupsOfPcaPlot];
-    // Update the 'colorCode' of the respective group
-    updatedGroups[index].colorCode = newColor;
-    // Update the state with the modified array
-    setColorGroupsOfPcaPlot(updatedGroups);
+    console.log("🚀🚀🚀 colorGroupsOfPcaPlot sau khi change", colorGroupsOfPcaPlot)
+
+    const newPcaPlotData = { ...pcaPlotData }
+    console.log("🚀🚀🚀 newPcaPlotData", newPcaPlotData)
+
+    // Find the samples in the pcaPlotData array
+    newColorGroupsOfPcaPlot[indexOfTheGroup].sampleNames.forEach((sampleName, index) => {
+      // If the sample is found in the array
+      const indexOfItem = newPcaPlotData.data.findIndex(sample => sample.name === sampleName);
+      if (indexOfItem !== -1) {
+        // Update the color field of the sample
+        newPcaPlotData.data[indexOfItem].marker.color = newColor;
+      }
+    })
+
+    // Update the options 
+    const newOptions = [...options];
+    newOptions[indexOfTheGroup].value = `${newColorGroupsOfPcaPlot[indexOfTheGroup].groupId}, ${newColor}`;
+    setOptions(newOptions);
+
   };
 
 
   const renderColorGroups = () => {
     if (pcaPlotData) {
       return (
-        <div className='grid grid-cols-4 gap-4'>
-          {colorGroupsOfPcaPlot.map((eachColorGroup, indexOfEachColorGroup) => (
-            <div
-              key={indexOfEachColorGroup}
-              className='flex gap-4 items-center'
-            >
-              <h3>{eachColorGroup.name}</h3>
-              <Input
-                type="color"
-                className='cursor-pointer w-1/3'
-                value={eachColorGroup.colorCode}
-                onChange={(e) => handleColorGroupChange(indexOfEachColorGroup, e.target.value)}
-              />
-            </div>
-          ))}
+        <div>
+
+          <Button variant="secondary" className="mb-8">
+            Add group
+          </Button>
+
+          <div className='grid grid-cols-4 gap-4'>
+            {colorGroupsOfPcaPlot.map((eachColorGroup, indexOfEachColorGroup) => (
+              <div
+                key={indexOfEachColorGroup}
+                className='flex gap-4 items-center'
+              >
+                <h3>{eachColorGroup.name}</h3>
+                <Input
+                  type="color"
+                  className='cursor-pointer w-1/3'
+                  value={eachColorGroup.colorCode}
+                  onChange={(e) => handleColorGroupChange(indexOfEachColorGroup, e.target.value)}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       );
     }
   }
 
-  const handleSampleGroupChange = (sampleName, colorCode) => {
+  const handleSampleGroupChange = (sampleName, value) => {
     // Log the sample name and color code
     console.log("🚀🚀🚀 sampleName", sampleName)
-    console.log("🚀🚀🚀 e", colorCode)
+    console.log("🚀🚀🚀 value", value)
+
+    let [groupId, colorCode] = value.split(", ");
+
+    console.log("🚀🚀🚀 groupId", groupId)
+
+    // Update the colorGroupsOfPcaPlot state
+    const newColorGroupsOfPcaPlot = [...colorGroupsOfPcaPlot];
+
+    // Find the index of the group in the colorGroupsOfPcaPlot array
+    const indexOfColorGroup = newColorGroupsOfPcaPlot.findIndex(group => group.groupId === groupId);
+
+    // If the group is found in the array
+    if (indexOfColorGroup !== -1) {
+      // Update the sampleNames array of the group
+      newColorGroupsOfPcaPlot[indexOfColorGroup].sampleNames.push(sampleName);
+    }
+
+    // Update the state with the new array
+    setColorGroupsOfPcaPlot(newColorGroupsOfPcaPlot);
+
+
+    console.log("🚀🚀🚀 colorGroupsOfPcaPlot sau khi select", colorGroupsOfPcaPlot)
 
     const newPcaPlotData = { ...pcaPlotData }
     console.log("🚀🚀🚀 newPcaPlotData", newPcaPlotData)
@@ -320,7 +374,7 @@ export default function Home() {
 
   const renderNameOfSamplesInPCAPlotWithGroupColorChoice = () => {
     return (
-      <div className='grid grid-cols-3 gap-x-6 gap-y-3'>
+      <div className='grid grid-cols-3 gap-x-6 gap-y-3 my-7'>
         {nameOfSamplesInPCAPlot.map((sample, index) => {
           return <div
             key={index}
@@ -329,7 +383,7 @@ export default function Home() {
             <p>{sample.name}</p>
 
             <Select
-              onChange={(colorCode) => handleSampleGroupChange(sample.name, colorCode)}
+              onChange={(value) => handleSampleGroupChange(sample.name, value)}
               className='w-3/5'
               options={options}
             />

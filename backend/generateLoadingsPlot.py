@@ -9,28 +9,13 @@ bp = Blueprint('generateLoadingsPlot', __name__)
 
 @bp.route('/api/generate_loadings_plot', methods=['POST'])
 def generate_scree_plot():
-    #########################
-    # Get the initial data and do some initial preparation
-    #########################
 
-    # Two things done in the following code:
-    # 1. Get the data from the request
-    # 2. Convert the data into a DataFrame
     initialData = request.json
     convertedData = pd.DataFrame(data=initialData)
 
-    # Assume that the first column is the column that contains the names of the genes (like gene1, gene2, etc.), so here we set the first column as the index of the DataFrame
-    # ==> so the Dataframe will not use it for the calculations
-    # Two things done in the following code:
-    # 1. Take the name of the first column in the DataFrame
-    # 2. Based on that name, let the first column be the index of the DataFrame
     nameOfTheFirstColumn = list(initialData[0].keys())[0]
     convertedData.set_index(nameOfTheFirstColumn, inplace=True)
 
-    # Three things done in the following code:
-    # 1. Replace comma with dot in the DataFrame
-    # 2. Convert string values to float
-    # 3. Remove rows with NaN values
     convertedData = convertedData.replace(',', '.', regex=True)
     convertedData = convertedData.astype(float)
     convertedData = convertedData.dropna()
@@ -38,27 +23,13 @@ def generate_scree_plot():
     print("🚀🚀🚀 CONVERTED DATA \n")
     print(convertedData)
 
-    #########################
-    # Standardize the data
-    #########################
-
-    # Two things done in the following code:
-    # 1. Create a StandardScaler object by using StandardScaler() of scikit-learn
-    # 2. Pass the data into the scaling object ==> data will be standardized
     standardScalerObject = StandardScaler()
     dataAfterStandardization = standardScalerObject.fit_transform(
-        convertedData)
+        convertedData.T)
 
     print("🚀🚀🚀 DATA AFTER STANDARDIZATION \n")
     print(dataAfterStandardization)
 
-    #########################
-    # Do the PCA
-    #########################
-
-    # Two things done in the following code:
-    # 1. Create a PCA object by using PCA() of scikit-learn
-    # 2. Pass the standardized data into the PCA object
     pcaObject = PCA(n_components=2)
     pcaObject.fit_transform(dataAfterStandardization)
 
@@ -67,20 +38,45 @@ def generate_scree_plot():
 
     print("🚀🚀🚀 LOADINGS \n")
     print(loadings)
+    print("🚀🚀🚀 LOADINGS SHAPE \n")
+    print(loadings.shape)
 
     # Number of features before PCA
     n_features = pcaObject.n_features_in_
     print("n_features: \n", n_features)
 
     # Create a DataFrame from the loadings
-    # labelPrincipalComponents = [
-    #     'PC' + str(i+1) for i in range(loadings.shape[0])]
+    labelPrincipalComponents = [
+        'PC' + str(i+1) for i in range(loadings.shape[0])]
 
-    # loadings_df = pd.DataFrame(
-    #     loadings.T,
-    #     index=convertedData.index, columns=labelPrincipalComponents)
-    # print("🚀🚀🚀 LOADINGS_DF \n")
-    # print(loadings_df)
+    # Create a DataFrame from the loadings
+    # The data frame will look like this:
+    #       |  PC1  |  PC2  |  PC3  | ... | PCn  |
+    # gene1 | 0.042 | 0.021 | -0.03 | ... | 0.12 |
+    # gene2 | 0.563 | 0.241 | 0.123 | ... | 0.8  |
+    # gene3 | 0.012 | 0.222 | 0.333 | ... | 0.011|
+    # ...   | ...   | ...   | ...   | ... | ...  |
+    # geneN | -0.23 | 0.512 | -0.215| ... | 0.033|
+    loadings_df = pd.DataFrame(
+        loadings.T,
+        index=convertedData.index,
+        columns=labelPrincipalComponents
+    )
+    print("\n 🚀🚀🚀 LOADINGS_DF")
+    print(loadings_df)
+
+    # Top 5 most contributing features for each PC
+    # axis=0 means that the lambda function will apply to each column
+    top_5_contributors = loadings_df.apply(
+        lambda s: s.abs().nlargest(5).index.tolist(), axis=0)
+    print("🚀🚀🚀 TOP 5 CONTRIBUTORS \n")
+    print(top_5_contributors)
+
+    # Top 5 least contributing features for each PC
+    least_5_contributors = loadings_df.apply(
+        lambda s: s.abs().nsmallest(5).index.tolist(), axis=0)
+    print("🚀🚀🚀 LEAST 5 CONTRIBUTORS \n")
+    print(least_5_contributors)
 
     #########################
     # Prepare the result following the Plotly format
