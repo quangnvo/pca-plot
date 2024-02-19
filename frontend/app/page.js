@@ -252,7 +252,7 @@ export default function Home() {
           <div className='p-3 border border-gray-200 rounded-lg'>
             <Plot
               useResizeHandler
-              style={{ width: "100%", height: "100%" }}
+              style={{ width: "100%", height: "500px" }}
               data={screePlotData.data}
               layout={screePlotData.layout}
             />
@@ -260,7 +260,6 @@ export default function Home() {
         )
       }
     }
-    return <></>
   }
 
   const renderPCAPlot = () => {
