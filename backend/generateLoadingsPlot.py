@@ -8,7 +8,7 @@ bp = Blueprint('generateLoadingsPlot', __name__)
 
 
 @bp.route('/api/generate_loadings_plot', methods=['POST'])
-def generate_scree_plot():
+def generate_loadings_plot():
 
     initialData = request.json
     convertedData = pd.DataFrame(data=initialData)
@@ -65,8 +65,7 @@ def generate_scree_plot():
     print("\n 🚀🚀🚀 LOADINGS_DF")
     print(loadings_df)
 
-    # Top 5 most contributing features for each PC
-    # axis=0 means that the lambda function will apply to each column
+  # Top 5 most contributing features for each PC
     top_5_contributors = loadings_df.apply(
         lambda s: s.abs().nlargest(5).index.tolist(), axis=0)
     print("🚀🚀🚀 TOP 5 CONTRIBUTORS \n")
@@ -78,65 +77,66 @@ def generate_scree_plot():
     print("🚀🚀🚀 LEAST 5 CONTRIBUTORS \n")
     print(least_5_contributors)
 
-    #########################
-    # Prepare the result following the Plotly format
-    #########################
 
-    # Four things done in the following code:
-    # 1. Create labels for the scree plot, like "PC1", "PC2", etc.
-    # 2. Prepare the data for the scree plot
-    # 3. Prepare the layout for the scree plot
-    # 4. Combine the data and the layout into a dictionary and return it as a JSON object
+# aaaaaaaaaa REMOVE THE FOLLOWING PART IF THE ABOVE PART ALREADY OK
+#########################
+# Prepare the result following the Plotly format
+#########################
 
-    # loadingsPlotFormatData = [
-    #     {
-    #         'type': 'bar',
-    #         'x': labels,
-    #         'y': percentageOfVariance.tolist(),
-    #         # Display the percentage on top of each bar
-    #         'text': [f'{value}%' for value in percentageOfVariance.tolist()],
-    #         'textposition': 'auto',
-    #         'marker': {
-    #                 'color': 'yellow',
-    #                 'line': {
-    #                     'color': 'black',
-    #                     'width': 2,
-    #                 },
-    #         }
-    #     }
-    # ]
+# 1. Create labels for the scree plot, like "PC1", "PC2", etc.
+# 2. Prepare the data for the scree plot
+# 3. Prepare the layout for the scree plot
+# 4. Combine the data and the layout into a dictionary and return it as a JSON object
 
-    layoutLoadingslotForReact = {
-        'title': {
-            'text': 'Scree Plot',
-            'font': {
-                    'size': 30,
-                    'color': 'black',
-            },
-        },
-        'xaxis': {
-            'title': 'Principal component',
-            'titlefont': {
-                'size': 20,
-                'color': 'black',
-            },
-        },
-        'yaxis': {
-            'title': 'Explained variance (%)',
-            'titlefont': {
-                'size': 20,
-                'color': 'black',
-            },
-        },
-        'autosize': True,
-        'hovermode': 'closest',
-        'showlegend': False,
-        'height': 400,
-    }
+# loadingsPlotFormatData = [
+#     {
+#         'type': 'bar',
+#         'x': labels,
+#         'y': percentageOfVariance.tolist(),
+#         # Display the percentage on top of each bar
+#         'text': [f'{value}%' for value in percentageOfVariance.tolist()],
+#         'textposition': 'auto',
+#         'marker': {
+#                 'color': 'yellow',
+#                 'line': {
+#                     'color': 'black',
+#                     'width': 2,
+#                 },
+#         }
+#     }
+# ]
 
-    # result = {
-    #     'data': screePlotFormatData,
-    #     'layout': layoutScreePlotForReact
-    # }
+# layoutLoadingslotForReact = {
+#     'title': {
+#         'text': 'Scree Plot',
+#         'font': {
+#                 'size': 30,
+#                 'color': 'black',
+#         },
+#     },
+#     'xaxis': {
+#         'title': 'Principal component',
+#         'titlefont': {
+#             'size': 20,
+#             'color': 'black',
+#         },
+#     },
+#     'yaxis': {
+#         'title': 'Explained variance (%)',
+#         'titlefont': {
+#             'size': 20,
+#             'color': 'black',
+#         },
+#     },
+#     'autosize': True,
+#     'hovermode': 'closest',
+#     'showlegend': False,
+#     'height': 400,
+# }
 
-    return jsonify("")
+# result = {
+#     'data': screePlotFormatData,
+#     'layout': layoutScreePlotForReact
+# }
+
+# return jsonify("")

@@ -88,13 +88,14 @@ def generate_pca():
     ]
 
     layoutPCAPlotForReact = {
-        'title': {
-            'text': 'PCA Plot',
-            'font': {
-                'size': 30,
-                'color': 'black',
-            },
-        },
+        # The title of the plot, which will be displayed above the plot
+        # 'title': {
+        #     'text': 'PCA Plot',
+        #     'font': {
+        #         'size': 30,
+        #         'color': 'black',
+        #     },
+        # },
         'xaxis': {
             'title': f'PC1 ({pcaVariancePercentage[0]*100:.2f}%)',
             'titlefont': {

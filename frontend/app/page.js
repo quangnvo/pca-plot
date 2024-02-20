@@ -39,6 +39,7 @@ export default function Home() {
   const [isPcaPlotVisible, setIsPcaPlotVisible] = useState(false);
   const [isLoadingsPlotVisible, setIsLoadingsPlotVisible] = useState(false);
   const [isLoadingsTableVisible, setIsLoadingsTableVisible] = useState(false);
+  const [isTopFiveContributorsTableVisible, setIsTopFiveContributorsTableVisible] = useState(false);
 
   const [nameOfSamplesInPCAPlot, setNameOfSamplesInPCAPlot]
     = useState([]);
@@ -68,9 +69,43 @@ export default function Home() {
     },
   ]);
 
+
+
   /*####################
-  # The following code is about generating data: generateRandomData, generateScreePlot, generatePCAPlot, etc.
+# The following code is only about FILE UPLOAD
+####################*/
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    // Checking if the file is a csv file or the txt file
+    // If .csv or .txt file, then continue
+    if (file.type === 'text/csv' || file.type === 'text/plain') {
+      // Using PapaParse, a library used for parsing, to parse the file
+      Papa.parse(file, {
+        header: true,
+        complete: (results) => {
+          // Then set the parsed data to the csvData
+          setCsvData(results.data);
+        },
+      });
+    }
+  };
+  /*####################
+  # End of the code for FILE UPLOAD
   ####################*/
+
+
+
+  /*####################
+  # The following code is about FUNCTIONS FOR BUTTONS: generateRandomData, generateScreePlot, generatePCAPlot, etc.
+  ####################*/
+
+  // Clear the uploaded file
+  const clearUploadedFile = () => {
+    // Clear the csvData state
+    setCsvData([]);
+    // Reset the file input value to null, this is important because if we don't reset the file input value to null, then the user can't upload the same file again
+    document.getElementById('fileInput').value = null;
+  }
 
   //  Generate random data function
   const generateRandomData = async () => {
@@ -101,7 +136,6 @@ export default function Home() {
     setIsScreePlotVisible(!isScreePlotVisible);
   }
 
-
   //  Generate PCA plot function
   const generatePCAPlot = async () => {
     if (!isPcaPlotVisible) {
@@ -123,7 +157,6 @@ export default function Home() {
     }
     setIsPcaPlotVisible(!isPcaPlotVisible);
   }
-
 
   // Generate Loadings plot
   const generateLoadingsPlot = async () => {
@@ -149,28 +182,22 @@ export default function Home() {
     setIsLoadingsTableVisible(!isLoadingsTableVisible);
   }
 
-
-  /*####################
-  # The following code is only about FILE UPLOAD
-  ####################*/
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    // Checking if the file is a csv file or the txt file
-    // If .csv or .txt file, then continue
-    if (file.type === 'text/csv' || file.type === 'text/plain') {
-      // Using PapaParse, a library used for parsing, to parse the file
-      Papa.parse(file, {
-        header: true,
-        complete: (results) => {
-          // Then set the parsed data to the csvData
-          setCsvData(results.data);
-        },
-      });
+  // Generate Top 5 contributors table
+  const generateTopFiveContributors = async () => {
+    if (!isTopFiveContributorsTableVisible) {
+      try {
+        const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_top_five_contributors`, csvData);
+        console.log("🚀🚀🚀 top 5 contributor table data", response)
+      } catch (error) {
+        console.error(error);
+      }
     }
-  };
+    setIsTopFiveContributorsTableVisible(!isTopFiveContributorsTableVisible);
+  }
   /*####################
-  # End of the code for FILE UPLOAD
+  # End of the code for FUNCTIONS FOR BUTTONS
   ####################*/
+
 
 
   /*####################
@@ -187,10 +214,23 @@ export default function Home() {
   const renderButtonUploadFile = () => {
     return (
       <Input
+        // The id is used to select the file input by using the document.getElementById('fileInput'), then we can reset the file input value to null
+        id='fileInput'
         type='file'
         accept='.csv,.txt'
         onChange={handleFileUpload}
       />
+    )
+  }
+
+  const renderButtonClearUploadedFile = () => {
+    return (
+      <Button
+        variant="outline"
+        onClick={clearUploadedFile}
+      >
+        Clear
+      </Button>
     )
   }
 
@@ -234,6 +274,17 @@ export default function Home() {
         variant={isLoadingsTableVisible ? "default" : "outline"}
       >
         Loadings table
+      </Button>
+    )
+  }
+
+  const renderButtonGenerateTopFiveContributorsTable = () => {
+    return (
+      <Button
+        onClick={generateTopFiveContributors}
+        variant={isTopFiveContributorsTableVisible ? "default" : "outline"}
+      >
+        Top 5 contributors
       </Button>
     )
   }
@@ -289,116 +340,78 @@ export default function Home() {
   # The following code is only about function used to render TABLE, such as renderDataTable, renderLoadingsTable, etc.
   ####################*/
 
-  // Convert the data from the csv file that user uploaded to the format required by "Ant Design" (antd). The Ant Design Table belongs to the library "antd" which is used for the UI. Link: https://ant.design/components/table
-
-  // Convert csvData to the "tableDataForAntdTable" format required by antd
-  const tableDataForAntdTable = csvData.map((eachRow, index) => ({
-    key: index,
-    ...eachRow,
-  }));
-  // Set the columns for the antd table
-  const columnsForAntdTable = csvData.length > 0 ? Object.keys(csvData[0]).map(key => ({
-    title: key,
-    dataIndex: key,
-    key: key,
-    width: 150,
-  })) : [];
-
-  // Render the data table from the csv file that user uploaded
-  const renderDataTable = () => {
-    if (csvData.length === 0) {
-      return null;
-    }
-    return (
-      <Table
-        columns={columnsForAntdTable}
-        dataSource={tableDataForAntdTable}
-        scroll={{
-          x: 1500,
-        }}
-        sticky={{
-          offsetHeader: 64,
-        }}
-      />
-    )
-  }
-
-
+  /*####################
+  # TABLE --- Searching Dropdown
+  ####################*/
+  // The following code is used to render the searching dropdown, which can be used in any table
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
+  // The function handleSearch is used to search the data in the table
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
   };
 
+  // The function handleReset is used to reset the search, meaning that it will clear the search input
   const handleReset = (clearFilters) => {
     clearFilters();
     setSearchText('');
   };
 
-  const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+  // The function renderSearchingDropdown is used to render the search input in the table
+  const renderSearchingDropdown = (nameOfColumn) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
       <div
-        style={{
-          padding: 8,
-        }}
+        className='p-3'
+        // The onKeyDown={(e) => e.stopPropagation()} is a piece of JavaScript code used in React. It’s an event handler for the "onKeyDown" event.
+        // The "onKeyDown" event is fired when a user is pressing a key (on the keyboard).
+        // In simpler terms, when a key is pressed down, this code prevents the "onKeyDown" event from bubbling up to parent elements. This can be useful in scenarios where we don’t want parent elements to react to the key press event. For example, if we have a modal and we don’t want a key press in the modal to trigger events in the background page, we could use this code.
+        // In this case, just to make sure that the event is not propagated to the parent element, we use this "onKeyDown". 
         onKeyDown={(e) => e.stopPropagation()}
       >
+        {/* Input area */}
         <InputAntd
+          className='mb-3 w-full'
           ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
+          placeholder="Search ..."
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-          style={{
-            marginBottom: 8,
-            display: 'block',
-          }}
+          onChange={(e) => setSelectedKeys(e.target.value
+            ? [e.target.value]
+            : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, nameOfColumn)}
         />
-        <Space>
-          {/* <Button
-            type="primary"
-            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-            icon={<SearchOutlined />}
-            size="small"
-            style={{
-              width: 90,
-            }}
-          >
-            Search
-          </Button> */}
 
+        <div className="flex gap-2 justify-end">
+
+          {/* Button Search */}
           <Button
             type="link"
-            size="small"
+            variant="secondary"
             onClick={() => {
-              confirm({
-                closeDropdown: false,
-              });
+              confirm({ closeDropdown: false });
               setSearchText(selectedKeys[0]);
-              setSearchedColumn(dataIndex);
+              setSearchedColumn(nameOfColumn);
             }}
           >
             Search
           </Button>
 
-
+          {/* Button Clear */}
           <Button
+            variant="secondary"
             onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{
-              width: 90,
-            }}
           >
             Clear
           </Button>
-
-        </Space>
+        </div>
       </div>
     ),
+
+    // Filter icon
     filterIcon: (filtered) => (
       <SearchOutlined
         style={{
@@ -408,7 +421,7 @@ export default function Home() {
     ),
 
     onFilter: (value, record) =>
-      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+      record[nameOfColumn].toString().toLowerCase().includes(value.toLowerCase()),
 
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
@@ -417,7 +430,7 @@ export default function Home() {
     },
 
     render: (text) =>
-      searchedColumn === dataIndex ? (
+      searchedColumn === nameOfColumn ? (
         <Highlighter
           highlightStyle={{
             backgroundColor: '#ffc069',
@@ -431,37 +444,105 @@ export default function Home() {
         text
       ),
   });
+  /*####################
+  # End of the code for TABLE --- Searching Dropdown
+  ####################*/
 
 
-  const loadingsDataForAntdTable = loadingsTableData.map((eachRow, index) => ({
+  /*####################
+  # TABLE --- Data Table
+  # The following code is only about the Data Table, which is the table that shows the data from the csv file that user uploaded
+  ####################*/
+  // Convert the data from the csv file that user uploaded to the format required by "Ant Design" (antd). The Ant Design Table belongs to the library "antd" which is used for the UI. Link: https://ant.design/components/table
+
+  // Convert csvData to the "dataForCsvTable" format required by antd
+  const dataForCsvTable = csvData.map((eachRow, index) => ({
     key: index,
     ...eachRow,
   }));
 
-  const columnsForLoadingsTableInAntd = loadingsTableData.length > 0
-    ? Object.keys(loadingsTableData[0]).map((key) => {
+  // Set the columns for the antd table
+  const columnForCsvTable = csvData.length > 0
+    ? Object.keys(csvData[0]).map((nameOfEachColumn, index) => {
       let column = {
-        title: key,
-        dataIndex: key,
-        key: key,
-        width: 100,
+        title: nameOfEachColumn,
+        dataIndex: nameOfEachColumn,
+        key: nameOfEachColumn,
+        width: 150,
         sortDirections: ['descend', 'ascend'],
-      };
-      if (!key.includes("PC")) {
+      }
+      // Check if it's the first column
+      if (index === 0) {
         column = {
           ...column,
-          ...getColumnSearchProps(key),
+          ...renderSearchingDropdown(nameOfEachColumn),
         };
-      } else {
+      }
+      // Check if the column data is numeric
+      else if (!isNaN(csvData[0][nameOfEachColumn])) {
         column = {
           ...column,
-          sorter: (a, b) => a[key] - b[key],
+          sorter: (a, b) => a[nameOfEachColumn] - b[nameOfEachColumn],
         };
       }
       return column;
     })
     : [];
 
+  // Render the data table from the csv file that user uploaded
+  const renderDataTable = () => {
+    if (csvData.length === 0) {
+      return null;
+    }
+    return (
+      <Table
+        columns={columnForCsvTable}
+        dataSource={dataForCsvTable}
+        scroll={{
+          x: 1500,
+        }}
+        sticky={{
+          offsetHeader: 64,
+        }}
+      />
+    )
+  }
+  /*####################
+  # End of the code for TABLE --- Data Table
+  ####################*/
+
+  /*####################
+  # TABLE --- Loadings Table
+  # The following code is only about the Loadings Table, which is the table that shows which genes contribute how much to the principal components
+  ####################*/
+  const dataForLoadingsTable = loadingsTableData.map((eachRow, index) => ({
+    key: index,
+    ...eachRow,
+  }));
+
+  const columnForLoadingsTable = loadingsTableData.length > 0
+    ? Object.keys(loadingsTableData[0]).map((nameOfEachColumn) => {
+      let column = {
+        title: nameOfEachColumn,
+        dataIndex: nameOfEachColumn,
+        key: nameOfEachColumn,
+        width: 100,
+        sortDirections: ['descend', 'ascend'],
+      };
+      if (!nameOfEachColumn.includes("PC")) {
+        column = {
+          ...column,
+          ...renderSearchingDropdown(nameOfEachColumn),
+        };
+      } else {
+        column = {
+          ...column,
+          sorter: (a, b) => a[nameOfEachColumn] - b[nameOfEachColumn],
+        };
+      }
+      return column;
+    })
+    : [];
 
   // Render the loadings table to show that which features contribute how much to the principal components
   const renderLoadingsTable = () => {
@@ -473,8 +554,8 @@ export default function Home() {
     }
     return (
       <Table
-        columns={columnsForLoadingsTableInAntd}
-        dataSource={loadingsDataForAntdTable}
+        columns={columnForLoadingsTable}
+        dataSource={dataForLoadingsTable}
         scroll={{
           x: 1000,
         }}
@@ -484,10 +565,94 @@ export default function Home() {
       />
     )
   }
+  /*####################
+  # End of the code for TABLE --- Loadings Table
+  ####################*/
+
+  /*####################
+  # TABLE --- Top Five Contributors Table
+  # The following code is only about the Top Five Contributors Table, which is the table that shows the top 5 contributors to the principal components
+  ####################*/
+  const dataForTopFiveContributorsTable = [
+    {
+      key: '1',
+      name: 'John Brown',
+      age: 32,
+      address: 'New York No. 1 Lake Park',
+    },
+    {
+      key: '2',
+      name: 'Jim Green',
+      age: 42,
+      address: 'London No. 1 Lake Park',
+    },
+    {
+      key: '3',
+      name: 'Joe Black',
+      age: 32,
+      address: 'Sidney No. 1 Lake Park',
+    },
+    {
+      key: '4',
+      name: 'Jim Red',
+      age: 32,
+      address: 'London No. 2 Lake Park',
+    },
+  ];
+
+  const columnForTopFiveContributorsTable = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      width: 150,
+      ...renderSearchingDropdown('name'),
+    },
+    {
+      title: 'Age',
+      dataIndex: 'age',
+      key: 'age',
+      width: 150,
+      sorter: (a, b) => a.age - b.age,
+    },
+    {
+      title: 'Address',
+      dataIndex: 'address',
+      key: 'address',
+      width: 150,
+      ...renderSearchingDropdown('address'),
+    },
+  ];
+
+  // Render the top five contributors table
+  const renderTopFiveContributorsTable = () => {
+    if (!isTopFiveContributorsTableVisible) {
+      return null;
+    }
+    return (
+      <Table
+        columns={columnForTopFiveContributorsTable}
+        dataSource={dataForTopFiveContributorsTable}
+        scroll={{
+          x: 500,
+        }}
+        sticky={{
+          offsetHeader: 64,
+        }}
+      />
+    )
+  }
+
+
+  /*####################
+  # End of the code for TABLE --- Top Five Contributors Table
+  ####################*/
+
 
   /*####################
   # End of the code for TABLE
   ####################*/
+
 
 
   /*####################
@@ -657,10 +822,15 @@ export default function Home() {
       <div className='mb-10'>
         <h1 className='font-bold mb-3'>Things</h1>
         <ul className='list-disc list-inside'>
-          <li className='text-blue-500'>UI - Change color of the button - DONE</li>
           <li className='text-red-500'>Fix bug - group color of PCA plot</li>
+          <li className='text-blue-500'>Task - Change state of the button when click- DONE</li>
+          <li className='text-blue-500'>Task - Make vertical line in the PCA plot, over 80% cumulative - DONE</li>
           <li className='text-red-500'>Task - Add loadings plot</li>
-          <li className='text-red-500'>Task - Make vertical line in the PCA plot, like elbow, horn, etc.</li>
+          <li className='text-blue-500'>Task - Modify the UI of search button in loadings table - DONE</li>
+          <li className='text-red-500'>Task - Add another table to show top 5 contributor </li>
+          <li className='text-blue-500'>Task - Remove the title of plot and bring it out - DONE</li>
+          <li className='text-blue-500'>Task - Add the search function to the first column of data table - DONE</li>
+          <li className='text-blue-500'>Task - Add button remove file uploaded (to clear the data table) - DONE</li>
         </ul>
       </div>
 
@@ -669,6 +839,7 @@ export default function Home() {
         <div className='flex gap-2'>
           {/* {renderButtonGenerateRandomData()} */}
           {renderButtonUploadFile()}
+          {renderButtonClearUploadedFile()}
         </div>
 
         <div className='flex gap-2'>
@@ -676,6 +847,7 @@ export default function Home() {
           {renderButtonGeneratePCAPlot()}
           {renderButtonGenerateLoadingsPlot()}
           {renderButtonGenerateLoadingsTable()}
+          {renderButtonGenerateTopFiveContributorsTable()}
         </div>
       </div>
 
@@ -685,6 +857,7 @@ export default function Home() {
       {renderNameOfSamplesInPCAPlotWithGroupColorChoice()}
       {renderPCAPlot()}
 
+      {renderTopFiveContributorsTable()}
       {renderLoadingsTable()}
 
       {renderNumberSamples()}

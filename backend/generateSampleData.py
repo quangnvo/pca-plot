@@ -27,4 +27,6 @@ def generate_data():
             'condition 5': f"{random.uniform(4, 10):.2f}"
         }
         data.append(sample)
+    print("🚀🚀🚀 RANDOM DATA")
+    print(data[0:5])
     return jsonify(data)

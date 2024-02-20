@@ -60,7 +60,7 @@ def generate_scree_plot():
     # Things done in the following code:
     # 1. Create a PCA object by using PCA() of scikit-learn
     # 2. Pass the standardized data into the PCA object
-    pcaObject = PCA(n_components=8)
+    pcaObject = PCA(n_components=10)
     pcaObject.fit_transform(dataAfterStandardization)
 
     # Calculate the percentage of explained variance per principal component
@@ -82,14 +82,19 @@ def generate_scree_plot():
 
     cumulativeVariance = np.cumsum(percentageOfVariance)
 
+ # Find the index where the cumulative variance exceeds 80%
+    index_80 = next(i for i, v in enumerate(
+        cumulativeVariance.tolist()) if v >= 80)
+
     screePlotFormatData = [
         {
             'type': 'bar',
             'x': labels,
             'y': percentageOfVariance.tolist(),
             # Display the percentage on top of each bar
-            'text': [f'{value}%' for value in percentageOfVariance.tolist()],
+            # 'text': [f'{value}%' for value in percentageOfVariance.tolist()],
             'textposition': 'auto',
+            'name': 'Individual',
             'marker': {
                 'color': 'yellow',
                 'line': {
@@ -97,7 +102,6 @@ def generate_scree_plot():
                     'width': 2,
                 },
             },
-            'name': 'Individual'
         },
         {
             'type': 'scatter',
@@ -117,10 +121,10 @@ def generate_scree_plot():
 
     layoutScreePlotForReact = {
         'title': {
-            'text': 'Scree Plot',
+            # 'text': 'Scree Plot',
             'font': {
-                    'size': 30,
-                    'color': 'black',
+                'size': 30,
+                'color': 'black',
             },
         },
         'xaxis': {
@@ -141,6 +145,22 @@ def generate_scree_plot():
         'hovermode': 'closest',
         'showlegend': False,
         'height': 400,
+        'shapes': [
+            {
+                'type': 'line',
+                'xref': 'x',
+                'yref': 'paper',
+                'x0': labels[index_80],
+                'y0': 0,
+                'x1': labels[index_80],
+                'y1': 1,
+                'line': {
+                    'color': 'black',
+                    'width': 1,
+                    'dash': 'dash',
+                },
+            }
+        ]
     }
 
     result = {
