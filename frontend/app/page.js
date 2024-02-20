@@ -34,6 +34,7 @@ export default function Home() {
   const [screePlotData, setScreePlotData] = useState(null);
   const [pcaPlotData, setPcaPlotData] = useState(null);
   const [loadingsTableData, setLoadingsTableData] = useState([]);
+  const [topFiveContributorsTableData, setTopFiveContributorsTableData] = useState([]);
 
   const [isScreePlotVisible, setIsScreePlotVisible] = useState(false);
   const [isPcaPlotVisible, setIsPcaPlotVisible] = useState(false);
@@ -187,7 +188,7 @@ export default function Home() {
     if (!isTopFiveContributorsTableVisible) {
       try {
         const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_top_five_contributors`, csvData);
-        console.log("🚀🚀🚀 top 5 contributor table data", response)
+        setTopFiveContributorsTableData(response.data);
       } catch (error) {
         console.error(error);
       }
@@ -476,6 +477,9 @@ export default function Home() {
         column = {
           ...column,
           ...renderSearchingDropdown(nameOfEachColumn),
+          width: 150,
+          // The fixed: 'left' is used to freeze the column, and because now we are inside the condition (index === 0), so the first column is frozen 
+          fixed: 'left',
         };
       }
       // Check if the column data is numeric
@@ -573,56 +577,30 @@ export default function Home() {
   # TABLE --- Top Five Contributors Table
   # The following code is only about the Top Five Contributors Table, which is the table that shows the top 5 contributors to the principal components
   ####################*/
-  const dataForTopFiveContributorsTable = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-    },
-    {
-      key: '4',
-      name: 'Jim Red',
-      age: 32,
-      address: 'London No. 2 Lake Park',
-    },
-  ];
+  const dataForTopFiveContributorsTable = topFiveContributorsTableData.map((eachRow, index) => ({
+    key: index,
+    ...eachRow,
+  }));
 
-  const columnForTopFiveContributorsTable = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      width: 150,
-      ...renderSearchingDropdown('name'),
-    },
-    {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
-      width: 150,
-      sorter: (a, b) => a.age - b.age,
-    },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
-      width: 150,
-      ...renderSearchingDropdown('address'),
-    },
-  ];
+  console.log("🚀🚀🚀 topFiveContributorsTableData", dataForTopFiveContributorsTable)
+
+  const columnForTopFiveContributorsTable = topFiveContributorsTableData.length > 0
+    ? Object.keys(topFiveContributorsTableData[0]).map((nameOfEachColumn) => {
+      let column = {
+        title: nameOfEachColumn,
+        dataIndex: nameOfEachColumn,
+        key: nameOfEachColumn,
+        width: 100,
+      };
+      if (nameOfEachColumn === "PC" || nameOfEachColumn === "Gene") {
+        column = {
+          ...column,
+          ...renderSearchingDropdown(nameOfEachColumn),
+        };
+      }
+      return column;
+    })
+    : [];
 
   // Render the top five contributors table
   const renderTopFiveContributorsTable = () => {
@@ -828,6 +806,7 @@ export default function Home() {
           <li className='text-red-500'>Task - Add loadings plot</li>
           <li className='text-blue-500'>Task - Modify the UI of search button in loadings table - DONE</li>
           <li className='text-red-500'>Task - Add another table to show top 5 contributor </li>
+          <li className='text-blue-500'>Task - Fix 1st column of the table - DONE</li>
           <li className='text-blue-500'>Task - Remove the title of plot and bring it out - DONE</li>
           <li className='text-blue-500'>Task - Add the search function to the first column of data table - DONE</li>
           <li className='text-blue-500'>Task - Add button remove file uploaded (to clear the data table) - DONE</li>

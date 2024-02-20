@@ -48,28 +48,20 @@ def generate_top_five_contributors():
         columns=labelPrincipalComponents
     )
 
-    # Get the top 5 contributors for each principal component
-    # top_five_contributors = []
-    top_five_contributorsaaaaa = {}
-    for pc in labelPrincipalComponents:
-        top_five_contributorsaaaaa = loadings_df[pc].map(abs).sort_values(
-            ascending=False).head(5).index.to_series().map(loadings_df[pc]).to_dict()
-
-    print("\n 🚀🚀🚀 TOP FIVE CONTRIBUTORS co negative va positive")
-    print(top_five_contributorsaaaaa)
-
-    # for pc in labelPrincipalComponents:
-    #     top_five_contributors[pc] = loadings_df[pc].map(abs).sort_values(
-    #         ascending=False).head(5).index.to_series().map(loadings_df[pc]).to_dict()
-
+  # Get the top 5 contributors for each principal component
     top_five_contributors = []
 
     for pc in labelPrincipalComponents:
         contributors = loadings_df[pc].map(abs).sort_values(
-            ascending=False).head(5).index.to_series().map(loadings_df[pc]).to_dict()
-        top_five_contributors.append({pc: contributors})
+            ascending=False).head(5).index.to_series().map(loadings_df[pc])
+        for gene, value in contributors.items():
+            top_five_contributors.append({
+                "Principal component": pc,
+                "Gene": gene,
+                "Loadings": value
+            })
 
-    print("\n 🚀🚀🚀 TOP FIVE CONTRIBUTORS co negative va positive")
+    print("🚀🚀🚀 TOP FIVE CONTRIBUTORS co negative va positive \n")
     print(top_five_contributors)
 
     # Convert the list to JSON
