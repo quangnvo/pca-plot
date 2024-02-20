@@ -301,13 +301,18 @@ export default function Home() {
     if (isScreePlotVisible) {
       if (screePlotData) {
         return (
-          <div className='p-3 border border-gray-200 rounded-lg'>
-            <Plot
-              useResizeHandler
-              style={{ width: "100%", height: "500px" }}
-              data={screePlotData.data}
-              layout={screePlotData.layout}
-            />
+          <div className='mb-10'>
+            <div className='text-3xl font-bold mb-4'>
+              Scree plot
+            </div>
+            <div className='p-3 border border-gray-200 rounded-lg'>
+              <Plot
+                useResizeHandler
+                style={{ width: "100%", height: "500px" }}
+                data={screePlotData.data}
+                layout={screePlotData.layout}
+              />
+            </div>
           </div>
         )
       }
@@ -318,15 +323,20 @@ export default function Home() {
     if (isPcaPlotVisible) {
       if (pcaPlotData) {
         return (
-          <div className='p-3 border border-gray-200 rounded-lg'>
-            <Plot
-              useResizeHandler
-              style={{ width: "100%", height: "100%" }}
-              data={pcaPlotData.data}
-              layout={pcaPlotData.layout}
-              // key={Math.random()} is very important here, because it will force the Plot to re-render when the data is changed. Otherwise, the Plot will not re-render, so the color of the samples on the plot will not be updated.
-              key={Math.random()}
-            />
+          <div className='mb-10'>
+            <div className='text-3xl font-bold mb-4'>
+              PCA plot
+            </div>
+            <div className='p-3 border border-gray-200 rounded-lg'>
+              <Plot
+                useResizeHandler
+                style={{ width: "100%", height: "100%" }}
+                data={pcaPlotData.data}
+                layout={pcaPlotData.layout}
+                // key={Math.random()} is very important here, because it will force the Plot to re-render when the data is changed. Otherwise, the Plot will not re-render, so the color of the samples on the plot will not be updated.
+                key={Math.random()}
+              />
+            </div>
           </div>
         )
       }
@@ -499,16 +509,21 @@ export default function Home() {
       return null;
     }
     return (
-      <Table
-        columns={columnForCsvTable}
-        dataSource={dataForCsvTable}
-        scroll={{
-          x: 1500,
-        }}
-        sticky={{
-          offsetHeader: 64,
-        }}
-      />
+      <>
+        <div className='text-3xl font-bold'>
+          Data table
+        </div>
+        <Table
+          columns={columnForCsvTable}
+          dataSource={dataForCsvTable}
+          scroll={{
+            x: 1500,
+          }}
+          sticky={{
+            offsetHeader: 64,
+          }}
+        />
+      </>
     )
   }
   /*####################
@@ -557,16 +572,21 @@ export default function Home() {
       return null;
     }
     return (
-      <Table
-        columns={columnForLoadingsTable}
-        dataSource={dataForLoadingsTable}
-        scroll={{
-          x: 1000,
-        }}
-        sticky={{
-          offsetHeader: 64,
-        }}
-      />
+      <div className='mb-10'>
+        <div className='text-3xl font-bold mb-4'>
+          Loadings table
+        </div>
+        <Table
+          columns={columnForLoadingsTable}
+          dataSource={dataForLoadingsTable}
+          scroll={{
+            x: 1000,
+          }}
+          sticky={{
+            offsetHeader: 64,
+          }}
+        />
+      </div>
     )
   }
   /*####################
@@ -585,22 +605,36 @@ export default function Home() {
   console.log("🚀🚀🚀 topFiveContributorsTableData", dataForTopFiveContributorsTable)
 
   const columnForTopFiveContributorsTable = topFiveContributorsTableData.length > 0
-    ? Object.keys(topFiveContributorsTableData[0]).map((nameOfEachColumn) => {
-      let column = {
-        title: nameOfEachColumn,
-        dataIndex: nameOfEachColumn,
-        key: nameOfEachColumn,
+    ? [
+      // The first column is the Principal component, the name "Principal component" should match exactly with the name in the backend file generateTopFiveContributors.py
+      {
+        title: "Principal component",
+        dataIndex: "Principal component",
+        key: "Principal component",
         width: 100,
-      };
-      if (nameOfEachColumn === "PC" || nameOfEachColumn === "Gene") {
-        column = {
-          ...column,
-          ...renderSearchingDropdown(nameOfEachColumn),
+        ...renderSearchingDropdown("Principal component"),
+      },
+      ...Object.keys(topFiveContributorsTableData[0]).filter(nameOfEachColumn => nameOfEachColumn !== "Principal component").map((nameOfEachColumn) => {
+        let column = {
+          title: nameOfEachColumn,
+          dataIndex: nameOfEachColumn,
+          key: nameOfEachColumn,
+          width: 100,
         };
-      }
-      return column;
-    })
+        // The name "Gene" should match exactly with the name in the backend file generateTopFiveContributors.py
+        if (nameOfEachColumn === "Gene") {
+          column = {
+            ...column,
+            ...renderSearchingDropdown(nameOfEachColumn),
+          };
+        }
+        return column;
+      })
+    ]
     : [];
+
+
+  console.log("🚀🚀🚀 columnForTopFiveContributorsTable", columnForTopFiveContributorsTable)
 
   // Render the top five contributors table
   const renderTopFiveContributorsTable = () => {
@@ -608,16 +642,21 @@ export default function Home() {
       return null;
     }
     return (
-      <Table
-        columns={columnForTopFiveContributorsTable}
-        dataSource={dataForTopFiveContributorsTable}
-        scroll={{
-          x: 500,
-        }}
-        sticky={{
-          offsetHeader: 64,
-        }}
-      />
+      <div className='mb-10'>
+        <div className='text-3xl font-bold mb-4'>
+          Top 5 contributors table
+        </div>
+        <Table
+          columns={columnForTopFiveContributorsTable}
+          dataSource={dataForTopFiveContributorsTable}
+          scroll={{
+            x: 500,
+          }}
+          sticky={{
+            offsetHeader: 64,
+          }}
+        />
+      </div>
     )
   }
 
@@ -810,6 +849,8 @@ export default function Home() {
           <li className='text-blue-500'>Task - Remove the title of plot and bring it out - DONE</li>
           <li className='text-blue-500'>Task - Add the search function to the first column of data table - DONE</li>
           <li className='text-blue-500'>Task - Add button remove file uploaded (to clear the data table) - DONE</li>
+          <li className='text-red-500'>Task - Do PCA 3D plot </li>
+          <li className='text-red-500'>Task - Add the Begin Tour </li>
         </ul>
       </div>
 
@@ -832,9 +873,9 @@ export default function Home() {
 
       {renderScreePlot()}
 
+      {renderPCAPlot()}
       {renderColorGroups()}
       {renderNameOfSamplesInPCAPlotWithGroupColorChoice()}
-      {renderPCAPlot()}
 
       {renderTopFiveContributorsTable()}
       {renderLoadingsTable()}
