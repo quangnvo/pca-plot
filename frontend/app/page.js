@@ -33,6 +33,7 @@ export default function Home() {
   const [csvData, setCsvData] = useState([]);
   const [screePlotData, setScreePlotData] = useState(null);
   const [pcaPlotData, setPcaPlotData] = useState(null);
+  const [pcaPlot3DData, setPcaPlot3DData] = useState(null);
   const [loadingsTableData, setLoadingsTableData] = useState([]);
   const [topFiveContributorsTableData, setTopFiveContributorsTableData] = useState([]);
 
@@ -41,6 +42,7 @@ export default function Home() {
   const [isLoadingsPlotVisible, setIsLoadingsPlotVisible] = useState(false);
   const [isLoadingsTableVisible, setIsLoadingsTableVisible] = useState(false);
   const [isTopFiveContributorsTableVisible, setIsTopFiveContributorsTableVisible] = useState(false);
+  const [isPcaPlot3DVisible, setIsPcaPlot3DVisible] = useState(false);
 
   const [nameOfSamplesInPCAPlot, setNameOfSamplesInPCAPlot]
     = useState([]);
@@ -159,6 +161,19 @@ export default function Home() {
     setIsPcaPlotVisible(!isPcaPlotVisible);
   }
 
+  // Generate PCA 3D plot
+  const generatePCAPlot3D = async () => {
+    if (!isPcaPlot3DVisible) {
+      try {
+        const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca_3d`, csvData);
+        setPcaPlot3DData(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    setIsPcaPlot3DVisible(!isPcaPlot3DVisible);
+  }
+
   // Generate Loadings plot
   const generateLoadingsPlot = async () => {
     try {
@@ -252,7 +267,18 @@ export default function Home() {
         onClick={generatePCAPlot}
         variant={isPcaPlotVisible ? "default" : "outline"}
       >
-        PCA plot
+        PCA plot - 2D
+      </Button>
+    )
+  }
+
+  const renderButtonGeneratePCAPlot3D = () => {
+    return (
+      <Button
+        onClick={generatePCAPlot3D}
+        variant={isPcaPlot3DVisible ? "default" : "outline"}
+      >
+        PCA plot - 3D
       </Button>
     )
   }
@@ -334,6 +360,29 @@ export default function Home() {
                 data={pcaPlotData.data}
                 layout={pcaPlotData.layout}
                 // key={Math.random()} is very important here, because it will force the Plot to re-render when the data is changed. Otherwise, the Plot will not re-render, so the color of the samples on the plot will not be updated.
+                key={Math.random()}
+              />
+            </div>
+          </div>
+        )
+      }
+    }
+  }
+
+  const renderPCAPlot3D = () => {
+    if (isPcaPlot3DVisible) {
+      if (pcaPlot3DData) {
+        return (
+          <div className='mb-10'>
+            <div className='text-3xl font-bold mb-4'>
+              PCA plot - 3D
+            </div>
+            <div className='p-1 border border-gray-200 rounded-lg'>
+              <Plot
+                useResizeHandler
+                style={{ width: "100%", height: "700px" }}
+                data={pcaPlot3DData.data}
+                layout={pcaPlot3DData.layout}
                 key={Math.random()}
               />
             </div>
@@ -842,15 +891,16 @@ export default function Home() {
           <li className='text-red-500'>Fix bug - group color of PCA plot</li>
           <li className='text-blue-500'>Task - Change state of the button when click- DONE</li>
           <li className='text-blue-500'>Task - Make vertical line in the PCA plot, over 80% cumulative - DONE</li>
-          <li className='text-red-500'>Task - Add loadings plot</li>
+          <li className='text-red-500'>Task - Add loadings plot</li>  
           <li className='text-blue-500'>Task - Modify the UI of search button in loadings table - DONE</li>
-          <li className='text-red-500'>Task - Add another table to show top 5 contributor </li>
+          <li className='text-blue-500'>Task - Add table to show top 5 contributor - DONE</li>
           <li className='text-blue-500'>Task - Fix 1st column of the table - DONE</li>
           <li className='text-blue-500'>Task - Remove the title of plot and bring it out - DONE</li>
           <li className='text-blue-500'>Task - Add the search function to the first column of data table - DONE</li>
           <li className='text-blue-500'>Task - Add button remove file uploaded (to clear the data table) - DONE</li>
-          <li className='text-red-500'>Task - Do PCA 3D plot </li>
+          <li className='text-blue-500'>Task - Do PCA 3D plot - DONE</li>
           <li className='text-red-500'>Task - Add the Begin Tour </li>
+          <li className='text-red-500'>Task - Add the function for change color points in PCA 3D </li>
         </ul>
       </div>
 
@@ -865,23 +915,23 @@ export default function Home() {
         <div className='flex gap-2'>
           {renderButtonGenerateScreePlot()}
           {renderButtonGeneratePCAPlot()}
+          {renderButtonGeneratePCAPlot3D()}
           {renderButtonGenerateLoadingsPlot()}
           {renderButtonGenerateLoadingsTable()}
           {renderButtonGenerateTopFiveContributorsTable()}
         </div>
       </div>
 
-      {renderScreePlot()}
+      {renderNumberSamples()}
+      {renderDataTable()}
 
+      {renderScreePlot()}
       {renderPCAPlot()}
       {renderColorGroups()}
       {renderNameOfSamplesInPCAPlotWithGroupColorChoice()}
-
+      {renderPCAPlot3D()}
       {renderTopFiveContributorsTable()}
       {renderLoadingsTable()}
-
-      {renderNumberSamples()}
-      {renderDataTable()}
     </div>
   );
   /*####################

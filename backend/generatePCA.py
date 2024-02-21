@@ -1,6 +1,3 @@
-import matplotlib.colors as mcolors
-import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 from flask import Blueprint, jsonify, request
 from sklearn.decomposition import PCA
