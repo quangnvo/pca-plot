@@ -6,7 +6,12 @@ import Plot from 'react-plotly.js';
 import axios from 'axios';
 import Papa from 'papaparse';
 
-import { Table, Select, Input as InputAntd, Space } from 'antd';
+import {
+  Table,
+  Select,
+  Input as InputAntd,
+  Dropdown as DropdownAntd
+} from 'antd';
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -43,35 +48,6 @@ export default function Home() {
   const [isLoadingsTableVisible, setIsLoadingsTableVisible] = useState(false);
   const [isTopFiveContributorsTableVisible, setIsTopFiveContributorsTableVisible] = useState(false);
   const [isPcaPlot3DVisible, setIsPcaPlot3DVisible] = useState(false);
-
-  const [nameOfSamplesInPCAPlot, setNameOfSamplesInPCAPlot]
-    = useState([]);
-  const [colorGroupsOfPcaPlot, setColorGroupsOfPcaPlot] = useState([
-    {
-      groupId: "1",
-      name: "Group 1",
-      colorCode: "#272E3F",
-      sampleNames: []
-    },
-    {
-      groupId: "2",
-      name: "Group 2",
-      colorCode: "#FFFF00",
-      sampleNames: []
-    },
-  ]);
-  // This option is the required format to use <Select> of antd library
-  const [options, setOptions] = useState([
-    {
-      label: "Group 1",
-      value: "1, #272E3F"
-    },
-    {
-      label: "Group 2",
-      value: "2, #FFFF00"
-    },
-  ]);
-
 
 
   /*####################
@@ -166,6 +142,7 @@ export default function Home() {
     if (!isPcaPlot3DVisible) {
       try {
         const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca_3d`, csvData);
+        console.log("🚀🚀🚀 data for 3D plot", response.data)
         setPcaPlot3DData(response.data);
       } catch (error) {
         console.error(error);
@@ -651,8 +628,6 @@ export default function Home() {
     ...eachRow,
   }));
 
-  console.log("🚀🚀🚀 topFiveContributorsTableData", dataForTopFiveContributorsTable)
-
   const columnForTopFiveContributorsTable = topFiveContributorsTableData.length > 0
     ? [
       // The first column is the Principal component, the name "Principal component" should match exactly with the name in the backend file generateTopFiveContributors.py
@@ -682,8 +657,6 @@ export default function Home() {
     ]
     : [];
 
-
-  console.log("🚀🚀🚀 columnForTopFiveContributorsTable", columnForTopFiveContributorsTable)
 
   // Render the top five contributors table
   const renderTopFiveContributorsTable = () => {
@@ -724,6 +697,34 @@ export default function Home() {
   /*####################
   # The following code is only about COLORS, such as renderColorCardsForPCAPlot, handleColorChange, etc.
   ####################*/
+
+  const [nameOfSamplesInPCAPlot, setNameOfSamplesInPCAPlot]
+    = useState([]);
+  const [colorGroupsOfPcaPlot, setColorGroupsOfPcaPlot] = useState([
+    {
+      groupId: "1",
+      name: "Group 1",
+      colorCode: "#272E3F",
+      sampleNames: []
+    },
+    {
+      groupId: "2",
+      name: "Group 2",
+      colorCode: "#FFFF00",
+      sampleNames: []
+    },
+  ]);
+  // This option is the required format to use <Select> of antd library
+  const [options, setOptions] = useState([
+    {
+      label: "Group 1",
+      value: "1, #272E3F"
+    },
+    {
+      label: "Group 2",
+      value: "2, #FFFF00"
+    },
+  ]);
 
   const handleColorGroupChange = (indexOfTheGroup, newColor) => {
     console.log("🚀🚀🚀 index", indexOfTheGroup)
@@ -882,6 +883,76 @@ export default function Home() {
   /*####################
   # The following code is to render the final UI of the page
   ####################*/
+
+  const [isPCAVisible, setIsPCAVisible] = useState(false);
+  const [isPCA2DVisible, setIsPCA2DVisible] = useState(false);
+  const [isPCA3DVisible, setIsPCA3DVisible] = useState(false);
+  const namePCA2D = "PCA 2D";
+  const namePCA3D = "PCA 3D";
+
+  const pcaOptions = [
+    {
+      key: '1',
+      label: (
+        <p>
+          {namePCA2D}
+        </p>
+      ),
+      onClick: () => {
+        console.log("🚀🚀🚀 PCA-2D", isPCA2DVisible)
+        setIsPCA2DVisible(!isPCA2DVisible);
+        if (isPCA3DVisible) {
+          setIsPCA3DVisible(false);
+        }
+      }
+    },
+    {
+      key: '2',
+      label: (
+        <p>
+          {namePCA3D}
+        </p>
+      ),
+      onClick: () => {
+        console.log("🚀🚀🚀 PCA-3D", isPCA3DVisible)
+        setIsPCA3DVisible(!isPCA3DVisible);
+        if (isPCA2DVisible) {
+          setIsPCA2DVisible(false);
+        }
+      }
+    },
+  ];
+
+
+  const renderButtonPCAPlotOptions = () => {
+    if (isPCA2DVisible) {
+      return (
+        <Button
+          variant="default"
+        >
+          {namePCA2D}
+        </Button>
+      )
+    } else if (isPCA3DVisible) {
+      return (
+        <Button
+          variant="default"
+        >
+          {namePCA3D}
+        </Button>
+      )
+    } else {
+      return (
+        <Button
+          variant="outline"
+        >
+          PCA plot
+        </Button>
+      )
+    }
+  }
+
+
   return (
     <div className='container my-4 flex flex-col gap-5'>
 
@@ -889,9 +960,10 @@ export default function Home() {
         <h1 className='font-bold mb-3'>Things</h1>
         <ul className='list-disc list-inside'>
           <li className='text-red-500'>Fix bug - group color of PCA plot</li>
+          <li className='text-red-500'>Task - Add the function for change color points in PCA 3D </li>
+          <li className='text-red-500'>Task - Make PCA2D and PCA3D only 1 can appear not both, and make the space (fix the height, then click then only appear in that height)</li>
           <li className='text-blue-500'>Task - Change state of the button when click- DONE</li>
           <li className='text-blue-500'>Task - Make vertical line in the PCA plot, over 80% cumulative - DONE</li>
-          <li className='text-red-500'>Task - Add loadings plot</li>  
           <li className='text-blue-500'>Task - Modify the UI of search button in loadings table - DONE</li>
           <li className='text-blue-500'>Task - Add table to show top 5 contributor - DONE</li>
           <li className='text-blue-500'>Task - Fix 1st column of the table - DONE</li>
@@ -899,8 +971,8 @@ export default function Home() {
           <li className='text-blue-500'>Task - Add the search function to the first column of data table - DONE</li>
           <li className='text-blue-500'>Task - Add button remove file uploaded (to clear the data table) - DONE</li>
           <li className='text-blue-500'>Task - Do PCA 3D plot - DONE</li>
-          <li className='text-red-500'>Task - Add the Begin Tour </li>
-          <li className='text-red-500'>Task - Add the function for change color points in PCA 3D </li>
+
+
         </ul>
       </div>
 
@@ -914,9 +986,23 @@ export default function Home() {
 
         <div className='flex gap-2'>
           {renderButtonGenerateScreePlot()}
+
+          <DropdownAntd
+            menu={{
+              items: pcaOptions,
+            }}
+            placement="bottomLeft"
+            arrow
+          >
+            {renderButtonPCAPlotOptions()}
+          </DropdownAntd>
+
+
+
+
           {renderButtonGeneratePCAPlot()}
           {renderButtonGeneratePCAPlot3D()}
-          {renderButtonGenerateLoadingsPlot()}
+          {/* {renderButtonGenerateLoadingsPlot()} */}
           {renderButtonGenerateLoadingsTable()}
           {renderButtonGenerateTopFiveContributorsTable()}
         </div>
@@ -927,9 +1013,9 @@ export default function Home() {
 
       {renderScreePlot()}
       {renderPCAPlot()}
+      {renderPCAPlot3D()}
       {renderColorGroups()}
       {renderNameOfSamplesInPCAPlotWithGroupColorChoice()}
-      {renderPCAPlot3D()}
       {renderTopFiveContributorsTable()}
       {renderLoadingsTable()}
     </div>
