@@ -12,13 +12,13 @@ import {
   Input as InputAntd,
   Dropdown as DropdownAntd
 } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-import { SearchOutlined } from '@ant-design/icons';
-
 import Highlighter from 'react-highlight-words';
+
 
 export default function Home() {
 
@@ -28,13 +28,21 @@ export default function Home() {
   const BACKEND_PORT = 8080
 
   /*####################
-  # The following code is used to only setup INITIAL VARIABLES
+  # The following code is used to only about setup INITIAL VARIABLES
   ####################*/
+
   // We have "csvData", "setCsvData" ; "pcaPlotData", "setPcaPlotData" ;  etc.
+
   // The "setSomething" function is used to update the "something"
   // For example, at the beginning, something = "123", then setSomething("abcdef") will update something, then something = "abcdef"
+
   // The "useState" function is a React hook function that is used to create the combo of "something" and "setSomething"
-  // The "useState" is used to trigger the re-render of the UI when the "something" is updated
+  // The purpose of using "useState" is that it is used to "trigger the re-render of the UI" when the "something is updated"
+
+  // For example, at the beginning, screePlotData = null, then nothing on the screen yet, then we call API to calculate the scree plot data, then we need to store the data get from API to the screePlotData and render it to the screen.
+  // If we just assign the screePlotData = "data From API", it will not re-render the UI, so the scree plot will not be shown on the screen.
+  // So we need to used "useState()"
+
   const [csvData, setCsvData] = useState([]);
   const [screePlotData, setScreePlotData] = useState(null);
   const [pcaPlotData, setPcaPlotData] = useState(null);
@@ -42,14 +50,21 @@ export default function Home() {
   const [loadingsTableData, setLoadingsTableData] = useState([]);
   const [topFiveContributorsTableData, setTopFiveContributorsTableData] = useState([]);
 
+  // The following variables are used to control the visibility of the things, like the bulb light switch on and off.
+  // For example, if isScreePlotVisible = true, then the scree plot will be visible, if isScreePlotVisible = false, then the scree plot will be invisible
+  // This is controlled by the buttons in the BUTTONS section below
   const [isScreePlotVisible, setIsScreePlotVisible] = useState(false);
   const [isLoadingsTableVisible, setIsLoadingsTableVisible] = useState(false);
   const [isTopFiveContributorsTableVisible, setIsTopFiveContributorsTableVisible] = useState(false);
 
+  /*####################
+  # End of the code for INITIAL VARIABLES
+  ####################*/
+
 
   /*####################
-# The following code is only about FILE UPLOAD
-####################*/
+  # The following code is only about FILE UPLOAD
+  ####################*/
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     // Checking if the file is a csv file or the txt file
@@ -72,14 +87,14 @@ export default function Home() {
 
 
   /*####################
-  # The following code is about FUNCTIONS For Buttons: generateRandomData, generateScreePlot, generatePCAPlot, etc.
+  # The following code is only about FUNCTIONS For Buttons: clearUploadedFile, generateScreePlot, generatePCAPlot, etc.
   ####################*/
 
   // Clear the uploaded file
   const clearUploadedFile = () => {
-    // Clear the csvData state
+    // Clear the csvData state to make it back to empty array
     setCsvData([]);
-    // Reset the file input value to null, this is important because if we don't reset the file input value to null, then the user can't upload the same file again
+    // Reset the file input value to null, this is important because if we don't reset the file input value to null, then the user can't upload the same file again after they uploaded it once
     document.getElementById('fileInput').value = null;
   }
 
@@ -98,6 +113,7 @@ export default function Home() {
 
   // Generate Scree plot function
   const generateScreePlot = async () => {
+    // if (!isScreePlotVisible) ==> if the scree plot is not visible, then we will call the API to generate the scree plot data
     if (!isScreePlotVisible) {
       try {
         // Send a POST request with the "csvData" to the backend
@@ -109,6 +125,7 @@ export default function Home() {
         console.error(error);
       }
     }
+    // Then we will toggle the visibility of the scree plot. If it's visible, then we will make it invisible, and vice versa
     setIsScreePlotVisible(!isScreePlotVisible);
   }
 
@@ -118,6 +135,7 @@ export default function Home() {
       const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca`, csvData);
       console.log("🚀🚀🚀 data for 2D plot", response.data)
       setPcaPlotData(response.data);
+
       // Extract the names of the samples in the PCA plot
       const names = []
       response.data.data.forEach((eachItem, index) => {
@@ -175,7 +193,7 @@ export default function Home() {
 
 
   /*####################
-  # The following code is only about function used to render BUTTONS, such as renderButtonGenerateRandomData, renderButtonUploadFile, etc.
+  # The following code is only about function used to render BUTTONS, such as renderButtonUploadFile, renderButtonClearUploadedFile, etc.
   ####################*/
   const renderButtonGenerateRandomData = () => {
     return (
@@ -275,14 +293,16 @@ export default function Home() {
   ####################*/
 
 
+
   /*####################
   # The following code is only about function used to render TABLE, such as renderDataTable, renderLoadingsTable, etc.
   ####################*/
 
   /*####################
   # TABLE --- Searching Dropdown
+  * The following code is used to render the searching dropdown, which can be used in any table
   ####################*/
-  // The following code is used to render the searching dropdown, which can be used in any table
+
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
@@ -416,12 +436,13 @@ export default function Home() {
           ...column,
           ...renderSearchingDropdown(nameOfEachColumn),
           width: 150,
-          // The fixed: 'left' is used to freeze the column, and because now we are inside the condition (index === 0), so the first column is frozen 
+          // The fixed: 'left' is used to freeze a column, and because now we are inside the condition of (index === 0), so the first column is frozen 
           fixed: 'left',
         };
       }
       // Check if the column data is numeric
       else if (!isNaN(csvData[0][nameOfEachColumn])) {
+        // If the column data is numeric, then we will add the sorter to the column, so that the user can click on the column header to sort the data
         column = {
           ...column,
           sorter: (a, b) => a[nameOfEachColumn] - b[nameOfEachColumn],
@@ -493,12 +514,15 @@ export default function Home() {
 
   // Render the loadings table to show that which features contribute how much to the principal components
   const renderLoadingsTable = () => {
+    // If isLoadingsTableVisible = false, then the loadings table will not be shown, so we will return null
     if (!isLoadingsTableVisible) {
       return null;
     }
+    // If no data in the loadings table, then we will return null
     if (loadingsTableData.length === 0) {
       return null;
     }
+    // If there is data in the loadings table, then we will render the table
     return (
       <div className='mb-10'>
         <div className='text-3xl font-bold mb-4'>
@@ -870,30 +894,40 @@ export default function Home() {
     if (isPCA2DVisible) {
       if (pcaPlotData) {
         return (
-          // <div className='border border-gray-200 rounded-lg'>
-          <Plot
-            useResizeHandler
-            style={{ width: "100%", height: "100%" }}
-            data={pcaPlotData.data}
-            layout={pcaPlotData.layout}
-            // key={Math.random()} is very important here, because it will force the Plot to re-render when the data is changed. Otherwise, the Plot will not re-render, so the color of the samples on the plot will not be updated.
-            key={Math.random()}
-          />
-          // </div>
+          <>
+            <div className='text-3xl font-bold mb-4'>
+              PCA-2D plot
+            </div>
+            <div className='border border-gray-200 rounded-lg overflow-hidden'>
+              <Plot
+                useResizeHandler
+                style={{ width: "100%", height: "100%" }}
+                data={pcaPlotData.data}
+                layout={pcaPlotData.layout}
+                // key={Math.random()} is very important here, because it will force the Plot to re-render when the data is changed. Otherwise, the Plot will not re-render, so the color of the samples on the plot will not be updated.
+                key={Math.random()}
+              />
+            </div>
+          </>
         )
       }
     } else if (isPCA3DVisible) {
       if (pcaPlot3DData) {
         return (
-          // <div className='border border-gray-200 rounded-lg'>
-          <Plot
-            useResizeHandler
-            style={{ width: "100%", height: "100%" }}
-            data={pcaPlot3DData.data}
-            layout={pcaPlot3DData.layout}
-            key={Math.random()}
-          />
-          // </div>
+          <>
+            <div className='text-3xl font-bold mb-4'>
+              PCA-3D plot
+            </div>
+            <div className='border border-gray-200 rounded-lg overflow-hidden'>
+              <Plot
+                useResizeHandler
+                style={{ width: "100%", height: "700px" }}
+                data={pcaPlot3DData.data}
+                layout={pcaPlot3DData.layout}
+                key={Math.random()}
+              />
+            </div>
+          </>
         )
       }
     } else {
@@ -959,8 +993,8 @@ export default function Home() {
       {renderColorGroups()}
       {renderNameOfSamplesInPCAPlotWithGroupColorChoice()}
 
-      {renderTopFiveContributorsTable()}
       {renderLoadingsTable()}
+      {renderTopFiveContributorsTable()}
 
     </div>
   );
