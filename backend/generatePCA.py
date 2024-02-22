@@ -74,8 +74,7 @@ def generate_pca():
             'y': [pcaData[i, 1]],
             'marker': {
                 'size': 12,
-                # 'color': colors_hex[i],
-                "color": "#FFFFFF",
+                "color": "#272E3F",
                 'line': {
                     'color': 'black',
                     'width': 2,

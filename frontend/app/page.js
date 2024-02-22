@@ -136,7 +136,7 @@ export default function Home() {
       console.log("🚀🚀🚀 data for 2D plot", response.data)
       setPcaPlotData(response.data);
 
-      // Extract the names of the samples in the PCA plot
+      // Extract the names of the sample replicates in the PCA plot, such as "H2O_30m_A", "H2O_30m-B", "H2O_30m-C", "PNA79_30m_A", "PNA79_30m_B", "PNA79_30m_C", etc.
       const names = []
       response.data.data.forEach((eachItem, index) => {
         names.push({
@@ -144,7 +144,25 @@ export default function Home() {
           groupId: ""
         })
       })
-      setNameOfSamplesInPCAPlot(names);
+      console.log("🚀🚀🚀 names", names)
+      setNameOfSamples(names);
+
+      // This is used to reset the color groups
+      setColorGroups([
+        {
+          groupId: "1",
+          name: "Group 1",
+          colorCode: "#272E3F",
+          sampleNames: []
+        },
+        {
+          groupId: "2",
+          name: "Group 2",
+          colorCode: "#FFFF00",
+          sampleNames: []
+        },
+      ]);
+
     } catch (error) {
       console.error(error);
     }
@@ -156,6 +174,34 @@ export default function Home() {
       const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca_3d`, csvData);
       console.log("🚀🚀🚀 data for 3D plot", response.data)
       setPcaPlot3DData(response.data);
+
+      // Extract the names of the sample replicates in the PCA plot, such as "H2O_30m_A", "H2O_30m-B", "H2O_30m-C", "PNA79_30m_A", "PNA79_30m_B", "PNA79_30m_C", etc.
+      const names = []
+      response.data.data.forEach((eachItem, index) => {
+        names.push({
+          name: eachItem.name,
+          groupId: ""
+        })
+      })
+      console.log("🚀🚀🚀 names", names)
+      setNameOfSamples(names);
+
+      // This is used to reset the color groups
+      setColorGroups([
+        {
+          groupId: "1",
+          name: "Group 1",
+          colorCode: "#272E3F",
+          sampleNames: []
+        },
+        {
+          groupId: "2",
+          name: "Group 2",
+          colorCode: "#FFFF00",
+          sampleNames: []
+        },
+      ]);
+
     } catch (error) {
       console.error(error);
     }
@@ -616,13 +662,27 @@ export default function Home() {
   ####################*/
 
 
+
   /*####################
   # The following code is only about COLORS, such as renderColorCardsForPCAPlot, handleColorChange, etc.
   ####################*/
 
-  const [nameOfSamplesInPCAPlot, setNameOfSamplesInPCAPlot]
+  /*####################
+  # COLORS --- Setup variables
+  ####################*/
+
+  // The "nameOfSamples" is an array of objects, each object has the format
+  // {
+  //    name: "H2O_30m_A",
+  //    groupId: ""
+  // }
+  const [nameOfSamples, setNameOfSamples]
     = useState([]);
-  const [colorGroupsOfPcaPlot, setColorGroupsOfPcaPlot] = useState([
+
+
+  // The "colorGroups" is an array of objects, and it is used to store the color of the groups, like "Group 1" which color , "Group 2" which color, etc.
+  // The "sampleNames" is an array of strings, and it is used to store the names of the samples that belong to which group, like "H2O_30m_A", "H2O_30m_B", "H2O_30m_C", etc. For example, if user choose "Group 1" for "H2O_30m_A", then "H2O_30m_A" will be added to the "sampleNames" array of "Group 1".
+  const [colorGroups, setColorGroups] = useState([
     {
       groupId: "1",
       name: "Group 1",
@@ -636,8 +696,10 @@ export default function Home() {
       sampleNames: []
     },
   ]);
-  // This option is the required format to use <Select> of antd library
-  const [options, setOptions] = useState([
+
+  // This "groupOptions" is the required format to use in the antd library <Select> component
+  // This one is used to render the Group selection dropdown for user to select, like "H2O_30m_A" - "Group 1", "H2O_30m_B" - "Group 1", etc.
+  const [groupOptions, setGroupOptions] = useState([
     {
       label: "Group 1",
       value: "1, #272E3F"
@@ -648,22 +710,87 @@ export default function Home() {
     },
   ]);
 
-  const handleColorGroupChange = (indexOfTheGroup, newColor) => {
+  /*####################
+  # End of the code for COLORS --- Setup variables
+  ####################*/
+
+
+  /*####################
+  # COLORS --- Functions
+  ####################*/
+
+  // The function "handleChangeColorInPlot2D" is used to change the color of the sample in the 2D PCA plot
+  const handleChangeColorInPlot2D = (sampleName, colorCode) => {
+    const newPcaPlotData = { ...pcaPlotData }
+    const index = newPcaPlotData.data.findIndex(sample => sample.name === sampleName);
+    if (index !== -1) {
+      newPcaPlotData.data[index].marker.color = colorCode;
+    }
+    setPcaPlotData(newPcaPlotData);
+  }
+
+  // The function "handleChangeColorInPlot3D" is used to change the color of the sample in the 3D PCA plot
+  const handleChangeColorInPlot3D = (sampleName, colorCode) => {
+    const newPcaPlotData = { ...pcaPlot3DData }
+    const index = newPcaPlotData.data.findIndex(sample => sample.name === sampleName);
+    if (index !== -1) {
+      newPcaPlotData.data[index].marker.color = colorCode;
+    }
+    setPcaPlot3DData(newPcaPlotData);
+  }
+
+
+
+  // The function "handleChangeGroupOfEachSample" is call when user click on the which color group belong to each sample. For example, "H2O_30m_A" - user chooses "Group 1", "H2O_30m_B" - user chooses "Group 1", etc.
+  const handleChangeGroupOfEachSample = (sampleName, value) => {
+
+    // Because at the above, we set the "value" of the each object in the groupOptions to be "1, #272E3F", "2, #FFFF00", etc.
+    // So here, we will split the "value" to get the "groupId" and "colorCode", like groupId = "1", colorCode = "#272E3F", etc.
+    let [groupId, colorCode] = value.split(", ");
+
+    // Copy the colorGroups array to a new array.
+    // Copying old array to new array is a step in update the state, as we should not update the state directly. We should update the state by using the "setColorGroups" function
+    // If we update the state directly, then the UI will not be re-rendered, so the color of the samples on the plot will not be updated.
+    const newColorGroups = [...colorGroups];
+
+    // Find the index of the group in the array, like if user choose "Group 1" for "H2O_30m_A", then we will find where is the "Group 1" in the array newColorGroups, then later we will add "H2O_30m_A" to the "sampleNames" array of "Group 1"
+    const indexOfColorGroup = newColorGroups.findIndex(group => group.groupId === groupId);
+
+    // If the group is found in the array
+    if (indexOfColorGroup !== -1) {
+      // Then we will add the sample to the "sampleNames" array of the group
+      newColorGroups[indexOfColorGroup].sampleNames.push(sampleName);
+    }
+
+    // Then we will update the state with the new array
+    // Now the "sampleNames" array of the group is updated, like "H2O_30m_A" is already added to the "sampleNames" array of "Group 1" 
+    setColorGroups(newColorGroups);
+
+    if (isPCA2DVisible) {
+      handleChangeColorInPlot2D(sampleName, colorCode);
+    } else if (isPCA3DVisible) {
+      handleChangeColorInPlot3D(sampleName, colorCode);
+    }
+  }
+
+
+  // This function is used to handle the color change of the group, when user changes the color of the group, like Group 1 which color, Group 2 which color, etc.
+  const handleColorOfGroupChange = (indexOfTheGroup, newColor) => {
     console.log("🚀🚀🚀 index", indexOfTheGroup)
     console.log("🚀🚀🚀 newColor", newColor)
 
-    // Find the group in the colorGroupsOfPcaPlot array
-    const newColorGroupsOfPcaPlot = [...colorGroupsOfPcaPlot];
-    newColorGroupsOfPcaPlot[indexOfTheGroup].colorCode = newColor;
-    setColorGroupsOfPcaPlot(newColorGroupsOfPcaPlot);
+    // Find the group in the colorGroups array
+    const newColorGroups = [...colorGroups];
+    newColorGroups[indexOfTheGroup].colorCode = newColor;
+    setColorGroups(newColorGroups);
 
-    console.log("🚀🚀🚀 colorGroupsOfPcaPlot sau khi change", colorGroupsOfPcaPlot)
+    console.log("🚀🚀🚀 colorGroups sau khi change", colorGroups)
 
     const newPcaPlotData = { ...pcaPlotData }
     console.log("🚀🚀🚀 newPcaPlotData", newPcaPlotData)
 
     // Find the samples in the pcaPlotData array
-    newColorGroupsOfPcaPlot[indexOfTheGroup].sampleNames.forEach((sampleName, index) => {
+    newColorGroups[indexOfTheGroup].sampleNames.forEach((sampleName, index) => {
       // If the sample is found in the array
       const indexOfItem = newPcaPlotData.data.findIndex(sample => sample.name === sampleName);
       if (indexOfItem !== -1) {
@@ -673,37 +800,51 @@ export default function Home() {
     })
 
     // Update the options 
-    const newOptions = [...options];
-    newOptions[indexOfTheGroup].value = `${newColorGroupsOfPcaPlot[indexOfTheGroup].groupId}, ${newColor}`;
-    setOptions(newOptions);
+    const newOptions = [...groupOptions];
+    newOptions[indexOfTheGroup].value = `${newColorGroups[indexOfTheGroup].groupId}, ${newColor}`;
+    setGroupOptions(newOptions);
 
   };
 
+  /*####################
+  # End of the code for COLORS --- Functions
+  ####################*/
 
-  const renderColorGroups = () => {
-    // if (!isPcaPlotVisible) {
-    //   return null;
-    // }
-    if (pcaPlotData) {
+
+  /*####################
+  # COLORS --- Render
+  ####################*/
+  const renderColorSection = () => {
+    if (!isPCA2DVisible && !isPCA3DVisible) {
+      return null;
+    }
+    if (pcaPlotData || pcaPlot3DData) {
       return (
         <div>
 
-          <Button variant="secondary" className="mb-8">
+          {/* Button Add Group, to add the group of color */}
+          <Button
+            variant="secondary"
+            className="mb-8"
+          >
             Add group
           </Button>
 
+          {/* This will render groups, like "Group 1 - which color", "Group 2 - which color", etc. */}
           <div className='grid grid-cols-4 gap-4'>
-            {colorGroupsOfPcaPlot.map((eachColorGroup, indexOfEachColorGroup) => (
+            {colorGroups.map((eachColorGroup, indexOfEachColorGroup) => (
               <div
                 key={indexOfEachColorGroup}
                 className='flex gap-4 items-center'
               >
                 <h3>{eachColorGroup.name}</h3>
+                {/* The input here is the place that users can choose the color they want */}
                 <Input
                   type="color"
                   className='cursor-pointer w-1/3'
                   value={eachColorGroup.colorCode}
-                  onChange={(e) => handleColorGroupChange(indexOfEachColorGroup, e.target.value)}
+                  // So when the user changes the color, we will call the "handleColorOfGroupChange" function to update the color of the group
+                  onChange={(e) => handleColorOfGroupChange(indexOfEachColorGroup, e.target.value)}
                 />
               </div>
             ))}
@@ -713,83 +854,44 @@ export default function Home() {
     }
   }
 
-  const handleSampleGroupChange = (sampleName, value) => {
-    // Log the sample name and color code
-    console.log("🚀🚀🚀 sampleName", sampleName)
-    console.log("🚀🚀🚀 value", value)
-
-    let [groupId, colorCode] = value.split(", ");
-
-    console.log("🚀🚀🚀 groupId", groupId)
-
-    // Update the colorGroupsOfPcaPlot state
-    const newColorGroupsOfPcaPlot = [...colorGroupsOfPcaPlot];
-
-    // Find the index of the group in the colorGroupsOfPcaPlot array
-    const indexOfColorGroup = newColorGroupsOfPcaPlot.findIndex(group => group.groupId === groupId);
-
-    // If the group is found in the array
-    if (indexOfColorGroup !== -1) {
-      // Update the sampleNames array of the group
-      newColorGroupsOfPcaPlot[indexOfColorGroup].sampleNames.push(sampleName);
+  const renderSampleNamesWithGroupChoice = () => {
+    if (!isPCA2DVisible && !isPCA3DVisible) {
+      return null;
     }
+    if (pcaPlotData || pcaPlot3DData) {
+      return (
+        <div className='grid grid-cols-3 gap-x-6 gap-y-3 my-7'>
+          {nameOfSamples.map((sample, index) => {
+            return <div
+              key={index}
+              className='grid grid-cols-2 items-center'
+            >
+              <p>{sample.name}</p>
 
-    // Update the state with the new array
-    setColorGroupsOfPcaPlot(newColorGroupsOfPcaPlot);
-
-
-    console.log("🚀🚀🚀 colorGroupsOfPcaPlot sau khi select", colorGroupsOfPcaPlot)
-
-    const newPcaPlotData = { ...pcaPlotData }
-    console.log("🚀🚀🚀 newPcaPlotData", newPcaPlotData)
-
-    // Find the index of the sample in the pcaPlotData array
-    const index = newPcaPlotData.data.findIndex(sample => sample.name === sampleName);
-
-    console.log("🚀🚀🚀 index", index)
-
-    // If the sample is found in the array
-    if (index !== -1) {
-      // Update the color field of the sample
-      newPcaPlotData.data[index].marker.color = colorCode;
+              <Select
+                onChange={(value) => handleChangeGroupOfEachSample(sample.name, value)}
+                className='w-3/5'
+                options={groupOptions}
+              />
+            </div>
+          })}
+        </div>
+      )
     }
-
-    console.log("🚀🚀🚀 newPcaPlotData", newPcaPlotData)
-
-    // Update the state with the new array
-    setPcaPlotData(newPcaPlotData);
   }
+  /*####################
+  # End of the code for COLORS --- Render
+  ####################*/
 
-
-  const renderNameOfSamplesInPCAPlotWithGroupColorChoice = () => {
-    // if (!isPcaPlotVisible) {
-    //   return null;
-    // }
-    return (
-      <div className='grid grid-cols-3 gap-x-6 gap-y-3 my-7'>
-        {nameOfSamplesInPCAPlot.map((sample, index) => {
-          return <div
-            key={index}
-            className='grid grid-cols-2 items-center'
-          >
-            <p>{sample.name}</p>
-
-            <Select
-              onChange={(value) => handleSampleGroupChange(sample.name, value)}
-              className='w-3/5'
-              options={options}
-            />
-          </div>
-        })}
-      </div>
-    )
-  }
   /*####################
   # End of the code for COLORS
   ####################*/
 
 
-  // Render the number of samples
+
+  /*####################
+  # The following code is only about the NUMBER OF SAMPLES
+  ####################*/
   const renderNumberSamples = () => {
     if (csvData.length === 0) {
       return null;
@@ -800,10 +902,14 @@ export default function Home() {
       </p>
     )
   }
-  // End of the code for the number of samples
+  /*####################
+  # End of the code for the NUMBER OF SAMPLES
+  ####################*/
+
+
 
   /*####################
-  # The following code is to render the final UI of the page
+  # The following code is to render the FINAL UI of the page
   ####################*/
 
   const [isPCA2DVisible, setIsPCA2DVisible] = useState(false);
@@ -811,6 +917,9 @@ export default function Home() {
   const namePCA2D = "PCA 2D";
   const namePCA3D = "PCA 3D";
 
+
+  // The "pcaOptions" is the required format to use in the antd library <DropdownAntd> component
+  // This one is used to show the PCA plot selection dropdown for user hover, like "PCA 2D" and "PCA 3D"
   const pcaOptions = [
     {
       key: '1',
@@ -858,31 +967,23 @@ export default function Home() {
     },
   ];
 
-  console.log("🚀🚀🚀 PCA-2D", isPCA2DVisible)
-  console.log("🚀🚀🚀 PCA-3D", isPCA3DVisible)
 
-  const renderButtonPCAPlotOptions = () => {
+  const renderButtonPCAPlot = () => {
     if (isPCA2DVisible) {
       return (
-        <Button
-          variant="default"
-        >
+        <Button variant="default" >
           {namePCA2D}
         </Button>
       )
     } else if (isPCA3DVisible) {
       return (
-        <Button
-          variant="default"
-        >
+        <Button variant="default">
           {namePCA3D}
         </Button>
       )
     } else {
       return (
-        <Button
-          variant="outline"
-        >
+        <Button variant="outline">
           PCA plot
         </Button>
       )
@@ -939,26 +1040,6 @@ export default function Home() {
   return (
     <div className='container my-4 flex flex-col gap-5'>
 
-      <div className='mb-10'>
-        <h1 className='font-bold mb-3'>Things</h1>
-        <ul className='list-disc list-inside'>
-          <li className='text-red-500'>Task - Make PCA2D and PCA3D only 1 can appear not both, and make the space (fix the height, then click then only appear in that height)</li>
-          <li className='text-red-500'>Task - Add function to change color of the plot2D 3D</li>
-          <li className='text-blue-500'>Task - Change state of the button when click- DONE</li>
-          <li className='text-blue-500'>Task - Make vertical line in the PCA plot, over 80% cumulative - DONE</li>
-          <li className='text-blue-500'>Task - Modify the UI of search button in loadings table - DONE</li>
-          <li className='text-blue-500'>Task - Add table to show top 5 contributor - DONE</li>
-          <li className='text-blue-500'>Task - Fix 1st column of the table - DONE</li>
-          <li className='text-blue-500'>Task - Remove the title of plot and bring it out - DONE</li>
-          <li className='text-blue-500'>Task - Add the search function to the first column of data table - DONE</li>
-          <li className='text-blue-500'>Task - Add button remove file uploaded (to clear the data table) - DONE</li>
-          <li className='text-blue-500'>Task - Do PCA 3D plot - DONE</li>
-
-
-        </ul>
-      </div>
-
-
       <div className="flex py-3 justify-between sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
         <div className='flex gap-2'>
           {renderButtonUploadFile()}
@@ -975,7 +1056,7 @@ export default function Home() {
             placement="bottomLeft"
             arrow
           >
-            {renderButtonPCAPlotOptions()}
+            {renderButtonPCAPlot()}
           </DropdownAntd>
 
 
@@ -990,8 +1071,8 @@ export default function Home() {
       {renderScreePlot()}
 
       {renderPCAPlotGeneral(isPCA2DVisible, isPCA3DVisible)}
-      {renderColorGroups()}
-      {renderNameOfSamplesInPCAPlotWithGroupColorChoice()}
+      {renderColorSection()}
+      {renderSampleNamesWithGroupChoice()}
 
       {renderLoadingsTable()}
       {renderTopFiveContributorsTable()}
