@@ -75,7 +75,7 @@ export default function Home() {
 
 
   /*####################
-  # The following code is about FUNCTIONS FOR BUTTONS: generateRandomData, generateScreePlot, generatePCAPlot, etc.
+  # The following code is about FUNCTIONS For Buttons: generateRandomData, generateScreePlot, generatePCAPlot, etc.
   ####################*/
 
   // Clear the uploaded file
@@ -188,7 +188,7 @@ export default function Home() {
     setIsTopFiveContributorsTableVisible(!isTopFiveContributorsTableVisible);
   }
   /*####################
-  # End of the code for FUNCTIONS FOR BUTTONS
+  # End of the code for FUNCTIONS For Buttons
   ####################*/
 
 
@@ -681,17 +681,13 @@ export default function Home() {
       </div>
     )
   }
-
-
   /*####################
   # End of the code for TABLE --- Top Five Contributors Table
   ####################*/
 
-
   /*####################
   # End of the code for TABLE
   ####################*/
-
 
 
   /*####################
@@ -884,7 +880,6 @@ export default function Home() {
   # The following code is to render the final UI of the page
   ####################*/
 
-  const [isPCAVisible, setIsPCAVisible] = useState(false);
   const [isPCA2DVisible, setIsPCA2DVisible] = useState(false);
   const [isPCA3DVisible, setIsPCA3DVisible] = useState(false);
   const namePCA2D = "PCA 2D";
@@ -899,9 +894,14 @@ export default function Home() {
         </p>
       ),
       onClick: () => {
-        console.log("🚀🚀🚀 PCA-2D", isPCA2DVisible)
-        setIsPCA2DVisible(!isPCA2DVisible);
-        if (isPCA3DVisible) {
+        if (isPCA2DVisible == false && isPCA3DVisible == false) {
+          setIsPCA2DVisible(true);
+        }
+        if (isPCA2DVisible == true && isPCA3DVisible == false) {
+          setIsPCA2DVisible(false);
+        }
+        if (isPCA2DVisible == false && isPCA3DVisible == true) {
+          setIsPCA2DVisible(true);
           setIsPCA3DVisible(false);
         }
       }
@@ -914,15 +914,22 @@ export default function Home() {
         </p>
       ),
       onClick: () => {
-        console.log("🚀🚀🚀 PCA-3D", isPCA3DVisible)
-        setIsPCA3DVisible(!isPCA3DVisible);
-        if (isPCA2DVisible) {
+        if (isPCA2DVisible == false && isPCA3DVisible == false) {
+          setIsPCA3DVisible(true);
+        }
+        if (isPCA2DVisible == true && isPCA3DVisible == false) {
           setIsPCA2DVisible(false);
+          setIsPCA3DVisible(true);
+        }
+        if (isPCA2DVisible == false && isPCA3DVisible == true) {
+          setIsPCA3DVisible(false);
         }
       }
     },
   ];
 
+  console.log("🚀🚀🚀 PCA-2D", isPCA2DVisible)
+  console.log("🚀🚀🚀 PCA-3D", isPCA3DVisible)
 
   const renderButtonPCAPlotOptions = () => {
     if (isPCA2DVisible) {
@@ -959,9 +966,8 @@ export default function Home() {
       <div className='mb-10'>
         <h1 className='font-bold mb-3'>Things</h1>
         <ul className='list-disc list-inside'>
-          <li className='text-red-500'>Fix bug - group color of PCA plot</li>
-          <li className='text-red-500'>Task - Add the function for change color points in PCA 3D </li>
           <li className='text-red-500'>Task - Make PCA2D and PCA3D only 1 can appear not both, and make the space (fix the height, then click then only appear in that height)</li>
+          <li className='text-red-500'>Task - Add function to change color of the plot2D 3D</li>
           <li className='text-blue-500'>Task - Change state of the button when click- DONE</li>
           <li className='text-blue-500'>Task - Make vertical line in the PCA plot, over 80% cumulative - DONE</li>
           <li className='text-blue-500'>Task - Modify the UI of search button in loadings table - DONE</li>
@@ -1005,6 +1011,11 @@ export default function Home() {
           {/* {renderButtonGenerateLoadingsPlot()} */}
           {renderButtonGenerateLoadingsTable()}
           {renderButtonGenerateTopFiveContributorsTable()}
+
+          {/* Chỗ này là cho hiện 1 trong 2 plots */}
+          <div>
+
+          </div>
         </div>
       </div>
 
