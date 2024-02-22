@@ -43,11 +43,8 @@ export default function Home() {
   const [topFiveContributorsTableData, setTopFiveContributorsTableData] = useState([]);
 
   const [isScreePlotVisible, setIsScreePlotVisible] = useState(false);
-  const [isPcaPlotVisible, setIsPcaPlotVisible] = useState(false);
-  const [isLoadingsPlotVisible, setIsLoadingsPlotVisible] = useState(false);
   const [isLoadingsTableVisible, setIsLoadingsTableVisible] = useState(false);
   const [isTopFiveContributorsTableVisible, setIsTopFiveContributorsTableVisible] = useState(false);
-  const [isPcaPlot3DVisible, setIsPcaPlot3DVisible] = useState(false);
 
 
   /*####################
@@ -115,47 +112,32 @@ export default function Home() {
     setIsScreePlotVisible(!isScreePlotVisible);
   }
 
-  //  Generate PCA plot function
+  //  Generate PCA plot data
   const generatePCAPlot = async () => {
-    if (!isPcaPlotVisible) {
-      try {
-        const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca`, csvData);
-        setPcaPlotData(response.data);
-        // Extract the names of the samples in the PCA plot
-        const names = []
-        response.data.data.forEach((eachItem, index) => {
-          names.push({
-            name: eachItem.name,
-            groupId: ""
-          })
-        })
-        setNameOfSamplesInPCAPlot(names);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    setIsPcaPlotVisible(!isPcaPlotVisible);
-  }
-
-  // Generate PCA 3D plot
-  const generatePCAPlot3D = async () => {
-    if (!isPcaPlot3DVisible) {
-      try {
-        const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca_3d`, csvData);
-        console.log("🚀🚀🚀 data for 3D plot", response.data)
-        setPcaPlot3DData(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    setIsPcaPlot3DVisible(!isPcaPlot3DVisible);
-  }
-
-  // Generate Loadings plot
-  const generateLoadingsPlot = async () => {
     try {
-      const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_loadings_plot`, csvData);
+      const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca`, csvData);
+      console.log("🚀🚀🚀 data for 2D plot", response.data)
       setPcaPlotData(response.data);
+      // Extract the names of the samples in the PCA plot
+      const names = []
+      response.data.data.forEach((eachItem, index) => {
+        names.push({
+          name: eachItem.name,
+          groupId: ""
+        })
+      })
+      setNameOfSamplesInPCAPlot(names);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Generate PCA 3D plot data
+  const generatePCAPlot3D = async () => {
+    try {
+      const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca_3d`, csvData);
+      console.log("🚀🚀🚀 data for 3D plot", response.data)
+      setPcaPlot3DData(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -166,7 +148,6 @@ export default function Home() {
     if (!isLoadingsTableVisible) {
       try {
         const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_loadings_table`, csvData);
-        console.log("🚀🚀🚀 loading table data", response)
         setLoadingsTableData(response.data);
       } catch (error) {
         console.error(error);
@@ -238,39 +219,6 @@ export default function Home() {
     )
   }
 
-  const renderButtonGeneratePCAPlot = () => {
-    return (
-      <Button
-        onClick={generatePCAPlot}
-        variant={isPcaPlotVisible ? "default" : "outline"}
-      >
-        PCA plot - 2D
-      </Button>
-    )
-  }
-
-  const renderButtonGeneratePCAPlot3D = () => {
-    return (
-      <Button
-        onClick={generatePCAPlot3D}
-        variant={isPcaPlot3DVisible ? "default" : "outline"}
-      >
-        PCA plot - 3D
-      </Button>
-    )
-  }
-
-  const renderButtonGenerateLoadingsPlot = () => {
-    return (
-      <Button
-        onClick={generateLoadingsPlot}
-        variant={isLoadingsPlotVisible ? "default" : "outline"}
-      >
-        Loadings plot
-      </Button>
-    )
-  }
-
   const renderButtonGenerateLoadingsTable = () => {
     return (
       <Button
@@ -322,52 +270,6 @@ export default function Home() {
     }
   }
 
-  const renderPCAPlot = () => {
-    if (isPcaPlotVisible) {
-      if (pcaPlotData) {
-        return (
-          <div className='mb-10'>
-            <div className='text-3xl font-bold mb-4'>
-              PCA plot
-            </div>
-            <div className='p-3 border border-gray-200 rounded-lg'>
-              <Plot
-                useResizeHandler
-                style={{ width: "100%", height: "100%" }}
-                data={pcaPlotData.data}
-                layout={pcaPlotData.layout}
-                // key={Math.random()} is very important here, because it will force the Plot to re-render when the data is changed. Otherwise, the Plot will not re-render, so the color of the samples on the plot will not be updated.
-                key={Math.random()}
-              />
-            </div>
-          </div>
-        )
-      }
-    }
-  }
-
-  const renderPCAPlot3D = () => {
-    if (isPcaPlot3DVisible) {
-      if (pcaPlot3DData) {
-        return (
-          <div className='mb-10'>
-            <div className='text-3xl font-bold mb-4'>
-              PCA plot - 3D
-            </div>
-            <div className='p-1 border border-gray-200 rounded-lg'>
-              <Plot
-                useResizeHandler
-                style={{ width: "100%", height: "700px" }}
-                data={pcaPlot3DData.data}
-                layout={pcaPlot3DData.layout}
-                key={Math.random()}
-              />
-            </div>
-          </div>
-        )
-      }
-    }
-  }
   /*####################
   # End of the code for PLOTS
   ####################*/
@@ -755,9 +657,9 @@ export default function Home() {
 
 
   const renderColorGroups = () => {
-    if (!isPcaPlotVisible) {
-      return null;
-    }
+    // if (!isPcaPlotVisible) {
+    //   return null;
+    // }
     if (pcaPlotData) {
       return (
         <div>
@@ -836,9 +738,9 @@ export default function Home() {
 
 
   const renderNameOfSamplesInPCAPlotWithGroupColorChoice = () => {
-    if (!isPcaPlotVisible) {
-      return null;
-    }
+    // if (!isPcaPlotVisible) {
+    //   return null;
+    // }
     return (
       <div className='grid grid-cols-3 gap-x-6 gap-y-3 my-7'>
         {nameOfSamplesInPCAPlot.map((sample, index) => {
@@ -895,12 +797,14 @@ export default function Home() {
       ),
       onClick: () => {
         if (isPCA2DVisible == false && isPCA3DVisible == false) {
+          generatePCAPlot();
           setIsPCA2DVisible(true);
         }
         if (isPCA2DVisible == true && isPCA3DVisible == false) {
           setIsPCA2DVisible(false);
         }
         if (isPCA2DVisible == false && isPCA3DVisible == true) {
+          generatePCAPlot();
           setIsPCA2DVisible(true);
           setIsPCA3DVisible(false);
         }
@@ -915,9 +819,11 @@ export default function Home() {
       ),
       onClick: () => {
         if (isPCA2DVisible == false && isPCA3DVisible == false) {
+          generatePCAPlot3D();
           setIsPCA3DVisible(true);
         }
         if (isPCA2DVisible == true && isPCA3DVisible == false) {
+          generatePCAPlot3D();
           setIsPCA2DVisible(false);
           setIsPCA3DVisible(true);
         }
@@ -960,6 +866,42 @@ export default function Home() {
   }
 
 
+  const renderPCAPlotGeneral = (isPCA2DVisible, isPCA3DVisible) => {
+    if (isPCA2DVisible) {
+      if (pcaPlotData) {
+        return (
+          // <div className='border border-gray-200 rounded-lg'>
+          <Plot
+            useResizeHandler
+            style={{ width: "100%", height: "100%" }}
+            data={pcaPlotData.data}
+            layout={pcaPlotData.layout}
+            // key={Math.random()} is very important here, because it will force the Plot to re-render when the data is changed. Otherwise, the Plot will not re-render, so the color of the samples on the plot will not be updated.
+            key={Math.random()}
+          />
+          // </div>
+        )
+      }
+    } else if (isPCA3DVisible) {
+      if (pcaPlot3DData) {
+        return (
+          // <div className='border border-gray-200 rounded-lg'>
+          <Plot
+            useResizeHandler
+            style={{ width: "100%", height: "100%" }}
+            data={pcaPlot3DData.data}
+            layout={pcaPlot3DData.layout}
+            key={Math.random()}
+          />
+          // </div>
+        )
+      }
+    } else {
+      return null;
+    }
+  }
+
+
   return (
     <div className='container my-4 flex flex-col gap-5'>
 
@@ -985,7 +927,6 @@ export default function Home() {
 
       <div className="flex py-3 justify-between sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
         <div className='flex gap-2'>
-          {/* {renderButtonGenerateRandomData()} */}
           {renderButtonUploadFile()}
           {renderButtonClearUploadedFile()}
         </div>
@@ -1004,18 +945,8 @@ export default function Home() {
           </DropdownAntd>
 
 
-
-
-          {renderButtonGeneratePCAPlot()}
-          {renderButtonGeneratePCAPlot3D()}
-          {/* {renderButtonGenerateLoadingsPlot()} */}
           {renderButtonGenerateLoadingsTable()}
           {renderButtonGenerateTopFiveContributorsTable()}
-
-          {/* Chỗ này là cho hiện 1 trong 2 plots */}
-          <div>
-
-          </div>
         </div>
       </div>
 
@@ -1023,12 +954,14 @@ export default function Home() {
       {renderDataTable()}
 
       {renderScreePlot()}
-      {renderPCAPlot()}
-      {renderPCAPlot3D()}
+
+      {renderPCAPlotGeneral(isPCA2DVisible, isPCA3DVisible)}
       {renderColorGroups()}
       {renderNameOfSamplesInPCAPlotWithGroupColorChoice()}
+
       {renderTopFiveContributorsTable()}
       {renderLoadingsTable()}
+
     </div>
   );
   /*####################
