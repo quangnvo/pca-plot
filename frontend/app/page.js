@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 import Highlighter from 'react-highlight-words';
-
+import { Plus } from 'lucide-react';
 
 export default function Home() {
 
@@ -56,7 +56,11 @@ export default function Home() {
   const [isScreePlotVisible, setIsScreePlotVisible] = useState(false);
   const [isLoadingsTableVisible, setIsLoadingsTableVisible] = useState(false);
   const [isTopFiveContributorsTableVisible, setIsTopFiveContributorsTableVisible] = useState(false);
+  const [isPCA2DVisible, setIsPCA2DVisible] = useState(false);
+  const [isPCA3DVisible, setIsPCA3DVisible] = useState(false);
 
+  const namePCA2D = "PCA 2D";
+  const namePCA3D = "PCA 3D";
   /*####################
   # End of the code for INITIAL VARIABLES
   ####################*/
@@ -129,6 +133,7 @@ export default function Home() {
     setIsScreePlotVisible(!isScreePlotVisible);
   }
 
+
   //  Generate PCA plot data
   const generatePCAPlot = async () => {
     try {
@@ -160,6 +165,18 @@ export default function Home() {
           name: "Group 2",
           colorCode: "#FFFF00",
           sampleNames: []
+        },
+      ]);
+
+      // This is used to reset the group options that are required to use in the antd library <Select> component
+      setGroupOptions([
+        {
+          label: "Group 1",
+          value: "1, #272E3F"
+        },
+        {
+          label: "Group 2",
+          value: "2, #FFFF00"
         },
       ]);
 
@@ -199,6 +216,18 @@ export default function Home() {
           name: "Group 2",
           colorCode: "#FFFF00",
           sampleNames: []
+        },
+      ]);
+
+      // This is used to reset the group options that are required to use in the antd library <Select> component
+      setGroupOptions([
+        {
+          label: "Group 1",
+          value: "1, #272E3F"
+        },
+        {
+          label: "Group 2",
+          value: "2, #FFFF00"
         },
       ]);
 
@@ -697,6 +726,7 @@ export default function Home() {
     },
   ]);
 
+
   // This "groupOptions" is the required format to use in the antd library <Select> component
   // This one is used to render the Group selection dropdown for user to select, like "H2O_30m_A" - "Group 1", "H2O_30m_B" - "Group 1", etc.
   const [groupOptions, setGroupOptions] = useState([
@@ -741,8 +771,8 @@ export default function Home() {
 
 
 
-  // The function "handleChangeGroupOfEachSample" is call when user click on the which color group belong to each sample. For example, "H2O_30m_A" - user chooses "Group 1", "H2O_30m_B" - user chooses "Group 1", etc.
-  const handleChangeGroupOfEachSample = (sampleName, value) => {
+  // The function "handleChangeGroupForEachSample" is call when user click on the which color group belong to each sample. For example, "H2O_30m_A" - user chooses "Group 1", "H2O_30m_B" - user chooses "Group 1", etc.
+  const handleChangeGroupForEachSample = (sampleName, value) => {
 
     // Because at the above, we set the "value" of the each object in the groupOptions to be "1, #272E3F", "2, #FFFF00", etc.
     // So here, we will split the "value" to get the "groupId" and "colorCode", like groupId = "1", colorCode = "#272E3F", etc.
@@ -773,38 +803,65 @@ export default function Home() {
     }
   }
 
+  // The function "handleChangeGroupColorInPlot2D" is used to change the color of the group in the 2D PCA plot
+  const handleChangeGroupColorInPlot2D = (groupIndex, newColor) => {
+    const newPcaPlotData = { ...pcaPlotData }
+    colorGroups[groupIndex].sampleNames.forEach((sampleName, index) => {
+      const indexOfItem = newPcaPlotData.data.findIndex(sample => sample.name === sampleName);
+      if (indexOfItem !== -1) {
+        newPcaPlotData.data[indexOfItem].marker.color = newColor;
+      }
+    })
+    setPcaPlotData(newPcaPlotData);
+  }
+
+  // The function "handleChangeGroupColorInPlot3D" is used to change the color of the group in the 3D PCA plot
+  const handleChangeGroupColorInPlot3D = (groupIndex, newColor) => {
+    const newPcaPlotData = { ...pcaPlot3DData }
+    colorGroups[groupIndex].sampleNames.forEach((sampleName, index) => {
+      const indexOfItem = newPcaPlotData.data.findIndex(sample => sample.name === sampleName);
+      if (indexOfItem !== -1) {
+        newPcaPlotData.data[indexOfItem].marker.color = newColor;
+      }
+    })
+    setPcaPlot3DData(newPcaPlotData);
+  }
+
 
   // This function is used to handle the color change of the group, when user changes the color of the group, like Group 1 which color, Group 2 which color, etc.
   const handleColorOfGroupChange = (indexOfTheGroup, newColor) => {
-    console.log("🚀🚀🚀 index", indexOfTheGroup)
-    console.log("🚀🚀🚀 newColor", newColor)
 
-    // Find the group in the colorGroups array
+    // Set the new color to the colorGroups array
     const newColorGroups = [...colorGroups];
     newColorGroups[indexOfTheGroup].colorCode = newColor;
     setColorGroups(newColorGroups);
 
-    console.log("🚀🚀🚀 colorGroups sau khi change", colorGroups)
 
-    const newPcaPlotData = { ...pcaPlotData }
-    console.log("🚀🚀🚀 newPcaPlotData", newPcaPlotData)
+    // Update the color of the samples in the PCA plot
+    if (isPCA2DVisible) {
+      handleChangeGroupColorInPlot2D(indexOfTheGroup, newColor);
+    } else if (isPCA3DVisible) {
+      handleChangeGroupColorInPlot3D(indexOfTheGroup, newColor);
+    }
 
-    // Find the samples in the pcaPlotData array
-    newColorGroups[indexOfTheGroup].sampleNames.forEach((sampleName, index) => {
-      // If the sample is found in the array
-      const indexOfItem = newPcaPlotData.data.findIndex(sample => sample.name === sampleName);
-      if (indexOfItem !== -1) {
-        // Update the color field of the sample
-        newPcaPlotData.data[indexOfItem].marker.color = newColor;
-      }
-    })
-
-    // Update the options 
+    // Update the groupOptions, this is used to update the color of the group in the dropdown, like "Group 1 - which color", "Group 2 - which color", etc.
+    // The groupOptions is the required format to use in the antd library <Select> component
     const newOptions = [...groupOptions];
     newOptions[indexOfTheGroup].value = `${newColorGroups[indexOfTheGroup].groupId}, ${newColor}`;
     setGroupOptions(newOptions);
-
   };
+
+  // Add group color function
+  const addGroupColor = () => {
+    const newColorGroups = [...colorGroups];
+    newColorGroups.push({
+      groupId: (colorGroups.length + 1).toString(),
+      name: `Group ${colorGroups.length + 1}`,
+      colorCode: "#000000",
+      sampleNames: []
+    });
+    setColorGroups(newColorGroups);
+  }
 
   /*####################
   # End of the code for COLORS --- Functions
@@ -822,43 +879,45 @@ export default function Home() {
       return (
         <div>
 
-          {/* Button Add Group, to add the group of color */}
-          <Button
-            variant="secondary"
-            className="mb-8"
-          >
-            Add group
-          </Button>
+
 
           {/* This will render groups, like "Group 1 - which color", "Group 2 - which color", etc. */}
-          <div className='grid grid-cols-4 gap-4'>
+          <div className='grid grid-cols-5 gap-4 items-center'>
             {colorGroups.map((eachColorGroup, indexOfEachColorGroup) => (
               <div
                 key={indexOfEachColorGroup}
-                className='flex gap-4 items-center'
+                className='flex gap-2 items-center flex-nowrap'
               >
                 <h3>{eachColorGroup.name}</h3>
                 {/* The input here is the place that users can choose the color they want */}
                 <Input
                   type="color"
-                  className='cursor-pointer w-1/3'
+                  className='cursor-pointer w-3/5'
                   value={eachColorGroup.colorCode}
                   // So when the user changes the color, we will call the "handleColorOfGroupChange" function to update the color of the group
                   onChange={(e) => handleColorOfGroupChange(indexOfEachColorGroup, e.target.value)}
                 />
               </div>
             ))}
+            {/* Button Add Group, to add the group of color */}
+            <Button
+              variant="secondary"
+              size="icon"
+              onClick={addGroupColor}
+            >
+              <Plus />
+            </Button>
           </div>
         </div>
       );
     }
   }
 
-  const renderSampleNamesWithGroupChoice = () => {
+  const renderSampleNamesWithGroupChoice = (isPCA2DVisible, isPCA3DVisible) => {
     if (!isPCA2DVisible && !isPCA3DVisible) {
       return null;
     }
-    if (pcaPlotData || pcaPlot3DData) {
+    if (pcaPlotData) {
       return (
         <div className='grid grid-cols-3 gap-x-6 gap-y-3 my-7'>
           {nameOfSamples.map((sample, index) => {
@@ -869,7 +928,30 @@ export default function Home() {
               <p>{sample.name}</p>
 
               <Select
-                onChange={(value) => handleChangeGroupOfEachSample(sample.name, value)}
+                onChange={(value) =>
+                  handleChangeGroupForEachSample(sample.name, value)
+                }
+                className='w-3/5'
+                options={groupOptions}
+              />
+            </div>
+          })}
+        </div>
+      )
+    } else if (pcaPlot3DData) {
+      return (
+        <div className='grid grid-cols-3 gap-x-6 gap-y-3 my-7'>
+          {nameOfSamples.map((sample, index) => {
+            return <div
+              key={index}
+              className='grid grid-cols-2 items-center'
+            >
+              <p>{sample.name}</p>
+
+              <Select
+                onChange={(value) =>
+                  handleChangeGroupForEachSample(sample.name, value)
+                }
                 className='w-3/5'
                 options={groupOptions}
               />
@@ -878,6 +960,32 @@ export default function Home() {
         </div>
       )
     }
+
+    // REMOVEEEEEEEEEEEE
+    // if (pcaPlotData || pcaPlot3DData) {
+    //   return (
+    //     <div className='grid grid-cols-3 gap-x-6 gap-y-3 my-7'>
+    //       {nameOfSamples.map((sample, index) => {
+    //         return <div
+    //           key={index}
+    //           className='grid grid-cols-2 items-center'
+    //         >
+    //           <p>{sample.name}</p>
+
+    //           <Select
+    //             onChange={(value) =>
+    //               handleChangeGroupForEachSample(sample.name, value)
+    //             }
+    //             className='w-3/5'
+    //             options={groupOptions}
+    //           />
+    //         </div>
+    //       })}
+    //     </div>
+    //   )
+    // }
+    // REMOVEEEEEEEEEEEE
+
   }
   /*####################
   # End of the code for COLORS --- Render
@@ -912,10 +1020,6 @@ export default function Home() {
   # The following code is to render the FINAL UI of the page
   ####################*/
 
-  const [isPCA2DVisible, setIsPCA2DVisible] = useState(false);
-  const [isPCA3DVisible, setIsPCA3DVisible] = useState(false);
-  const namePCA2D = "PCA 2D";
-  const namePCA3D = "PCA 3D";
 
 
   // The "pcaOptions" is the required format to use in the antd library <DropdownAntd> component
@@ -1072,7 +1176,7 @@ export default function Home() {
 
       {renderPCAPlotGeneral(isPCA2DVisible, isPCA3DVisible)}
       {renderColorSection()}
-      {renderSampleNamesWithGroupChoice()}
+      {renderSampleNamesWithGroupChoice(isPCA2DVisible, isPCA3DVisible)}
 
       {renderLoadingsTable()}
       {renderTopFiveContributorsTable()}
