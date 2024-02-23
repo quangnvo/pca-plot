@@ -163,7 +163,7 @@ export default function Home() {
         {
           groupId: "2",
           name: "Group 2",
-          colorCode: "#FFFF00",
+          colorCode: "#272E3F",
           sampleNames: []
         },
       ]);
@@ -736,7 +736,7 @@ export default function Home() {
     },
     {
       label: "Group 2",
-      value: "2, #FFFF00"
+      value: "2, #272E3F"
     },
   ]);
 
@@ -853,14 +853,25 @@ export default function Home() {
 
   // Add group color function
   const addGroupColor = () => {
+    // Add the new group to the colorGroups array
     const newColorGroups = [...colorGroups];
-    newColorGroups.push({
-      groupId: (colorGroups.length + 1).toString(),
-      name: `Group ${colorGroups.length + 1}`,
-      colorCode: "#000000",
+    const newColorGroup = {
+      groupId: (newColorGroups.length + 1).toString(),
+      name: `Group ${newColorGroups.length + 1}`,
+      colorCode: "#272E3F",
       sampleNames: []
-    });
+    }
+    newColorGroups.push(newColorGroup);
     setColorGroups(newColorGroups);
+
+    // Add the new group to the groupOptions array
+    const newGroupOptions = [...groupOptions];
+    const newGroupOption = {
+      label: newColorGroup.name,
+      value: `${newColorGroup.groupId}, ${newColorGroup.colorCode}`
+    }
+    newGroupOptions.push(newGroupOption);
+    setGroupOptions(newGroupOptions);
   }
 
   /*####################
@@ -878,25 +889,28 @@ export default function Home() {
     if (pcaPlotData || pcaPlot3DData) {
       return (
         <div>
-
-
-
           {/* This will render groups, like "Group 1 - which color", "Group 2 - which color", etc. */}
           <div className='grid grid-cols-5 gap-4 items-center'>
             {colorGroups.map((eachColorGroup, indexOfEachColorGroup) => (
               <div
                 key={indexOfEachColorGroup}
-                className='flex gap-2 items-center flex-nowrap'
+                className='flex gap-2 items-center'
               >
-                <h3>{eachColorGroup.name}</h3>
+                <div className='w-[75px]'>
+                  <span>{eachColorGroup.name}</span>
+                </div>
+
                 {/* The input here is the place that users can choose the color they want */}
-                <Input
-                  type="color"
-                  className='cursor-pointer w-3/5'
-                  value={eachColorGroup.colorCode}
-                  // So when the user changes the color, we will call the "handleColorOfGroupChange" function to update the color of the group
-                  onChange={(e) => handleColorOfGroupChange(indexOfEachColorGroup, e.target.value)}
-                />
+                <div>
+                  <Input
+                    type="color"
+                    className='cursor-pointer w-32 h-10 rounded-md border border-gray-300'
+                    value={eachColorGroup.colorCode}
+                    // So when the user changes the color, we will call the "handleColorOfGroupChange" function to update the color of the group
+                    onChange={(e) => handleColorOfGroupChange(indexOfEachColorGroup, e.target.value)}
+                  />
+                </div>
+
               </div>
             ))}
             {/* Button Add Group, to add the group of color */}
