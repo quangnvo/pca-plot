@@ -107,6 +107,8 @@ export default function Home() {
       // Using PapaParse, a library used for parsing, to parse the file
       Papa.parse(file, {
         header: true,
+        // The skipEmptyLines: true is important, because if we don't use it, then the empty lines in the csv file will be parsed as an empty object, and it will cause the error when we try to render the table
+        skipEmptyLines: true,
         complete: (results) => {
           // Then set the parsed data to the csvData
           setCsvData(results.data);
