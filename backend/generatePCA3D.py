@@ -35,7 +35,7 @@ def generate_pca_3d():
             'z': [pcaData[i, 2]],
             'marker': {
                 'size': 12,
-                'color': "#30D5C8",
+                'color': "#272E3F",
                 'line': {
                     'color': 'black',
                     'width': 2,

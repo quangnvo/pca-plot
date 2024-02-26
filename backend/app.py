@@ -1,4 +1,3 @@
-import generateLoadingsPlot
 import generateLoadingsTable
 import generatePCA
 import generatePCA3D
@@ -22,7 +21,6 @@ def home():
 app.register_blueprint(generateSampleData.bp)
 app.register_blueprint(generatePCA.bp)
 app.register_blueprint(generateScreePlot.bp)
-app.register_blueprint(generateLoadingsPlot.bp)
 app.register_blueprint(generateLoadingsTable.bp)
 app.register_blueprint(generateTopFiveContributors.bp)
 app.register_blueprint(generatePCA3D.bp)

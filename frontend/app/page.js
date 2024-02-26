@@ -1,30 +1,44 @@
+// This "use client" is IMPORTANT and need to put on the top of the file, as it is used to tell the Next.js that this file is used in the client side, not in the server side. 
+// If not put "use client", then the Next.js will think that this file is used in the server side, as the server side is the default.
+// Because in the following code, we use the "useState", "useRef", etc. which are the React hooks, and they are used in the client side, not in the server side.
+// A server component cannot use React hooks like useState, useEffect, etc. This is because a server component is rendered once on the server and doesn't re-render. On the other hand, a client component is a normal React component with access to hooks and re-renders as the user interacts, clicks the buttons, changes the color, etc. with the app.
 "use client"
 
+// The useState, useRef are used to create the state and reference to the DOM element
 import { useState, useRef } from 'react';
 
+// The Plot from the react-plotly.js library is used to render the plot
 import Plot from 'react-plotly.js';
-import axios from 'axios';
+
+// The Papa is used to parse the csv file
 import Papa from 'papaparse';
 
+// The axios is used to send the HTTP request to the backend
+import axios from 'axios';
+
+// The button, input, table, etc. used for the UI
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import {
   Table,
   Select,
   Input as InputAntd,
   Dropdown as DropdownAntd
 } from 'antd';
+
+// The icons used in the UI
+import { Plus } from 'lucide-react';
 import { SearchOutlined } from '@ant-design/icons';
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-
+// The Highlighter is used to highlight the searched text in the table
 import Highlighter from 'react-highlight-words';
-import { Plus } from 'lucide-react';
+
+
+
 
 export default function Home() {
 
-  /*####################
-  # Define the backend port
-  ####################*/
+  // Define the backend port
   const BACKEND_PORT = 8080
 
   /*####################
@@ -40,8 +54,8 @@ export default function Home() {
   // The purpose of using "useState" is that it is used to "trigger the re-render of the UI" when the "something is updated"
 
   // For example, at the beginning, screePlotData = null, then nothing on the screen yet, then we call API to calculate the scree plot data, then we need to store the data get from API to the screePlotData and render it to the screen.
-  // If we just assign the screePlotData = "data From API", it will not re-render the UI, so the scree plot will not be shown on the screen.
-  // So we need to used "useState()"
+  // If we just assign the screePlotData = "data_from_API", it will not re-render the UI, so the scree plot will not be shown on the screen.
+  // So we need to use "useState()"
 
   const [csvData, setCsvData] = useState([]);
   const [screePlotData, setScreePlotData] = useState(null);
@@ -59,19 +73,33 @@ export default function Home() {
   const [isPCA2DVisible, setIsPCA2DVisible] = useState(false);
   const [isPCA3DVisible, setIsPCA3DVisible] = useState(false);
 
+  // The name of the PCA 2D and PCA 3D, just used for naming the title of the buttons
   const namePCA2D = "PCA 2D";
   const namePCA3D = "PCA 3D";
+
+  // The "defaultColor" is used to set the default color of the group
+  const defaultColor = "#272E3F";
+
+  // The id for the file input, used to reset the file input value to null
+  const inputFileId = "fileInput";
+
   /*####################
   # End of the code for INITIAL VARIABLES
   ####################*/
 
 
+
   /*####################
-  # The following code is only about FILE UPLOAD
+  # The following code is only about FUNCTIONS, such as clearUploadedFile, generateScreePlot, generatePCAPlot, etc.
+  ####################*/
+
+  /*####################
+  # FUNCTIONS --- Handle file upload
   ####################*/
   const handleFileUpload = (e) => {
+    // The e.target.files[0] is used to get the first file, as the user can upload multiple files at once, but in this case, we only allow the user to upload one file at once
     const file = e.target.files[0];
-    // Checking if the file is a csv file or the txt file
+    // Then, checking if the file is a csv file or the txt file
     // If .csv or .txt file, then continue
     if (file.type === 'text/csv' || file.type === 'text/plain') {
       // Using PapaParse, a library used for parsing, to parse the file
@@ -85,24 +113,27 @@ export default function Home() {
     }
   };
   /*####################
-  # End of the code for FILE UPLOAD
+  # End of the code for FUNCTIONS --- Handle file upload
   ####################*/
-
 
 
   /*####################
-  # The following code is only about FUNCTIONS For Buttons: clearUploadedFile, generateScreePlot, generatePCAPlot, etc.
+  # FUNCTIONS --- Clear the uploaded file
   ####################*/
-
-  // Clear the uploaded file
   const clearUploadedFile = () => {
     // Clear the csvData state to make it back to empty array
     setCsvData([]);
     // Reset the file input value to null, this is important because if we don't reset the file input value to null, then the user can't upload the same file again after they uploaded it once
-    document.getElementById('fileInput').value = null;
+    document.getElementById(inputFileId).value = null;
   }
+  /*####################
+  # End of the code for FUNCTIONS --- Clear the uploaded file 
+  ####################*/
 
-  //  Generate random data function
+
+  /*####################
+  # FUNCTIONS --- Generate random data
+  ####################*/
   const generateRandomData = async () => {
     try {
       // Send a GET request to the backend to generate random data
@@ -114,10 +145,16 @@ export default function Home() {
       console.error(error);
     }
   }
+  /*####################
+  # End of the code for FUNCTIONS --- Generate random data
+  ####################*/
 
-  // Generate Scree plot function
+
+  /*####################
+  # FUNCTIONS --- Generate Scree plot
+  ####################*/
   const generateScreePlot = async () => {
-    // if (!isScreePlotVisible) ==> if the scree plot is not visible, then we will call the API to generate the scree plot data
+    // if (!isScreePlotVisible) ==> if the scree plot is not visible, meaning there isn't scree plot on the screen yet, then we will call the API to generate the scree plot data
     if (!isScreePlotVisible) {
       try {
         // Send a POST request with the "csvData" to the backend
@@ -132,9 +169,14 @@ export default function Home() {
     // Then we will toggle the visibility of the scree plot. If it's visible, then we will make it invisible, and vice versa
     setIsScreePlotVisible(!isScreePlotVisible);
   }
+  /*####################
+  # End of the code for FUNCTIONS --- Generate Scree plot
+  ####################*/
 
 
-  //  Generate PCA plot data
+  /*####################
+  # FUNCTIONS --- Generate PCA plot 2D
+  ####################*/
   const generatePCAPlot = async () => {
     try {
       const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca`, csvData);
@@ -157,13 +199,13 @@ export default function Home() {
         {
           groupId: "1",
           name: "Group 1",
-          colorCode: "#272E3F",
+          colorCode: defaultColor,
           sampleNames: []
         },
         {
           groupId: "2",
           name: "Group 2",
-          colorCode: "#272E3F",
+          colorCode: defaultColor,
           sampleNames: []
         },
       ]);
@@ -172,11 +214,11 @@ export default function Home() {
       setGroupOptions([
         {
           label: "Group 1",
-          value: "1, #272E3F"
+          value: `1, ${defaultColor}`
         },
         {
           label: "Group 2",
-          value: "2, #FFFF00"
+          value: `2, ${defaultColor}`
         },
       ]);
 
@@ -184,8 +226,14 @@ export default function Home() {
       console.error(error);
     }
   }
+  /*####################
+  # End of the code for FUNCTIONS --- Generate PCA plot 2D
+  ####################*/
 
-  // Generate PCA 3D plot data
+
+  /*####################
+  # FUNCTIONS --- Generate PCA plot 3D
+  ####################*/
   const generatePCAPlot3D = async () => {
     try {
       const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca_3d`, csvData);
@@ -208,13 +256,13 @@ export default function Home() {
         {
           groupId: "1",
           name: "Group 1",
-          colorCode: "#272E3F",
+          colorCode: defaultColor,
           sampleNames: []
         },
         {
           groupId: "2",
           name: "Group 2",
-          colorCode: "#FFFF00",
+          colorCode: defaultColor,
           sampleNames: []
         },
       ]);
@@ -223,11 +271,11 @@ export default function Home() {
       setGroupOptions([
         {
           label: "Group 1",
-          value: "1, #272E3F"
+          value: `1, ${defaultColor}`
         },
         {
           label: "Group 2",
-          value: "2, #FFFF00"
+          value: `2, ${defaultColor}`
         },
       ]);
 
@@ -235,8 +283,14 @@ export default function Home() {
       console.error(error);
     }
   }
+  /*####################
+  # End of the code for FUNCTIONS --- Generate PCA plot 3D
+  ####################*/
 
-  // Generate Loadings table
+
+  /*####################
+  # FUNCTIONS --- Generate Loadings table
+  ####################*/
   const generateLoadingsTable = async () => {
     if (!isLoadingsTableVisible) {
       try {
@@ -248,8 +302,13 @@ export default function Home() {
     }
     setIsLoadingsTableVisible(!isLoadingsTableVisible);
   }
+  /*####################
+  # End of the code for FUNCTIONS --- Generate Loadings table
+  ####################*/
 
-  // Generate Top 5 contributors table
+  /*####################
+  # FUNCTIONS --- Generate Top 5 contributors table
+  ####################*/
   const generateTopFiveContributors = async () => {
     if (!isTopFiveContributorsTableVisible) {
       try {
@@ -262,13 +321,21 @@ export default function Home() {
     setIsTopFiveContributorsTableVisible(!isTopFiveContributorsTableVisible);
   }
   /*####################
-  # End of the code for FUNCTIONS For Buttons
+  # End of the code for FUNCTIONS --- Generate Top 5 contributors table
+  ####################*/
+
+  /*####################
+  # End of the code for FUNCTIONS 
   ####################*/
 
 
 
   /*####################
   # The following code is only about function used to render BUTTONS, such as renderButtonUploadFile, renderButtonClearUploadedFile, etc.
+  ####################*/
+
+  /*####################
+  # BUTTONS --- Render button to generate random data
   ####################*/
   const renderButtonGenerateRandomData = () => {
     return (
@@ -277,19 +344,33 @@ export default function Home() {
       </Button>
     )
   }
+  /*####################
+  # End of the code for BUTTONS --- Render button to generate random data
+  ####################*/
 
+
+  /*####################
+  # BUTTONS --- Render button to upload file
+  ####################*/
   const renderButtonUploadFile = () => {
     return (
       <Input
-        // The id is used to select the file input by using the document.getElementById('fileInput'), then we can reset the file input value to null
-        id='fileInput'
+        // The "id" is used to select the file input by using the document.getElementById(inputFileId), then we can reset the file input value to null
+        id={inputFileId}
         type='file'
         accept='.csv,.txt'
         onChange={handleFileUpload}
       />
     )
   }
+  /*####################
+  # End of the code for BUTTONS --- Render button to upload file
+  ####################*/
 
+
+  /*####################
+  # BUTTONS --- Render button to clear the uploaded file
+  ####################*/
   const renderButtonClearUploadedFile = () => {
     return (
       <Button
@@ -300,7 +381,14 @@ export default function Home() {
       </Button>
     )
   }
+  /*####################
+  # End of the code for BUTTONS --- Render button to clear the uploaded file
+  ####################*/
 
+
+  /*####################
+  # BUTTONS --- Render button to generate Screen plot
+  ####################*/
   const renderButtonGenerateScreePlot = () => {
     return (
       <Button
@@ -311,7 +399,42 @@ export default function Home() {
       </Button>
     )
   }
+  /*####################
+  # End of the code for BUTTONS --- Render button to generate Screen plot
+  ####################*/
 
+
+  /*####################
+  # BUTTONS --- Render button to generate PCA plot
+  ####################*/
+  const renderButtonPCAPlot = () => {
+    if (isPCA2DVisible) {
+      return (
+        <Button variant="default" >
+          {namePCA2D}
+        </Button>
+      )
+    } else if (isPCA3DVisible) {
+      return (
+        <Button variant="default">
+          {namePCA3D}
+        </Button>
+      )
+    } else {
+      return (
+        <Button variant="outline">
+          PCA plot
+        </Button>
+      )
+    }
+  }
+  /*####################
+  # End of the code for BUTTONS --- Render button to generate PCA plot
+  ####################*/
+
+  /*####################
+  # BUTTONS --- Render button to generate Loadings table
+  ####################*/
   const renderButtonGenerateLoadingsTable = () => {
     return (
       <Button
@@ -322,7 +445,14 @@ export default function Home() {
       </Button>
     )
   }
+  /*####################
+  # End of the code for BUTTONS --- Render button to generate Loadings table
+  ####################*/
 
+
+  /*####################
+  # BUTTONS --- Render button to generate Top 5 contributors table
+  ####################*/
   const renderButtonGenerateTopFiveContributorsTable = () => {
     return (
       <Button
@@ -333,13 +463,22 @@ export default function Home() {
       </Button>
     )
   }
+  /*###################
+  # End of the code for BUTTONS --- Render button to generate Top 5 contributors table
+  ####################*/
+
   /*####################
   # End of the code for BUTTONS
   ####################*/
 
 
+
   /*####################
   # The following code is only about function used to render PLOTS, such as renderScreePlot, renderPCAPlot, etc.
+  ####################*/
+
+  /*####################
+  # PLOTS --- Render Scree plot
   ####################*/
   const renderScreePlot = () => {
     if (isScreePlotVisible) {
@@ -362,6 +501,119 @@ export default function Home() {
       }
     }
   }
+  /*####################
+  # End of the code for PLOTS --- Render Scree plot
+  ####################*/
+
+  /*####################
+  # PLOTS --- Render PCA plot 2D and 3D
+  ####################*/
+  // The "pcaOptions" is the required format to use in the antd library <DropdownAntd> component
+  // This one is used to show the PCA plot selection dropdown for user hover, like "PCA 2D" and "PCA 3D"
+  const pcaOptions = [
+    // PCA 2D button
+    {
+      key: '1',
+      label: (
+        <p>
+          {namePCA2D}
+        </p>
+      ),
+      onClick: () => {
+        // Now user clicks on the PCA 2D, then we will check the current visibility of the PCA 2D and PCA 3D, then we will update the visibility of the PCA 2D and PCA 3D
+        // Click on the PCA 2D button --> if PCA 2D plot and PCA 3D plot not show yet --> then show PCA 2D plot
+        if (isPCA2DVisible == false && isPCA3DVisible == false) {
+          generatePCAPlot();
+          setIsPCA2DVisible(true);
+        }
+        // Click on the PCA 2D button --> if PCA 2D plot is showing and PCA 3D plot not show --> then hide PCA 2D plot
+        if (isPCA2DVisible == true && isPCA3DVisible == false) {
+          setIsPCA2DVisible(false);
+        }
+        // Click on the PCA 2D button --> if PCA 2D plot not show and PCA 3D plot is showing --> then hide PCA 3D plot and show PCA 2D plot
+        if (isPCA2DVisible == false && isPCA3DVisible == true) {
+          generatePCAPlot();
+          setIsPCA2DVisible(true);
+          setIsPCA3DVisible(false);
+        }
+      }
+    },
+    // PCA 3D button
+    {
+      key: '2',
+      label: (
+        <p>
+          {namePCA3D}
+        </p>
+      ),
+      onClick: () => {
+        // Click on the PCA 3D button --> if PCA 2D plot and PCA 3D plot not show yet --> then show PCA 3D plot
+        if (isPCA2DVisible == false && isPCA3DVisible == false) {
+          generatePCAPlot3D();
+          setIsPCA3DVisible(true);
+        }
+        // Click on the PCA 3D button --> if PCA 2D plot is showing and PCA 3D plot not show --> then hide PCA 2D plot and show PCA 3D plot
+        if (isPCA2DVisible == true && isPCA3DVisible == false) {
+          generatePCAPlot3D();
+          setIsPCA2DVisible(false);
+          setIsPCA3DVisible(true);
+        }
+        // Click on the PCA 3D button --> if PCA 2D plot not show and PCA 3D plot is showing --> then hide PCA 3D plot
+        if (isPCA2DVisible == false && isPCA3DVisible == true) {
+          setIsPCA3DVisible(false);
+        }
+      }
+    },
+  ];
+
+  const renderPCAPlotGeneral = (isPCA2DVisible, isPCA3DVisible) => {
+    if (isPCA2DVisible) {
+      if (pcaPlotData) {
+        return (
+          <>
+            <div className='text-3xl font-bold mb-4'>
+              PCA-2D plot
+            </div>
+            <div className='border border-gray-200 rounded-lg overflow-hidden'>
+              <Plot
+                useResizeHandler
+                style={{ width: "100%", height: "100%" }}
+                data={pcaPlotData.data}
+                layout={pcaPlotData.layout}
+                // key={Math.random()} is very important here, because it will force the Plot to re-render when the data is changed. 
+                // Otherwise, the Plot will not re-render, so the color of the samples on the plot will not be updated.
+                key={Math.random()}
+              />
+            </div>
+          </>
+        )
+      }
+    } else if (isPCA3DVisible) {
+      if (pcaPlot3DData) {
+        return (
+          <>
+            <div className='text-3xl font-bold mb-4'>
+              PCA-3D plot
+            </div>
+            <div className='border border-gray-200 rounded-lg overflow-hidden'>
+              <Plot
+                useResizeHandler
+                style={{ width: "100%", height: "700px" }}
+                data={pcaPlot3DData.data}
+                layout={pcaPlot3DData.layout}
+                key={Math.random()}
+              />
+            </div>
+          </>
+        )
+      }
+    } else {
+      return null;
+    }
+  }
+  /*####################
+  # End of the code for PLOTS --- Render PCA plot 2D and 3D
+  ####################*/
 
   /*####################
   # End of the code for PLOTS
@@ -693,7 +945,7 @@ export default function Home() {
 
 
   /*####################
-  # The following code is only about COLORS, such as renderColorCardsForPCAPlot, handleColorChange, etc.
+  # The following code is only about COLORS, such as changing color of the points in the PCA plot, changing color of the groups, etc.
   ####################*/
 
   /*####################
@@ -710,12 +962,12 @@ export default function Home() {
 
 
   // The "colorGroups" is an array of objects, and it is used to store the color of the groups, like "Group 1" which color , "Group 2" which color, etc.
-  // The "sampleNames" is an array of strings, and it is used to store the names of the samples that belong to which group, like "H2O_30m_A", "H2O_30m_B", "H2O_30m_C", etc. For example, if user choose "Group 1" for "H2O_30m_A", then "H2O_30m_A" will be added to the "sampleNames" array of "Group 1".
+  // The "sampleNames" in the "colorGroups" is an array of strings, and it is used to store the names of the samples that belong to which group, like "H2O_30m_A", "H2O_30m_B", "H2O_30m_C", etc. For example, if user choose "Group 1" for "H2O_30m_A", then "H2O_30m_A" will be added to the "sampleNames" array of "Group 1".
   const [colorGroups, setColorGroups] = useState([
     {
       groupId: "1",
       name: "Group 1",
-      colorCode: "#272E3F",
+      colorCode: defaultColor,
       sampleNames: []
     },
     {
@@ -775,7 +1027,7 @@ export default function Home() {
   const handleChangeGroupForEachSample = (sampleName, value) => {
 
     // Because at the above, we set the "value" of the each object in the groupOptions to be "1, #272E3F", "2, #FFFF00", etc.
-    // So here, we will split the "value" to get the "groupId" and "colorCode", like groupId = "1", colorCode = "#272E3F", etc.
+    // So here, we will split the "value" to get the "groupId" and "colorCode", like groupId = "1", colorCode = defaultColor, etc.
     let [groupId, colorCode] = value.split(", ");
 
     // Copy the colorGroups array to a new array.
@@ -858,7 +1110,7 @@ export default function Home() {
     const newColorGroup = {
       groupId: (newColorGroups.length + 1).toString(),
       name: `Group ${newColorGroups.length + 1}`,
-      colorCode: "#272E3F",
+      colorCode: defaultColor,
       sampleNames: []
     }
     newColorGroups.push(newColorGroup);
@@ -1033,128 +1285,6 @@ export default function Home() {
   /*####################
   # The following code is to render the FINAL UI of the page
   ####################*/
-
-
-
-  // The "pcaOptions" is the required format to use in the antd library <DropdownAntd> component
-  // This one is used to show the PCA plot selection dropdown for user hover, like "PCA 2D" and "PCA 3D"
-  const pcaOptions = [
-    {
-      key: '1',
-      label: (
-        <p>
-          {namePCA2D}
-        </p>
-      ),
-      onClick: () => {
-        if (isPCA2DVisible == false && isPCA3DVisible == false) {
-          generatePCAPlot();
-          setIsPCA2DVisible(true);
-        }
-        if (isPCA2DVisible == true && isPCA3DVisible == false) {
-          setIsPCA2DVisible(false);
-        }
-        if (isPCA2DVisible == false && isPCA3DVisible == true) {
-          generatePCAPlot();
-          setIsPCA2DVisible(true);
-          setIsPCA3DVisible(false);
-        }
-      }
-    },
-    {
-      key: '2',
-      label: (
-        <p>
-          {namePCA3D}
-        </p>
-      ),
-      onClick: () => {
-        if (isPCA2DVisible == false && isPCA3DVisible == false) {
-          generatePCAPlot3D();
-          setIsPCA3DVisible(true);
-        }
-        if (isPCA2DVisible == true && isPCA3DVisible == false) {
-          generatePCAPlot3D();
-          setIsPCA2DVisible(false);
-          setIsPCA3DVisible(true);
-        }
-        if (isPCA2DVisible == false && isPCA3DVisible == true) {
-          setIsPCA3DVisible(false);
-        }
-      }
-    },
-  ];
-
-
-  const renderButtonPCAPlot = () => {
-    if (isPCA2DVisible) {
-      return (
-        <Button variant="default" >
-          {namePCA2D}
-        </Button>
-      )
-    } else if (isPCA3DVisible) {
-      return (
-        <Button variant="default">
-          {namePCA3D}
-        </Button>
-      )
-    } else {
-      return (
-        <Button variant="outline">
-          PCA plot
-        </Button>
-      )
-    }
-  }
-
-
-  const renderPCAPlotGeneral = (isPCA2DVisible, isPCA3DVisible) => {
-    if (isPCA2DVisible) {
-      if (pcaPlotData) {
-        return (
-          <>
-            <div className='text-3xl font-bold mb-4'>
-              PCA-2D plot
-            </div>
-            <div className='border border-gray-200 rounded-lg overflow-hidden'>
-              <Plot
-                useResizeHandler
-                style={{ width: "100%", height: "100%" }}
-                data={pcaPlotData.data}
-                layout={pcaPlotData.layout}
-                // key={Math.random()} is very important here, because it will force the Plot to re-render when the data is changed. Otherwise, the Plot will not re-render, so the color of the samples on the plot will not be updated.
-                key={Math.random()}
-              />
-            </div>
-          </>
-        )
-      }
-    } else if (isPCA3DVisible) {
-      if (pcaPlot3DData) {
-        return (
-          <>
-            <div className='text-3xl font-bold mb-4'>
-              PCA-3D plot
-            </div>
-            <div className='border border-gray-200 rounded-lg overflow-hidden'>
-              <Plot
-                useResizeHandler
-                style={{ width: "100%", height: "700px" }}
-                data={pcaPlot3DData.data}
-                layout={pcaPlot3DData.layout}
-                key={Math.random()}
-              />
-            </div>
-          </>
-        )
-      }
-    } else {
-      return null;
-    }
-  }
-
-
   return (
     <div className='container my-4 flex flex-col gap-5'>
 
