@@ -83,6 +83,8 @@ export default function Home() {
   // The id for the file input, used to reset the file input value to null
   const inputFileId = "fileInput";
 
+  const acceptFileTypes = ".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel";
+
   /*####################
   # End of the code for INITIAL VARIABLES
   ####################*/
@@ -358,7 +360,7 @@ export default function Home() {
         // The "id" is used to select the file input by using the document.getElementById(inputFileId), then we can reset the file input value to null
         id={inputFileId}
         type='file'
-        accept='.csv,.txt'
+        accept={acceptFileTypes}
         onChange={handleFileUpload}
       />
     )
@@ -1266,6 +1268,7 @@ export default function Home() {
   /*####################
   # The following code is only about the NUMBER OF SAMPLES
   ####################*/
+  console.log("csvData: ", csvData)
   const renderNumberSamples = () => {
     if (csvData.length === 0) {
       return null;
