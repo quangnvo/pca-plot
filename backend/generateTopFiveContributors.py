@@ -1,4 +1,8 @@
-import numpy as np
+#########################
+# NOTICE
+# Check the file "generatePCA.py" for the detail explanation, as almost the code here is similar to the code in "generatePCA.py"
+#########################
+
 import pandas as pd
 from flask import Blueprint, jsonify, request
 from sklearn.decomposition import PCA
@@ -10,6 +14,9 @@ bp = Blueprint('generateTopFiveContributors', __name__)
 @bp.route('/api/generate_top_five_contributors', methods=['POST'])
 def generate_top_five_contributors():
 
+    #########################
+    # CODE SIMILAR TO "generatePCA.py"
+    #########################
     initialData = request.json
     convertedData = pd.DataFrame(data=initialData)
 
@@ -26,11 +33,17 @@ def generate_top_five_contributors():
 
     pcaObject = PCA(n_components=2)
     pcaObject.fit_transform(dataAfterStandardization)
+    #########################
+    # End of CODE SIMILAR TO "generatePCA.py"
+    #########################
 
-    # Get the pca components (loadings)
+    #########################
+    # FIND THE TOP FIVE CONTRIBUTORS FOR EACH PRINCIPAL COMPONENT
+    #########################
+    # Use the "components_" attribute of the PCA object to get the loadings
     loadings = pcaObject.components_
 
-    # Create a DataFrame from the loadings
+    # Create the labels for the principal components, like "PC1", "PC2", etc.
     labelPrincipalComponents = [
         'PC' + str(i+1) for i in range(loadings.shape[0])]
 
@@ -51,18 +64,27 @@ def generate_top_five_contributors():
   # Get the top 5 contributors for each principal component
     top_five_contributors = []
 
+    # The "labelPrincipalComponents" is ["PC1", "PC2", "PC3", ...]
     for pc in labelPrincipalComponents:
+        # loadings_df[pc].map(abs): This applies the absolute value function to each element in the column pc of the DataFrame loadings_df
+        # sort_values(ascending=False): This sorts the values in the column pc of the DataFrame loadings_df in descending order
+        # head(5): This gets the first 5 elements in the sorted column pc of the DataFrame loadings_df
+        # .index.to_series(): This gets the index of these top 5 rows and converts it into a pandas Series.
+        # .map(loadings_df[pc]): This maps the indices back to the original values in the pc column of loadings_df. The result is a Series of the top 5 contributors to the principal component pc, indexed by their gene names.
         contributors = loadings_df[pc].map(abs).sort_values(
             ascending=False).head(5).index.to_series().map(loadings_df[pc])
+
+        # for gene, value in contributors.items(): This loop iterates over each item in the contributors Series. Each item is a tuple where the first element is the gene name (index) and the second element is the corresponding value.
+        # top_five_contributors.append({"Principal component": pc, "Gene": gene, "Loadings": value}): This line appends a dictionary to the top_five_contributors list. The dictionary contains three key-value pairs: the principal component label, the gene name, and the corresponding value.
         for gene, value in contributors.items():
             top_five_contributors.append({
                 "Principal component": pc,
                 "Gene": gene,
                 "Loadings": value
             })
-
-    print("🚀🚀🚀 TOP FIVE CONTRIBUTORS co negative va positive \n")
-    print(top_five_contributors)
+    #########################
+    # End of FIND THE TOP FIVE CONTRIBUTORS FOR EACH PRINCIPAL COMPONENT
+    #########################
 
     # Convert the list to JSON
     result_json = jsonify(top_five_contributors)
