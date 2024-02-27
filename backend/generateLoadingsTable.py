@@ -1,4 +1,8 @@
-import numpy as np
+#########################
+# NOTICE
+# Check the file "generatePCA.py" for the detail explanation, as a half of the code here is similar to the code in "generatePCA.py"
+#########################
+
 import pandas as pd
 from flask import Blueprint, jsonify, request
 from sklearn.decomposition import PCA
@@ -10,6 +14,9 @@ bp = Blueprint('generateLoadingsTable', __name__)
 @bp.route('/api/generate_loadings_table', methods=['POST'])
 def generate_loadings_table():
 
+    #########################
+    # CODE SIMILAR TO "generatePCA.py"
+    #########################
     initialData = request.json
     convertedData = pd.DataFrame(data=initialData)
 
@@ -20,31 +27,33 @@ def generate_loadings_table():
     convertedData = convertedData.astype(float)
     convertedData = convertedData.dropna()
 
-    print("🚀🚀🚀 CONVERTED DATA \n")
-    print(convertedData)
-
     standardScalerObject = StandardScaler()
     dataAfterStandardization = standardScalerObject.fit_transform(
         convertedData.T)
 
+    # The n_components parameter is used to specify the number of principal components to be created
+    # If not specified, then default value of n_components is min(n_samples, n_features)
+    # For example, if the number of samples is 24 and the number of genes is 1000, then the default value of n_components will be 24
+    # If the number of samples is 24 and the number of genes is 10, then the default value of n_components will be 10
     pcaObject = PCA(n_components=2)
     pcaObject.fit_transform(dataAfterStandardization)
 
-    # Get the pca components (loadings)
+    #########################
+    # End of CODE SIMILAR TO "generatePCA.py"
+    #########################
+
+    #########################
+    # GET THE LOADINGS AND CREATE THE JSON DATA
+    #########################
+    # The loadings are the coefficients of the linear combination of the original variables that make up the principal components
+    # Use the "components_" attribute of the PCA object to get the loadings
     loadings = pcaObject.components_
 
-    print("In the generateLoadingsTable.py file aaaaaaaaa")
-
-    print("🚀🚀🚀 LOADINGS \n")
-    print(loadings)
-    print("🚀🚀🚀 LOADINGS SHAPE \n")
-    print(loadings.shape)
-
-    # Create a DataFrame from the loadings
+    # Then create the "labels" for the principal components, like "PC1", "PC2", "PC3", etc.
     labelPrincipalComponents = [
         'PC' + str(i+1) for i in range(loadings.shape[0])]
 
-    # Create a DataFrame from the loadings
+    # Then create a DataFrame from the "loadings"
     # The data frame will look like this:
     #       |  PC1  |  PC2  |  PC3  | ... | PCn  |
     # gene1 | 0.042 | 0.021 | -0.03 | ... | 0.12 |
@@ -57,19 +66,38 @@ def generate_loadings_table():
         index=convertedData.index,
         columns=labelPrincipalComponents
     )
-    print("\n 🚀🚀🚀 LOADINGS_DF")
-    print(loadings_df)
 
-  # Convert the DataFrame to a list of dictionaries
+    # Then convert the DataFrame to a list of dictionaries
+    # The purpose of this is to make it easier to convert the data to a JSON object
+    # reset_index(): This function resets the index of the DataFrame and makes it a column in the DataFrame.
+    # rename(columns={'index': 'Gene'}): This function renames the column labeled ‘index’ to ‘Gene’.
+    # to_dict('records'): This function converts the DataFrame into a list of dictionaries. The ‘records’ argument means that each item in the list will be a dictionary representing a row in the DataFrame, where the "keys" are the "column names" and the "values" are the "data in the row".
+    #
+    # For example, if loadings_df like this:
+    #       |  PC1  |  PC2  |
+    # gene1 |  a0   |   b0  |
+    # gene2 |  a1   |   b1  |
+    #
+    # After running the code, it will be like this:
+    # loadings_list = [
+    #   {
+    #       'Gene': "gene1",
+    #       'PC1': 'a0',
+    #       'PC2': 'b0'
+    #   },
+    #   {
+    #       'Gene': "gene2",
+    #       'A': 'a1',
+    #       'B': 'b1'
+    #   }
+    # ]
     loadings_list = loadings_df.reset_index().rename(
         columns={'index': 'Gene'}).to_dict('records')
 
-    # Print the list
-    print("\n 🚀🚀🚀 LOADINGS_LIST")
-    print(loadings_list[0:5])
-
-    # Convert the list to JSON
+    # Then convert the list of dictionaries to a JSON object
     result_json = jsonify(loadings_list)
+    #########################
+    # End of GET THE LOADINGS AND CREATE THE JSON DATA
+    #########################
 
-    # Return the JSON data
     return result_json
