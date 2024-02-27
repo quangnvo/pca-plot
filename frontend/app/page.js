@@ -126,15 +126,10 @@ export default function Home() {
   # FUNCTIONS --- Clear the uploaded file
   ####################*/
   const clearUploadedFile = () => {
-    // Clear the csvData state to make it back to empty array
-    setCsvData([]);
-    // Reset the file input value to null, this is important because if we don't reset the file input value to null, then the user can't upload the same file again after they uploaded it once
-    document.getElementById(inputFileId).value = null;
-    setIsScreePlotVisible(false);
-    setIsLoadingsTableVisible(false);
-    setIsTopFiveContributorsTableVisible(false);
-    setIsPCA2DVisible(false);
-    setIsPCA3DVisible(false);
+    if (csvData.length === 0) {
+      return;
+    }
+    showAlertForClear();
   }
   /*####################
   # End of FUNCTIONS --- Clear the uploaded file 
@@ -181,6 +176,45 @@ export default function Home() {
   # End of FUNCTIONS --- Show alert message
   ####################*/
 
+  /*####################
+  # FUNCTIONS --- Show alert message with options, like "OK" button, "Cancel" button, etc.
+  ####################*/
+  const showAlertForClear = () => {
+    Swal.fire({
+      title: "Do you want to clear all?",
+      icon: "warning",
+      showDenyButton: true,
+      confirmButtonColor: '#272E3F',
+      // showCancelButton: true,
+      confirmButtonText: "Yes",
+      denyButtonText: `No`
+    }).then((result) => {
+      // If the user clicks on the "Yes" button, then we will clear the csvData, and reset the file input value to null
+      if (result.isConfirmed) {
+        // Clear the csvData state to make it back to empty array
+        setCsvData([]);
+        // Reset the file input value to null, this is important because if we don't reset the file input value to null, then the user can't upload the same file again after they uploaded it once
+        document.getElementById(inputFileId).value = null;
+        // Then we will hide the scree plot, PCA plot, loadings table, top 5 contributors table
+        setIsScreePlotVisible(false);
+        setIsLoadingsTableVisible(false);
+        setIsTopFiveContributorsTableVisible(false);
+        setIsPCA2DVisible(false);
+        setIsPCA3DVisible(false);
+        // Then show the alert message to tell the user that everything is cleared
+        Swal.fire({
+          title: "Cleared!",
+          icon: "success",
+          showConfirmButton: false,
+          // The timer is used to auto close the alert
+          timer: 1500,
+        });
+      }
+    });
+  }
+  /*####################
+  # End of FUNCTIONS --- Show alert message with options
+  ####################*/
 
 
   /*####################
