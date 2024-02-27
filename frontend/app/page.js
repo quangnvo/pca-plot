@@ -107,7 +107,7 @@ export default function Home() {
       // Using PapaParse, a library used for parsing, to parse the file
       Papa.parse(file, {
         header: true,
-        // The skipEmptyLines: true is important, because if we don't use it, then the empty lines in the csv file will be parsed as an empty object, and it will cause the error when we try to render the table
+        // The "skipEmptyLines: true" is important, because if we don't use it, then the empty lines in the csv file will be parsed as an empty object, and it will cause the error when we try to render the table
         skipEmptyLines: true,
         complete: (results) => {
           // Then set the parsed data to the csvData
@@ -1292,6 +1292,18 @@ export default function Home() {
   ####################*/
   return (
     <div className='container my-4 flex flex-col gap-5'>
+
+      <div>
+        <h1 className='font-bold mb-4'>
+          Things
+        </h1>
+        <ul className="list-disc list-inside">
+          <li className='text-red-500'>Add color changer for scree plot</li>
+          <li className='text-red-500'>Fix bug color group when switching between PCA 2D and 3D</li>
+          <li className='text-red-500'>Add color badge for top 5 contributors table</li>
+        </ul>
+      </div>
+
 
       <div className="flex py-3 justify-between sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
         <div className='flex gap-2'>
