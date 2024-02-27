@@ -1,3 +1,8 @@
+#########################
+# NOTICE
+# Check the file "generatePCA.py" for the detail explanation, as almost the code here is similar to the code in "generatePCA.py"
+#########################
+
 import pandas as pd
 from flask import Blueprint, jsonify, request
 from sklearn.decomposition import PCA
@@ -25,19 +30,25 @@ def generate_pca_3d():
 
     pcaVariancePercentage = pcaObject.explained_variance_ratio_
 
+    defaultColor = "#272E3F"
+    defaultBorderColor = "#000000"
+    defaultTitleFontColor = "#000000"
+
     pcaScatterCoordinates = [
         {
             'type': 'scatter3d',
             'mode': 'markers',
             'name': convertedData.columns[i],
+            # In the PCA 2D, we use only x and y coordinates
+            # In the PCA 3D, we use x, y, and z coordinates
             'x': [pcaData[i, 0]],
             'y': [pcaData[i, 1]],
             'z': [pcaData[i, 2]],
             'marker': {
                 'size': 12,
-                'color': "#272E3F",
+                'color': defaultColor,
                 'line': {
-                    'color': 'black',
+                    'color': defaultBorderColor,
                     'width': 2,
                 }
             },
@@ -54,21 +65,21 @@ def generate_pca_3d():
                 'title': f'PC1 ({pcaVariancePercentage[0]*100:.2f}%)',
                 'titlefont': {
                     'size': 14,
-                    'color': 'black',
+                    'color': defaultTitleFontColor,
                 },
             },
             'yaxis': {
                 'title': f'PC2 ({pcaVariancePercentage[1]*100:.2f}%)',
                 'titlefont': {
                     'size': 14,
-                    'color': 'black',
+                    'color': defaultTitleFontColor,
                 },
             },
             'zaxis': {
                 'title': f'PC3 ({pcaVariancePercentage[2]*100:.2f}%)',
                 'titlefont': {
                     'size': 14,
-                    'color': 'black',
+                    'color': defaultTitleFontColor,
                 },
             },
         }

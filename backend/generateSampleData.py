@@ -7,9 +7,6 @@ bp = Blueprint('generateSampleData', __name__)
 
 
 @bp.route('/api/generate_data', methods=['GET'])
-#########################
-# Generate random data
-#########################
 def generate_data():
     data = []
     # Generate 300 random samples
@@ -27,6 +24,4 @@ def generate_data():
             'condition 5': f"{random.uniform(4, 10):.2f}"
         }
         data.append(sample)
-    print("🚀🚀🚀 RANDOM DATA")
-    print(data[0:5])
     return jsonify(data)

@@ -1301,6 +1301,8 @@ export default function Home() {
           <li className='text-red-500'>Add color changer for scree plot</li>
           <li className='text-red-500'>Fix bug color group when switching between PCA 2D and 3D</li>
           <li className='text-red-500'>Add color badge for top 5 contributors table</li>
+          <li className='text-red-500'>If click Clear then remove all the plot and table</li>
+          <li className='text-red-500'>Add alert if user not yet upload the csv file but still click on the buttons generate plot</li>
         </ul>
       </div>
 
