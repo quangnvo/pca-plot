@@ -33,7 +33,8 @@ import { SearchOutlined } from '@ant-design/icons';
 // The Highlighter is used to highlight the searched text in the table
 import Highlighter from 'react-highlight-words';
 
-
+// The sweetalert2 is used to show the alert message, like the alert message when the user didn't upload the file yet
+import Swal from 'sweetalert2'
 
 
 export default function Home() {
@@ -86,7 +87,7 @@ export default function Home() {
   const acceptFileTypes = ".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel";
 
   /*####################
-  # End of the code for INITIAL VARIABLES
+  # End of INITIAL VARIABLES
   ####################*/
 
 
@@ -117,7 +118,7 @@ export default function Home() {
     }
   };
   /*####################
-  # End of the code for FUNCTIONS --- Handle file upload
+  # End of FUNCTIONS --- Handle file upload
   ####################*/
 
 
@@ -129,16 +130,66 @@ export default function Home() {
     setCsvData([]);
     // Reset the file input value to null, this is important because if we don't reset the file input value to null, then the user can't upload the same file again after they uploaded it once
     document.getElementById(inputFileId).value = null;
+    setIsScreePlotVisible(false);
+    setIsLoadingsTableVisible(false);
+    setIsTopFiveContributorsTableVisible(false);
+    setIsPCA2DVisible(false);
+    setIsPCA3DVisible(false);
   }
   /*####################
-  # End of the code for FUNCTIONS --- Clear the uploaded file 
+  # End of FUNCTIONS --- Clear the uploaded file 
   ####################*/
+
+
+  /*####################
+  # FUNCTIONS --- Check if the file is uploaded
+  ####################*/
+  const isFileUploaded = () => {
+    if (csvData.length > 0) {
+      return true;
+    } else {
+      showAlert(
+        // The title of the alert
+        "Oops...",
+        // The message of the alert 
+        "Please upload the file first",
+        // The icon of the alert, can be "success", "error", "warning", "info", "question"
+        "error"
+      );
+      return false;
+    }
+  }
+  /*####################
+  # End of FUNCTIONS --- Check if the file is uploaded
+  ####################*/
+
+
+  /*####################
+  # FUNCTIONS --- Show alert message
+  ####################*/
+  const showAlert = (title, message, icon) => {
+    Swal.fire({
+      title: title,
+      text: message,
+      icon: icon,
+      showConfirmButton: false,
+      showCancelButton: true,
+      // cancelButtonColor: '#272E3F',
+    })
+  }
+  /*####################
+  # End of FUNCTIONS --- Show alert message
+  ####################*/
+
 
 
   /*####################
   # FUNCTIONS --- Generate random data
   ####################*/
   const generateRandomData = async () => {
+    if (!isFileUploaded()) {
+      return;
+    }
     try {
       // Send a GET request to the backend to generate random data
       // then backend will return the random data
@@ -150,7 +201,7 @@ export default function Home() {
     }
   }
   /*####################
-  # End of the code for FUNCTIONS --- Generate random data
+  # End of FUNCTIONS --- Generate random data
   ####################*/
 
 
@@ -158,6 +209,10 @@ export default function Home() {
   # FUNCTIONS --- Generate Scree plot
   ####################*/
   const generateScreePlot = async () => {
+    // Check if the file is uploaded, if not, then show the alert message and return
+    if (!isFileUploaded()) {
+      return;
+    }
     // if (!isScreePlotVisible) ==> if the scree plot is not visible, meaning there isn't scree plot on the screen yet, then we will call the API to generate the scree plot data
     if (!isScreePlotVisible) {
       try {
@@ -174,7 +229,7 @@ export default function Home() {
     setIsScreePlotVisible(!isScreePlotVisible);
   }
   /*####################
-  # End of the code for FUNCTIONS --- Generate Scree plot
+  # End of FUNCTIONS --- Generate Scree plot
   ####################*/
 
 
@@ -182,6 +237,9 @@ export default function Home() {
   # FUNCTIONS --- Generate PCA plot 2D
   ####################*/
   const generatePCAPlot = async () => {
+    if (!isFileUploaded()) {
+      return;
+    }
     try {
       const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca`, csvData);
       console.log("🚀🚀🚀 data for 2D plot", response.data)
@@ -231,7 +289,7 @@ export default function Home() {
     }
   }
   /*####################
-  # End of the code for FUNCTIONS --- Generate PCA plot 2D
+  # End of FUNCTIONS --- Generate PCA plot 2D
   ####################*/
 
 
@@ -239,6 +297,9 @@ export default function Home() {
   # FUNCTIONS --- Generate PCA plot 3D
   ####################*/
   const generatePCAPlot3D = async () => {
+    if (!isFileUploaded()) {
+      return;
+    }
     try {
       const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca_3d`, csvData);
       console.log("🚀🚀🚀 data for 3D plot", response.data)
@@ -288,7 +349,7 @@ export default function Home() {
     }
   }
   /*####################
-  # End of the code for FUNCTIONS --- Generate PCA plot 3D
+  # End of FUNCTIONS --- Generate PCA plot 3D
   ####################*/
 
 
@@ -296,6 +357,9 @@ export default function Home() {
   # FUNCTIONS --- Generate Loadings table
   ####################*/
   const generateLoadingsTable = async () => {
+    if (!isFileUploaded()) {
+      return;
+    }
     if (!isLoadingsTableVisible) {
       try {
         const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_loadings_table`, csvData);
@@ -307,13 +371,16 @@ export default function Home() {
     setIsLoadingsTableVisible(!isLoadingsTableVisible);
   }
   /*####################
-  # End of the code for FUNCTIONS --- Generate Loadings table
+  # End of FUNCTIONS --- Generate Loadings table
   ####################*/
 
   /*####################
   # FUNCTIONS --- Generate Top 5 contributors table
   ####################*/
   const generateTopFiveContributors = async () => {
+    if (!isFileUploaded()) {
+      return;
+    }
     if (!isTopFiveContributorsTableVisible) {
       try {
         const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_top_five_contributors`, csvData);
@@ -325,11 +392,11 @@ export default function Home() {
     setIsTopFiveContributorsTableVisible(!isTopFiveContributorsTableVisible);
   }
   /*####################
-  # End of the code for FUNCTIONS --- Generate Top 5 contributors table
+  # End of FUNCTIONS --- Generate Top 5 contributors table
   ####################*/
 
   /*####################
-  # End of the code for FUNCTIONS 
+  # End of FUNCTIONS 
   ####################*/
 
 
@@ -349,7 +416,7 @@ export default function Home() {
     )
   }
   /*####################
-  # End of the code for BUTTONS --- Render button to generate random data
+  # End of BUTTONS --- Render button to generate random data
   ####################*/
 
 
@@ -368,7 +435,7 @@ export default function Home() {
     )
   }
   /*####################
-  # End of the code for BUTTONS --- Render button to upload file
+  # End of BUTTONS --- Render button to upload file
   ####################*/
 
 
@@ -386,7 +453,7 @@ export default function Home() {
     )
   }
   /*####################
-  # End of the code for BUTTONS --- Render button to clear the uploaded file
+  # End of BUTTONS --- Render button to clear the uploaded file
   ####################*/
 
 
@@ -404,7 +471,7 @@ export default function Home() {
     )
   }
   /*####################
-  # End of the code for BUTTONS --- Render button to generate Screen plot
+  # End of BUTTONS --- Render button to generate Screen plot
   ####################*/
 
 
@@ -433,7 +500,7 @@ export default function Home() {
     }
   }
   /*####################
-  # End of the code for BUTTONS --- Render button to generate PCA plot
+  # End of BUTTONS --- Render button to generate PCA plot
   ####################*/
 
   /*####################
@@ -450,7 +517,7 @@ export default function Home() {
     )
   }
   /*####################
-  # End of the code for BUTTONS --- Render button to generate Loadings table
+  # End of BUTTONS --- Render button to generate Loadings table
   ####################*/
 
 
@@ -468,11 +535,11 @@ export default function Home() {
     )
   }
   /*###################
-  # End of the code for BUTTONS --- Render button to generate Top 5 contributors table
+  # End of BUTTONS --- Render button to generate Top 5 contributors table
   ####################*/
 
   /*####################
-  # End of the code for BUTTONS
+  # End of BUTTONS
   ####################*/
 
 
@@ -506,7 +573,7 @@ export default function Home() {
     }
   }
   /*####################
-  # End of the code for PLOTS --- Render Scree plot
+  # End of PLOTS --- Render Scree plot
   ####################*/
 
   /*####################
@@ -524,6 +591,10 @@ export default function Home() {
         </p>
       ),
       onClick: () => {
+        // Check if the file is uploaded, if not, then show the alert message and return
+        if (!isFileUploaded()) {
+          return;
+        }
         // Now user clicks on the PCA 2D, then we will check the current visibility of the PCA 2D and PCA 3D, then we will update the visibility of the PCA 2D and PCA 3D
         // Click on the PCA 2D button --> if PCA 2D plot and PCA 3D plot not show yet --> then show PCA 2D plot
         if (isPCA2DVisible == false && isPCA3DVisible == false) {
@@ -551,6 +622,10 @@ export default function Home() {
         </p>
       ),
       onClick: () => {
+        // Check if the file is uploaded, if not, then show the alert message and return
+        if (!isFileUploaded()) {
+          return;
+        }
         // Click on the PCA 3D button --> if PCA 2D plot and PCA 3D plot not show yet --> then show PCA 3D plot
         if (isPCA2DVisible == false && isPCA3DVisible == false) {
           generatePCAPlot3D();
@@ -616,11 +691,11 @@ export default function Home() {
     }
   }
   /*####################
-  # End of the code for PLOTS --- Render PCA plot 2D and 3D
+  # End of PLOTS --- Render PCA plot 2D and 3D
   ####################*/
 
   /*####################
-  # End of the code for PLOTS
+  # End of PLOTS
   ####################*/
 
 
@@ -735,7 +810,7 @@ export default function Home() {
       ),
   });
   /*####################
-  # End of the code for TABLE --- Searching Dropdown
+  # End of TABLE --- Searching Dropdown
   ####################*/
 
 
@@ -807,7 +882,7 @@ export default function Home() {
     )
   }
   /*####################
-  # End of the code for TABLE --- Data Table
+  # End of TABLE --- Data Table
   ####################*/
 
   /*####################
@@ -873,7 +948,7 @@ export default function Home() {
     )
   }
   /*####################
-  # End of the code for TABLE --- Loadings Table
+  # End of TABLE --- Loadings Table
   ####################*/
 
   /*####################
@@ -939,11 +1014,11 @@ export default function Home() {
     )
   }
   /*####################
-  # End of the code for TABLE --- Top Five Contributors Table
+  # End of TABLE --- Top Five Contributors Table
   ####################*/
 
   /*####################
-  # End of the code for TABLE
+  # End of TABLE
   ####################*/
 
 
@@ -997,7 +1072,7 @@ export default function Home() {
   ]);
 
   /*####################
-  # End of the code for COLORS --- Setup variables
+  # End of COLORS --- Setup variables
   ####################*/
 
 
@@ -1131,7 +1206,7 @@ export default function Home() {
   }
 
   /*####################
-  # End of the code for COLORS --- Functions
+  # End of COLORS --- Functions
   ####################*/
 
 
@@ -1258,11 +1333,11 @@ export default function Home() {
 
   }
   /*####################
-  # End of the code for COLORS --- Render
+  # End of COLORS --- Render
   ####################*/
 
   /*####################
-  # End of the code for COLORS
+  # End of COLORS
   ####################*/
 
 
@@ -1282,7 +1357,7 @@ export default function Home() {
     )
   }
   /*####################
-  # End of the code for the NUMBER OF SAMPLES
+  # End of the NUMBER OF SAMPLES
   ####################*/
 
 
@@ -1301,8 +1376,8 @@ export default function Home() {
           <li className='text-red-500'>Add color changer for scree plot</li>
           <li className='text-red-500'>Fix bug color group when switching between PCA 2D and 3D</li>
           <li className='text-red-500'>Add color badge for top 5 contributors table</li>
-          <li className='text-red-500'>If click Clear then remove all the plot and table</li>
-          <li className='text-red-500'>Add alert if user not yet upload the csv file but still click on the buttons generate plot</li>
+          <li className='text-blue-500'>If click Clear then remove all the plot and table - DONE</li>
+          <li className='text-blue-500'>Add alert if user not yet upload the csv file but still click on the buttons generate plot - DONE</li>
         </ul>
       </div>
 

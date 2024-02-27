@@ -93,6 +93,12 @@
   border-color: #070707 !important;
 }
 
+.swal2-cancel .swal2-styled {
+  background-color: #070707 !important;
+  border-color: #070707 !important;
+  color: #fff !important;
+}
+
 @layer base {
   * {
     @apply border-border;
