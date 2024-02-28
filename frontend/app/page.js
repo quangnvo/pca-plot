@@ -23,11 +23,12 @@ import {
   Table,
   Select,
   Input as InputAntd,
-  Dropdown as DropdownAntd
+  Dropdown as DropdownAntd,
+  Tour,
 } from 'antd';
 
 // The icons used in the UI
-import { Plus } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import { SearchOutlined } from '@ant-design/icons';
 
 // The Highlighter is used to highlight the searched text in the table
@@ -36,6 +37,8 @@ import Highlighter from 'react-highlight-words';
 // The sweetalert2 is used to show the alert message, like the alert message when the user didn't upload the file yet
 import Swal from 'sweetalert2'
 
+// The react-csv library is used to download the table as a csv file
+import { CSVLink } from 'react-csv';
 
 export default function Home() {
 
@@ -74,6 +77,60 @@ export default function Home() {
   const [isPCA2DVisible, setIsPCA2DVisible] = useState(false);
   const [isPCA3DVisible, setIsPCA3DVisible] = useState(false);
 
+  // Variables for the tour
+  const [isTourOpen, setIsTourOpen] = useState(false);
+  const refTourStep1 = useRef(null);
+  const refTourStep2 = useRef(null);
+  const refTourStep3 = useRef(null);
+  const refTourStep4 = useRef(null);
+  const refTourStep5 = useRef(null);
+  const refTourStep6 = useRef(null);
+
+  const tourSteps = [
+    {
+      title: 'Upload File',
+      description: 'Upload your file here.',
+      // cover: (
+      //   <img
+      //     alt="upload file"
+      //     src="https://picsum.photos/200/300"
+      //   />
+      // ),
+      target: () => refTourStep1.current,
+    },
+    {
+      title: 'Scree Plot',
+      description: 'aaaaaaaaaaaaa',
+      cover: (
+        <img
+          alt="scree plot"
+          src='tour-scree-plot.png'
+        />
+      ),
+      target: () => refTourStep2.current,
+    },
+    {
+      title: 'PCA Plot',
+      description: 'bbbbbbbbbb',
+      target: () => refTourStep3.current,
+    },
+    {
+      title: 'Loadings Table',
+      description: 'cccccccccc',
+      target: () => refTourStep4.current,
+    },
+    {
+      title: 'Top 5 Contributors',
+      description: 'dddddddddd',
+      target: () => refTourStep5.current,
+    },
+    {
+      title: 'Clear',
+      description: 'eeeeeeeeee',
+      target: () => refTourStep6.current,
+    },
+  ];
+
   // The name of the PCA 2D and PCA 3D, just used for naming the title of the buttons
   const namePCA2D = "PCA 2D";
   const namePCA3D = "PCA 3D";
@@ -89,6 +146,7 @@ export default function Home() {
   const spaceBetweenSections = "my-[30px]";
   const spaceBetweenColorSectionAndPlot = "mt-5";
   const styleForSectionHeading = "mb-4 text-3xl font-bold"
+  const styleforDownloadButton = "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
   /*####################
   # End of INITIAL VARIABLES
   ####################*/
@@ -470,6 +528,8 @@ export default function Home() {
         type='file'
         accept={acceptFileTypes}
         onChange={handleFileUpload}
+        // The ref={refTourStep1} is used to tell the tour that this is the target of the first step, the "Tour" is like the tutorial for the user
+        ref={refTourStep1}
       />
     )
   }
@@ -486,6 +546,7 @@ export default function Home() {
       <Button
         variant="outline"
         onClick={clearUploadedFile}
+        ref={refTourStep6}
       >
         Clear
       </Button>
@@ -504,6 +565,7 @@ export default function Home() {
       <Button
         onClick={generateScreePlot}
         variant={isScreePlotVisible ? "default" : "outline"}
+        ref={refTourStep2}
       >
         Scree plot
       </Button>
@@ -520,19 +582,29 @@ export default function Home() {
   const renderButtonPCAPlot = () => {
     if (isPCA2DVisible) {
       return (
-        <Button variant="default" >
+        <Button
+          variant="default"
+
+        >
           {namePCA2D}
         </Button>
       )
     } else if (isPCA3DVisible) {
       return (
-        <Button variant="default">
+        <Button
+          variant="default"
+
+        >
           {namePCA3D}
         </Button>
       )
     } else {
       return (
-        <Button variant="outline">
+        <Button
+          variant="outline"
+
+          ref={refTourStep3}
+        >
           PCA plot
         </Button>
       )
@@ -550,6 +622,7 @@ export default function Home() {
       <Button
         onClick={generateLoadingsTable}
         variant={isLoadingsTableVisible ? "default" : "outline"}
+        ref={refTourStep4}
       >
         Loadings table
       </Button>
@@ -568,6 +641,7 @@ export default function Home() {
       <Button
         onClick={generateTopFiveContributors}
         variant={isTopFiveContributorsTableVisible ? "default" : "outline"}
+        ref={refTourStep5}
       >
         Top 5 contributors
       </Button>
@@ -919,10 +993,23 @@ export default function Home() {
       return null;
     }
     return (
-      <>
-        <p className={`${styleForSectionHeading}`}>
-          Data table
-        </p>
+      <div>
+        <div className='flex justify-between'>
+          {/* Title of the table */}
+          <p className={`${styleForSectionHeading}`}>
+            Data table
+          </p>
+
+          {/* Button download file */}
+          <CSVLink
+            filename={"dataTable.csv"}
+            data={csvData}
+            className={`${styleforDownloadButton}`}
+          >
+            Download file
+          </CSVLink>
+        </div>
+        {/* The table */}
         <Table
           columns={columnForCsvTable}
           dataSource={dataForCsvTable}
@@ -933,7 +1020,7 @@ export default function Home() {
             offsetHeader: 64,
           }}
         />
-      </>
+      </div>
     )
   }
   /*####################
@@ -986,9 +1073,22 @@ export default function Home() {
     // If there is data in the loadings table, then we will render the table
     return (
       <div className={`${spaceBetweenSections}`} >
-        <p className={`${styleForSectionHeading}`}>
-          Loadings table
-        </p>
+        <div className='flex justify-between'>
+          {/* Title of the table */}
+          <p className={`${styleForSectionHeading}`}>
+            Loadings table
+          </p>
+
+          {/* Button download file */}
+          <CSVLink
+            filename={"loadingsTable.csv"}
+            data={loadingsTableData}
+            className={`${styleforDownloadButton}`}
+          >
+            Download file
+          </CSVLink>
+        </div>
+        {/* The table */}
         <Table
           columns={columnForLoadingsTable}
           dataSource={dataForLoadingsTable}
@@ -1050,11 +1150,26 @@ export default function Home() {
     if (!isTopFiveContributorsTableVisible) {
       return null;
     }
+    if (topFiveContributorsTableData.length === 0) {
+      return null;
+    }
     return (
       <div className={`${spaceBetweenSections}`} >
-        <p className={`${styleForSectionHeading}`}>
-          Top 5 contributors table
-        </p>
+        <div className='flex justify-between'>
+          {/* Title of the table */}
+          <p className={`${styleForSectionHeading}`}>
+            Top 5 contributors
+          </p>
+
+          {/* Button download file */}
+          <CSVLink
+            filename={"topfivecontributors.csv"}
+            data={topFiveContributorsTableData}
+            className={`${styleforDownloadButton}`}
+          >
+            Download file
+          </CSVLink>
+        </div>
         <Table
           columns={columnForTopFiveContributorsTable}
           dataSource={dataForTopFiveContributorsTable}
@@ -1456,7 +1571,7 @@ export default function Home() {
       return null;
     }
     return (
-      <p>
+      <p className='my-3'>
         Number of samples: <strong>{csvData ? csvData.length : "0"}</strong>
       </p>
     )
@@ -1473,15 +1588,19 @@ export default function Home() {
   return (
     <div className='container mt-4 flex flex-col'>
       <div className="flex py-3 justify-between sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
-        {/* Button upload file and Button clear */}
+
+        <div>
+          <Button
+            variant="outline"
+            onClick={() => setIsTourOpen(true)}
+          >
+            Begin a tour 🚀
+          </Button>
+        </div>
+
+
         <div className='flex gap-2'>
           {renderButtonUploadFile()}
-          {renderButtonClearUploadedFile()}
-        </div>
-        {/* End of Button upload file and Button clear */}
-
-        {/* Button scree plot, PCA, loadings table, top 5 contributors */}
-        <div className='flex gap-2'>
           {renderButtonGenerateScreePlot()}
           <DropdownAntd
             menu={{
@@ -1494,16 +1613,25 @@ export default function Home() {
           </DropdownAntd>
           {renderButtonGenerateLoadingsTable()}
           {renderButtonGenerateTopFiveContributorsTable()}
+          {renderButtonClearUploadedFile()}
         </div>
       </div>
-      {/* End of Button scree plot, PCA, loadings table, top 5 contributors */}
 
-      {renderNumberSamples()}
-      {renderDataTable()}
-      {renderScreePlot()}
-      {renderPCAPlotGeneral(isPCA2DVisible, isPCA3DVisible)}
-      {renderLoadingsTable()}
-      {renderTopFiveContributorsTable()}
+      <div className='mt-16'>
+        {renderNumberSamples()}
+        {renderDataTable()}
+        {renderScreePlot()}
+        {renderPCAPlotGeneral(isPCA2DVisible, isPCA3DVisible)}
+        {renderLoadingsTable()}
+        {renderTopFiveContributorsTable()}
+      </div>
+
+      {/* This is the "tour" as a tutorial for user, and this <Tour> should be put at the end */}
+      <Tour
+        steps={tourSteps}
+        open={isTourOpen}
+        onClose={() => setIsTourOpen(false)}
+      />
     </div>
   );
   /*####################

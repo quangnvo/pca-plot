@@ -99,6 +99,16 @@
   color: #fff !important;
 }
 
+.ant-tour-prev-btn {
+  color: #000000 !important;
+  background: #ffffff !important;
+}
+
+.ant-tour-next-btn {
+  color: white !important;
+  background: #272e3f !important;
+}
+
 @layer base {
   * {
     @apply border-border;
