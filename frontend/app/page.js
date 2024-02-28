@@ -86,6 +86,9 @@ export default function Home() {
 
   const acceptFileTypes = ".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel";
 
+  const spaceBetweenSections = "my-[30px]";
+  const spaceBetweenColorSectionAndPlot = "mt-4";
+  const styleForSectionHeading = "mb-4 text-3xl font-bold"
   /*####################
   # End of INITIAL VARIABLES
   ####################*/
@@ -589,17 +592,23 @@ export default function Home() {
     if (isScreePlotVisible) {
       if (screePlotData) {
         return (
-          <div className='mb-10'>
-            <div className='text-3xl font-bold mb-4'>
+          <div className={`${spaceBetweenSections}`} >
+            <p className={`${styleForSectionHeading}`}>
               Scree plot
-            </div>
+            </p>
             <div className='p-3 border border-gray-200 rounded-lg'>
               <Plot
                 useResizeHandler
                 style={{ width: "100%", height: "500px" }}
                 data={screePlotData.data}
                 layout={screePlotData.layout}
+                // key={Math.random()} is very IMPORTANT here, because it will force the Plot to re-render when the data is changed. 
+                // Otherwise, the Plot will not re-render, so the color on the plot will not be updated.
+                key={Math.random()}
               />
+            </div>
+            <div className={`${spaceBetweenColorSectionAndPlot}`}>
+              {renderColorSectionForScreePlot()}
             </div>
           </div>
         )
@@ -683,31 +692,35 @@ export default function Home() {
     if (isPCA2DVisible) {
       if (pcaPlotData) {
         return (
-          <>
-            <div className='text-3xl font-bold mb-4'>
+          <div className={`${spaceBetweenSections}`} >
+            <p className={`${styleForSectionHeading}`}>
               PCA-2D plot
-            </div>
+            </p>
             <div className='border border-gray-200 rounded-lg overflow-hidden'>
               <Plot
                 useResizeHandler
                 style={{ width: "100%", height: "100%" }}
                 data={pcaPlotData.data}
                 layout={pcaPlotData.layout}
-                // key={Math.random()} is very important here, because it will force the Plot to re-render when the data is changed. 
+                // key={Math.random()} is very IMPORTANT here, because it will force the Plot to re-render when the data is changed. 
                 // Otherwise, the Plot will not re-render, so the color of the samples on the plot will not be updated.
                 key={Math.random()}
               />
             </div>
-          </>
+            <div className={`${spaceBetweenColorSectionAndPlot}`}>
+              {renderColorSection()}
+              {renderSampleNamesWithGroupChoice(isPCA2DVisible, isPCA3DVisible)}
+            </div>
+          </div>
         )
       }
     } else if (isPCA3DVisible) {
       if (pcaPlot3DData) {
         return (
-          <>
-            <div className='text-3xl font-bold mb-4'>
+          <div className={`${spaceBetweenSections}`} >
+            <p className={`${styleForSectionHeading}`}>
               PCA-3D plot
-            </div>
+            </p>
             <div className='border border-gray-200 rounded-lg overflow-hidden'>
               <Plot
                 useResizeHandler
@@ -717,7 +730,11 @@ export default function Home() {
                 key={Math.random()}
               />
             </div>
-          </>
+            <div className={`${spaceBetweenColorSectionAndPlot}`}>
+              {renderColorSection()}
+              {renderSampleNamesWithGroupChoice(isPCA2DVisible, isPCA3DVisible)}
+            </div>
+          </div>
         )
       }
     } else {
@@ -773,7 +790,7 @@ export default function Home() {
       >
         {/* Input area */}
         <InputAntd
-          className='mb-3 w-full'
+          className='w-full'
           ref={searchInput}
           placeholder="Search ..."
           value={selectedKeys[0]}
@@ -899,9 +916,9 @@ export default function Home() {
     }
     return (
       <>
-        <div className='text-3xl font-bold'>
+        <p className={`${styleForSectionHeading}`}>
           Data table
-        </div>
+        </p>
         <Table
           columns={columnForCsvTable}
           dataSource={dataForCsvTable}
@@ -964,10 +981,10 @@ export default function Home() {
     }
     // If there is data in the loadings table, then we will render the table
     return (
-      <div className='mb-10'>
-        <div className='text-3xl font-bold mb-4'>
+      <div className={`${spaceBetweenSections}`} >
+        <p className={`${styleForSectionHeading}`}>
           Loadings table
-        </div>
+        </p>
         <Table
           columns={columnForLoadingsTable}
           dataSource={dataForLoadingsTable}
@@ -1030,10 +1047,10 @@ export default function Home() {
       return null;
     }
     return (
-      <div className='mb-10'>
-        <div className='text-3xl font-bold mb-4'>
+      <div className={`${spaceBetweenSections}`} >
+        <p className={`${styleForSectionHeading}`}>
           Top 5 contributors table
-        </div>
+        </p>
         <Table
           columns={columnForTopFiveContributorsTable}
           dataSource={dataForTopFiveContributorsTable}
@@ -1065,6 +1082,10 @@ export default function Home() {
   # COLORS --- Setup variables
   ####################*/
 
+  /*####################
+  # COLORS --- Setup variables --- For PCA 2D and PCA 3D
+  ####################*/
+
   // The "nameOfSamples" is an array of objects, each object has the format
   // {
   //    name: "H2O_30m_A",
@@ -1072,7 +1093,6 @@ export default function Home() {
   // }
   const [nameOfSamples, setNameOfSamples]
     = useState([]);
-
 
   // The "colorGroups" is an array of objects, and it is used to store the color of the groups, like "Group 1" which color , "Group 2" which color, etc.
   // The "sampleNames" in the "colorGroups" is an array of strings, and it is used to store the names of the samples that belong to which group, like "H2O_30m_A", "H2O_30m_B", "H2O_30m_C", etc. For example, if user choose "Group 1" for "H2O_30m_A", then "H2O_30m_A" will be added to the "sampleNames" array of "Group 1".
@@ -1086,24 +1106,37 @@ export default function Home() {
     {
       groupId: "2",
       name: "Group 2",
-      colorCode: "#FFFF00",
+      colorCode: defaultColor,
       sampleNames: []
     },
   ]);
-
 
   // This "groupOptions" is the required format to use in the antd library <Select> component
   // This one is used to render the Group selection dropdown for user to select, like "H2O_30m_A" - "Group 1", "H2O_30m_B" - "Group 1", etc.
   const [groupOptions, setGroupOptions] = useState([
     {
       label: "Group 1",
-      value: "1, #272E3F"
+      value: `1, ${defaultColor}`
     },
     {
       label: "Group 2",
-      value: "2, #272E3F"
+      value: `2, ${defaultColor}`
     },
   ]);
+
+  /*####################
+  # End of COLORS --- Setup variables --- For PCA 2D and PCA 3D
+  ####################*/
+
+  /*####################
+  # COLORS --- Setup variables --- For Scree plot
+  ####################*/
+
+  const [colorForScreePlot, setColorForScreePlot] = useState(defaultColor);
+
+  /*####################
+  # End of COLORS --- Setup variables --- For Scree plot
+  ####################*/
 
   /*####################
   # End of COLORS --- Setup variables
@@ -1114,6 +1147,9 @@ export default function Home() {
   # COLORS --- Functions
   ####################*/
 
+  /*####################
+  # COLORS --- Functions --- Change color for PCA 2D and PCA 3D
+  ####################*/
   // The function "handleChangeColorInPlot2D" is used to change the color of the sample in the 2D PCA plot
   const handleChangeColorInPlot2D = (sampleName, colorCode) => {
     const newPcaPlotData = { ...pcaPlotData }
@@ -1135,11 +1171,10 @@ export default function Home() {
   }
 
 
-
   // The function "handleChangeGroupForEachSample" is call when user click on the which color group belong to each sample. For example, "H2O_30m_A" - user chooses "Group 1", "H2O_30m_B" - user chooses "Group 1", etc.
   const handleChangeGroupForEachSample = (sampleName, value) => {
 
-    // Because at the above, we set the "value" of the each object in the groupOptions to be "1, #272E3F", "2, #FFFF00", etc.
+    // Because at the above, we set the "value" of the each object in the groupOptions to be "1, defaultColor", "2, defaultColor", etc.
     // So here, we will split the "value" to get the "groupId" and "colorCode", like groupId = "1", colorCode = defaultColor, etc.
     let [groupId, colorCode] = value.split(", ");
 
@@ -1240,12 +1275,38 @@ export default function Home() {
   }
 
   /*####################
+   # End of COLORS --- Functions --- Change color for PCA 2D and PCA 3D
+   ####################*/
+
+  /*####################
+  # COLORS --- Functions --- Change color for Scree plot
+  ####################*/
+
+  const changeColorForScreePlot = (newColor) => {
+    console.log("newColor: ", newColor)
+    console.log("screePlotData: ", screePlotData)
+
+    const newScreePlotData = { ...screePlotData }
+    newScreePlotData.data[0].marker.color = newColor;
+    setScreePlotData(newScreePlotData);
+    setColorForScreePlot(newColor);
+  }
+
+  /*####################
+  # End of COLORS --- Functions --- Change color for Scree plot
+  ####################*/
+
+  /*####################
   # End of COLORS --- Functions
   ####################*/
 
 
   /*####################
   # COLORS --- Render
+  ####################*/
+
+  /*####################
+  # COLORS --- Render --- Color section for PCA 2D and PCA 3D
   ####################*/
   const renderColorSection = () => {
     if (!isPCA2DVisible && !isPCA3DVisible) {
@@ -1339,33 +1400,40 @@ export default function Home() {
         </div>
       )
     }
-
-    // REMOVEEEEEEEEEEEE
-    // if (pcaPlotData || pcaPlot3DData) {
-    //   return (
-    //     <div className='grid grid-cols-3 gap-x-6 gap-y-3 my-7'>
-    //       {nameOfSamples.map((sample, index) => {
-    //         return <div
-    //           key={index}
-    //           className='grid grid-cols-2 items-center'
-    //         >
-    //           <p>{sample.name}</p>
-
-    //           <Select
-    //             onChange={(value) =>
-    //               handleChangeGroupForEachSample(sample.name, value)
-    //             }
-    //             className='w-3/5'
-    //             options={groupOptions}
-    //           />
-    //         </div>
-    //       })}
-    //     </div>
-    //   )
-    // }
-    // REMOVEEEEEEEEEEEE
-
   }
+
+  /*####################
+  # End of COLORS --- Render --- Color section for PCA 2D and PCA 3D
+  ####################*/
+
+  /*####################
+  # COLORS --- Render --- Color section for Scree plot
+  ####################*/
+
+  const renderColorSectionForScreePlot = () => {
+    if (!isScreePlotVisible) {
+      return null;
+    }
+    if (screePlotData) {
+      return (
+        <div className='flex gap-2 items-center'>
+          <span>Color for Scree plot</span>
+          <Input
+            type="color"
+            className='cursor-pointer w-32 h-10 rounded-md border border-gray-300'
+            value={colorForScreePlot}
+            onChange={(e) => changeColorForScreePlot(e.target.value)}
+          />
+        </div>
+      )
+    }
+  }
+
+
+  /*####################
+  # End of COLORS --- Render --- Color section for Scree plot
+  ####################*/
+
   /*####################
   # End of COLORS --- Render
   ####################*/
@@ -1379,7 +1447,6 @@ export default function Home() {
   /*####################
   # The following code is only about the NUMBER OF SAMPLES
   ####################*/
-  console.log("csvData: ", csvData)
   const renderNumberSamples = () => {
     if (csvData.length === 0) {
       return null;
@@ -1400,31 +1467,18 @@ export default function Home() {
   # The following code is to render the FINAL UI of the page
   ####################*/
   return (
-    <div className='container my-4 flex flex-col gap-5'>
-
-      <div>
-        <h1 className='font-bold mb-4'>
-          Things
-        </h1>
-        <ul className="list-disc list-inside">
-          <li className='text-red-500'>Add color changer for scree plot</li>
-          <li className='text-red-500'>Fix bug color group when switching between PCA 2D and 3D</li>
-          <li className='text-red-500'>Add color badge for top 5 contributors table</li>
-          <li className='text-blue-500'>If click Clear then remove all the plot and table - DONE</li>
-          <li className='text-blue-500'>Add alert if user not yet upload the csv file but still click on the buttons generate plot - DONE</li>
-        </ul>
-      </div>
-
-
+    <div className='container mt-4 flex flex-col gap-5'>
       <div className="flex py-3 justify-between sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
+        {/* Button upload file and Button clear */}
         <div className='flex gap-2'>
           {renderButtonUploadFile()}
           {renderButtonClearUploadedFile()}
         </div>
+        {/* End of Button upload file and Button clear */}
 
+        {/* Button scree plot, PCA, loadings table, top 5 contributors */}
         <div className='flex gap-2'>
           {renderButtonGenerateScreePlot()}
-
           <DropdownAntd
             menu={{
               items: pcaOptions,
@@ -1434,25 +1488,18 @@ export default function Home() {
           >
             {renderButtonPCAPlot()}
           </DropdownAntd>
-
-
           {renderButtonGenerateLoadingsTable()}
           {renderButtonGenerateTopFiveContributorsTable()}
         </div>
       </div>
+      {/* End of Button scree plot, PCA, loadings table, top 5 contributors */}
 
       {renderNumberSamples()}
       {renderDataTable()}
-
       {renderScreePlot()}
-
       {renderPCAPlotGeneral(isPCA2DVisible, isPCA3DVisible)}
-      {renderColorSection()}
-      {renderSampleNamesWithGroupChoice(isPCA2DVisible, isPCA3DVisible)}
-
       {renderLoadingsTable()}
       {renderTopFiveContributorsTable()}
-
     </div>
   );
   /*####################

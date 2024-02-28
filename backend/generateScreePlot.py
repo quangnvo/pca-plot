@@ -54,7 +54,7 @@ def generate_scree_plot():
         cumulativeVariance.tolist()) if v >= 80)
 
     # Default colors
-    defaultColor = '#FFFF00'
+    defaultColor = '#272E3F'
     defaultBorderColor = '#000000'
     defaultTitleColor = '#000000'
 
