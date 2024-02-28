@@ -87,7 +87,7 @@ export default function Home() {
   const acceptFileTypes = ".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel";
 
   const spaceBetweenSections = "my-[30px]";
-  const spaceBetweenColorSectionAndPlot = "mt-4";
+  const spaceBetweenColorSectionAndPlot = "mt-5";
   const styleForSectionHeading = "mb-4 text-3xl font-bold"
   /*####################
   # End of INITIAL VARIABLES
@@ -258,6 +258,8 @@ export default function Home() {
         // then put the scree plot data to the "screePlotData" by using "setScreePlotData"
         const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_scree_plot`, csvData);
         setScreePlotData(response.data);
+        // Reset the color of the scree plot
+        setColorForScreePlot(defaultColor);
       } catch (error) {
         console.error(error);
       }
@@ -727,6 +729,8 @@ export default function Home() {
                 style={{ width: "100%", height: "700px" }}
                 data={pcaPlot3DData.data}
                 layout={pcaPlot3DData.layout}
+                // key={Math.random()} is very IMPORTANT here, because it will force the Plot to re-render when the data is changed. 
+                // Otherwise, the Plot will not re-render, so the color of the samples on the plot will not be updated.
                 key={Math.random()}
               />
             </div>
@@ -1359,7 +1363,7 @@ export default function Home() {
     }
     if (pcaPlotData) {
       return (
-        <div className='grid grid-cols-3 gap-x-6 gap-y-3 my-7'>
+        <div className='grid grid-cols-3 gap-x-6 gap-y-3 mt-5'>
           {nameOfSamples.map((sample, index) => {
             return <div
               key={index}
@@ -1467,7 +1471,7 @@ export default function Home() {
   # The following code is to render the FINAL UI of the page
   ####################*/
   return (
-    <div className='container mt-4 flex flex-col gap-5'>
+    <div className='container mt-4 flex flex-col'>
       <div className="flex py-3 justify-between sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
         {/* Button upload file and Button clear */}
         <div className='flex gap-2'>
