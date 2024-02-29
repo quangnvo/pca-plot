@@ -36,7 +36,8 @@ import {
   BarChartBig,
   ScatterChart,
   Table as TableIcon,
-  Upload
+  Upload,
+  Download,
 } from 'lucide-react';
 import { SearchOutlined } from '@ant-design/icons';
 
@@ -48,6 +49,7 @@ import Swal from 'sweetalert2'
 
 // The react-csv library is used to download the table as a csv file
 import { CSVLink } from 'react-csv';
+import { render } from 'react-dom';
 
 export default function Home() {
 
@@ -714,6 +716,25 @@ export default function Home() {
   # End of BUTTONS --- Render button to generate Top 5 contributors table
   ####################*/
 
+
+  /*####################
+  # BUTTONS --- Render button download file
+  ####################*/
+  const renderButtonDownloadFile = (dataWillBeDownloaded, nameOfDownloadedFile) => {
+    return (
+      <CSVLink
+        data={dataWillBeDownloaded}
+        filename={"data.csv"}
+        className={`${styleForButton}`}
+      >
+        <Download className='mr-2' size={sizeOfIcon} /> Download file
+      </CSVLink>
+    )
+  }
+  /*####################
+  # End of BUTTONS --- Render button download file
+  ####################*/
+
   /*####################
   # End of BUTTONS
   ####################*/
@@ -1064,13 +1085,8 @@ export default function Home() {
           </p>
 
           {/* Button download file */}
-          <CSVLink
-            filename={"dataTable.csv"}
-            data={csvData}
-            className={`${styleForButton}`}
-          >
-            Download file
-          </CSVLink>
+          {renderButtonDownloadFile(csvData, "dataTable.csv")}
+
         </div>
         {/* The table */}
         <Table
@@ -1143,13 +1159,8 @@ export default function Home() {
           </p>
 
           {/* Button download file */}
-          <CSVLink
-            filename={"loadingsTable.csv"}
-            data={loadingsTableData}
-            className={`${styleForButton}`}
-          >
-            Download file
-          </CSVLink>
+          {renderButtonDownloadFile(loadingsTableData, "loadingsTable.csv")}
+
         </div>
         {/* The table */}
         <Table
@@ -1225,13 +1236,8 @@ export default function Home() {
           </p>
 
           {/* Button download file */}
-          <CSVLink
-            filename={"topfivecontributors.csv"}
-            data={topFiveContributorsTableData}
-            className={`${styleForButton}`}
-          >
-            Download file
-          </CSVLink>
+          {renderButtonDownloadFile(topFiveContributorsTableData, "topFiveContributors.csv")}
+
         </div>
         <Table
           columns={columnForTopFiveContributorsTable}
