@@ -28,7 +28,7 @@ import {
 } from 'antd';
 
 // The icons used in the UI
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Minus, Rocket, Trash, BarChartBig, ScatterChart, Table as TableIcon } from 'lucide-react';
 import { SearchOutlined } from '@ant-design/icons';
 
 // The Highlighter is used to highlight the searched text in the table
@@ -77,60 +77,6 @@ export default function Home() {
   const [isPCA2DVisible, setIsPCA2DVisible] = useState(false);
   const [isPCA3DVisible, setIsPCA3DVisible] = useState(false);
 
-  // Variables for the tour
-  const [isTourOpen, setIsTourOpen] = useState(false);
-  const refTourStep1 = useRef(null);
-  const refTourStep2 = useRef(null);
-  const refTourStep3 = useRef(null);
-  const refTourStep4 = useRef(null);
-  const refTourStep5 = useRef(null);
-  const refTourStep6 = useRef(null);
-
-  const tourSteps = [
-    {
-      title: 'Upload File',
-      description: 'Upload your file here.',
-      // cover: (
-      //   <img
-      //     alt="upload file"
-      //     src="https://picsum.photos/200/300"
-      //   />
-      // ),
-      target: () => refTourStep1.current,
-    },
-    {
-      title: 'Scree Plot',
-      description: 'aaaaaaaaaaaaa',
-      cover: (
-        <img
-          alt="scree plot"
-          src='tour-scree-plot.png'
-        />
-      ),
-      target: () => refTourStep2.current,
-    },
-    {
-      title: 'PCA Plot',
-      description: 'bbbbbbbbbb',
-      target: () => refTourStep3.current,
-    },
-    {
-      title: 'Loadings Table',
-      description: 'cccccccccc',
-      target: () => refTourStep4.current,
-    },
-    {
-      title: 'Top 5 Contributors',
-      description: 'dddddddddd',
-      target: () => refTourStep5.current,
-    },
-    {
-      title: 'Clear',
-      description: 'eeeeeeeeee',
-      target: () => refTourStep6.current,
-    },
-  ];
-
   // The name of the PCA 2D and PCA 3D, just used for naming the title of the buttons
   const namePCA2D = "PCA 2D";
   const namePCA3D = "PCA 3D";
@@ -147,6 +93,105 @@ export default function Home() {
   const spaceBetweenColorSectionAndPlot = "mt-5";
   const styleForSectionHeading = "mb-4 text-3xl font-bold"
   const styleforDownloadButton = "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+  const sizeOfIcon = "20px"
+
+  // Variables for the tour
+  const [isTourOpen, setIsTourOpen] = useState(false);
+  const refTourStep1 = useRef(null);
+  const refTourStep2 = useRef(null);
+  const refTourStep3 = useRef(null);
+  const refTourStep4 = useRef(null);
+  const refTourStep5 = useRef(null);
+  const refTourStep6 = useRef(null);
+
+  const tourSteps = [
+    {
+      target: () => refTourStep1.current,
+      title: 'Upload file',
+      description: 'Upload your file here.',
+    },
+    {
+      target: () => refTourStep2.current,
+      title: 'Scree plot',
+      description: <div>
+        <p>
+          A scree plot in PCA is a chart that shows the eigenvalues (variances) of each principal component in descending order.
+        </p>
+        <p>
+          It helps identify the optimal number of principal components by locating the point where the decrease in eigenvalues becomes less significant, often called the “elbow” point.
+        </p>
+      </div>,
+      cover: (
+        <img
+          alt="scree plot"
+          src='tour-scree-plot.png'
+        />
+      ),
+    },
+    {
+      target: () => refTourStep3.current,
+      title: 'PCA plot',
+      description: <div>
+        <p>
+          A PCA plot is useful in multivariate analysis that helps to understand the interrelationships among a set of variables.
+        </p>
+        <p>
+          It allows us to identify patterns and trends in the data, and to observe the overall spread of the data in terms of the principal components.
+        </p>
+        <p>
+          The principal components are linear combinations of the original variables, constructed in such a way that they are uncorrelated and capture the maximum possible information.
+        </p>
+      </div>,
+      cover: (
+        <img
+          alt="pca plot"
+          src='tour-pca-2d.png'
+        />
+      ),
+    },
+    {
+      target: () => refTourStep4.current,
+      title: 'Loadings table',
+      description: <div>
+        <p>
+          In PCA, a loadings table shows the contribution of each original variable to each principal component.
+        </p>
+        <p>
+          The larger the absolute value (positive or negative) of a loading, the stronger the influence of the corresponding variable on the respective component.
+        </p>
+      </div>,
+      cover: (
+        <img
+          alt="loadings table"
+          src='tour-loadings-table.png'
+        />
+      ),
+    },
+    {
+      target: () => refTourStep5.current,
+      title: 'Top 5 contributors',
+      description: <div>
+        <p>
+          The top-5-contributors table typically lists the five variables that contribute the most to each principal component.
+        </p>
+        <p>
+          The contribution of a variable is determined by its loading, with larger absolute values indicating stronger contributions.
+        </p>
+      </div>,
+      cover: (
+        <img
+          alt="top 5 contributors table"
+          src='tour-top-5-contributors-table.png'
+        />
+      ),
+    },
+    {
+      target: () => refTourStep6.current,
+      title: 'Clear',
+      description: 'Clear all the plots and tables.',
+    },
+  ];
+
   /*####################
   # End of INITIAL VARIABLES
   ####################*/
@@ -548,7 +593,7 @@ export default function Home() {
         onClick={clearUploadedFile}
         ref={refTourStep6}
       >
-        Clear
+        <Trash className='mr-2' size={sizeOfIcon} /> Clear
       </Button>
     )
   }
@@ -567,7 +612,7 @@ export default function Home() {
         variant={isScreePlotVisible ? "default" : "outline"}
         ref={refTourStep2}
       >
-        Scree plot
+        <BarChartBig className='mr-2' size={sizeOfIcon} /> Scree plot
       </Button>
     )
   }
@@ -586,7 +631,7 @@ export default function Home() {
           variant="default"
 
         >
-          {namePCA2D}
+          <ScatterChart className='mr-2' size={sizeOfIcon} /> {namePCA2D}
         </Button>
       )
     } else if (isPCA3DVisible) {
@@ -595,7 +640,7 @@ export default function Home() {
           variant="default"
 
         >
-          {namePCA3D}
+          <ScatterChart className='mr-2' size={sizeOfIcon} /> {namePCA3D}
         </Button>
       )
     } else {
@@ -605,7 +650,7 @@ export default function Home() {
 
           ref={refTourStep3}
         >
-          PCA plot
+          <ScatterChart className='mr-2' size={sizeOfIcon} /> PCA plot
         </Button>
       )
     }
@@ -624,7 +669,7 @@ export default function Home() {
         variant={isLoadingsTableVisible ? "default" : "outline"}
         ref={refTourStep4}
       >
-        Loadings table
+        <TableIcon className='mr-2' size={sizeOfIcon} /> Loadings table
       </Button>
     )
   }
@@ -643,7 +688,7 @@ export default function Home() {
         variant={isTopFiveContributorsTableVisible ? "default" : "outline"}
         ref={refTourStep5}
       >
-        Top 5 contributors
+        <TableIcon className='mr-2' size={sizeOfIcon} /> Top 5 contributors
       </Button>
     )
   }
@@ -1594,7 +1639,7 @@ export default function Home() {
             variant="outline"
             onClick={() => setIsTourOpen(true)}
           >
-            Begin a tour 🚀
+            <Rocket className='mr-2' size={sizeOfIcon} /> Begin a tour
           </Button>
         </div>
 
