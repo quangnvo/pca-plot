@@ -1,6 +1,6 @@
-// This "use client" is IMPORTANT and need to put on the top of the file, as it is used to tell the Next.js that this file is used in the client side, not in the server side. 
-// If not put "use client", then the Next.js will think that this file is used in the server side, as the server side is the default.
-// Because in the following code, we use the "useState", "useRef", etc. which are the React hooks, and they are used in the client side, not in the server side.
+// This "use client" is IMPORTANT and need to put on the top of the file, as it is used to tell the Next.js (a React framework) that this file is used in the client side, not in the server side. 
+// If not put "use client" at here, then the Next.js will think that this file is used in the server side, as the server side is the default.
+// Because in the following code, we use the "useState", "useRef", etc. which are the React hooks, and they are used in the client side, not in the server side, so we need to put "use client" here.
 // A server component cannot use React hooks like useState, useEffect, etc. This is because a server component is rendered once on the server and doesn't re-render. On the other hand, a client component is a normal React component with access to hooks and re-renders as the user interacts, clicks the buttons, changes the color, etc. with the app.
 "use client"
 
@@ -49,7 +49,6 @@ import Swal from 'sweetalert2'
 
 // The react-csv library is used to download the table as a csv file
 import { CSVLink } from 'react-csv';
-import { render } from 'react-dom';
 
 export default function Home() {
 
@@ -103,13 +102,14 @@ export default function Home() {
 
   const acceptFileTypes = ".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel";
 
-  const spaceBetweenSections = "my-[30px]";
-  const spaceBetweenColorSectionAndPlot = "mt-5";
-  const styleForSectionHeading = "mb-4 text-3xl font-bold"
+  // The styles for the buttons, sections, etc.
+  const spaceBetweenSections = "mb-[75px]";
+  const spaceBetweenColorSectionAndPlot = "mt-[15px]";
+  const styleForSectionHeading = "mb-[15px] text-3xl font-bold"
   const styleForButton = "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 cursor-pointer"
   const sizeOfIcon = "20px"
 
-  // Variables for the tour
+  // Variables for the "tour"
   const [isTourOpen, setIsTourOpen] = useState(false);
   const refTourStep1 = useRef(null);
   const refTourStep2 = useRef(null);
@@ -119,11 +119,17 @@ export default function Home() {
   const refTourStep6 = useRef(null);
 
   const tourSteps = [
+    // Tour step 1
     {
       target: () => refTourStep1.current,
       title: 'Upload file',
-      description: 'Upload your file here.',
+      description: <div>
+        <p>
+          Upload your file here.
+        </p>
+      </div>,
     },
+    // Tour step 2
     {
       target: () => refTourStep2.current,
       title: 'Scree plot',
@@ -142,6 +148,7 @@ export default function Home() {
         />
       ),
     },
+    // Tour step 3
     {
       target: () => refTourStep3.current,
       title: 'PCA plot',
@@ -163,6 +170,7 @@ export default function Home() {
         />
       ),
     },
+    // Tour step 4
     {
       target: () => refTourStep4.current,
       title: 'Loadings table',
@@ -181,6 +189,7 @@ export default function Home() {
         />
       ),
     },
+    // Tour step 5
     {
       target: () => refTourStep5.current,
       title: 'Top 5 contributors',
@@ -199,10 +208,15 @@ export default function Home() {
         />
       ),
     },
+    // Tour step 6
     {
       target: () => refTourStep6.current,
       title: 'Clear',
-      description: 'Clear all the plots and tables.',
+      description: <div>
+        <p>
+          Clear all the plots and tables.
+        </p>
+      </div>,
     },
   ];
 
@@ -296,6 +310,7 @@ export default function Home() {
   /*####################
   # End of FUNCTIONS --- Show alert message
   ####################*/
+
 
   /*####################
   # FUNCTIONS --- Show alert message with options, like "OK" button, "Cancel" button, etc.
@@ -530,6 +545,7 @@ export default function Home() {
   # End of FUNCTIONS --- Generate Loadings table
   ####################*/
 
+
   /*####################
   # FUNCTIONS --- Generate Top 5 contributors table
   ####################*/
@@ -681,6 +697,7 @@ export default function Home() {
   # End of BUTTONS --- Render button to generate PCA plot
   ####################*/
 
+
   /*####################
   # BUTTONS --- Render button to generate Loadings table
   ####################*/
@@ -754,7 +771,7 @@ export default function Home() {
     if (isScreePlotVisible) {
       if (screePlotData) {
         return (
-          <div className={`${spaceBetweenSections}`} >
+          <div className={`${spaceBetweenSections}`}>
             <p className={`${styleForSectionHeading}`}>
               Scree plot
             </p>
@@ -780,6 +797,7 @@ export default function Home() {
   /*####################
   # End of PLOTS --- Render Scree plot
   ####################*/
+
 
   /*####################
   # PLOTS --- Render PCA plot 2D and 3D
@@ -923,7 +941,6 @@ export default function Home() {
   # TABLE --- Searching Dropdown
   * The following code is used to render the searching dropdown, which can be used in any table
   ####################*/
-
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
@@ -1079,7 +1096,7 @@ export default function Home() {
       return null;
     }
     return (
-      <div>
+      <div className={`${spaceBetweenSections}`} >
         <div className='flex justify-between'>
           {/* Title of the table */}
           <p className={`${styleForSectionHeading}`}>
@@ -1107,6 +1124,7 @@ export default function Home() {
   /*####################
   # End of TABLE --- Data Table
   ####################*/
+
 
   /*####################
   # TABLE --- Loadings Table
@@ -1181,6 +1199,7 @@ export default function Home() {
   /*####################
   # End of TABLE --- Loadings Table
   ####################*/
+
 
   /*####################
   # TABLE --- Top Five Contributors Table
@@ -1275,7 +1294,6 @@ export default function Home() {
   /*####################
   # COLORS --- Setup variables --- For PCA 2D and PCA 3D
   ####################*/
-
   // The "nameOfSamples" is an array of objects, each object has the format
   // {
   //    name: "H2O_30m_A",
@@ -1313,17 +1331,15 @@ export default function Home() {
       value: `2, ${defaultColor}`
     },
   ]);
-
   /*####################
   # End of COLORS --- Setup variables --- For PCA 2D and PCA 3D
   ####################*/
 
+
   /*####################
   # COLORS --- Setup variables --- For Scree plot
   ####################*/
-
   const [colorForScreePlot, setColorForScreePlot] = useState(defaultColor);
-
   /*####################
   # End of COLORS --- Setup variables --- For Scree plot
   ####################*/
@@ -1463,15 +1479,14 @@ export default function Home() {
     newGroupOptions.push(newGroupOption);
     setGroupOptions(newGroupOptions);
   }
-
   /*####################
    # End of COLORS --- Functions --- Change color for PCA 2D and PCA 3D
    ####################*/
 
+
   /*####################
   # COLORS --- Functions --- Change color for Scree plot
   ####################*/
-
   const changeColorForScreePlot = (newColor) => {
     console.log("newColor: ", newColor)
     console.log("screePlotData: ", screePlotData)
@@ -1481,7 +1496,6 @@ export default function Home() {
     setScreePlotData(newScreePlotData);
     setColorForScreePlot(newColor);
   }
-
   /*####################
   # End of COLORS --- Functions --- Change color for Scree plot
   ####################*/
@@ -1591,15 +1605,14 @@ export default function Home() {
       )
     }
   }
-
   /*####################
   # End of COLORS --- Render --- Color section for PCA 2D and PCA 3D
   ####################*/
 
+
   /*####################
   # COLORS --- Render --- Color section for Scree plot
   ####################*/
-
   const renderColorSectionForScreePlot = () => {
     if (!isScreePlotVisible) {
       return null;
@@ -1618,8 +1631,6 @@ export default function Home() {
       )
     }
   }
-
-
   /*####################
   # End of COLORS --- Render --- Color section for Scree plot
   ####################*/
