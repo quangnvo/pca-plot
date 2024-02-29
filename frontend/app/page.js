@@ -28,7 +28,16 @@ import {
 } from 'antd';
 
 // The icons used in the UI
-import { Plus, Minus, Rocket, Trash, BarChartBig, ScatterChart, Table as TableIcon } from 'lucide-react';
+import {
+  Plus,
+  Minus,
+  Rocket,
+  Trash,
+  BarChartBig,
+  ScatterChart,
+  Table as TableIcon,
+  Upload
+} from 'lucide-react';
 import { SearchOutlined } from '@ant-design/icons';
 
 // The Highlighter is used to highlight the searched text in the table
@@ -92,7 +101,7 @@ export default function Home() {
   const spaceBetweenSections = "my-[30px]";
   const spaceBetweenColorSectionAndPlot = "mt-5";
   const styleForSectionHeading = "mb-4 text-3xl font-bold"
-  const styleforDownloadButton = "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+  const styleForButton = "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 cursor-pointer"
   const sizeOfIcon = "20px"
 
   // Variables for the tour
@@ -567,15 +576,24 @@ export default function Home() {
   ####################*/
   const renderButtonUploadFile = () => {
     return (
-      <Input
-        // The "id" is used to select the file input by using the document.getElementById(inputFileId), then we can reset the file input value to null
-        id={inputFileId}
-        type='file'
-        accept={acceptFileTypes}
-        onChange={handleFileUpload}
+      <div>
+        <Input
+          // The "id" is used to select the file input by using the document.getElementById(inputFileId), then we can reset the file input value to null
+          id={inputFileId}
+          type='file'
+          accept={acceptFileTypes}
+          onChange={handleFileUpload}
+          // The "hidden" is used to hide the file input, then we will use the label to trigger the file input instead
+          className='hidden'
         // The ref={refTourStep1} is used to tell the tour that this is the target of the first step, the "Tour" is like the tutorial for the user
-        ref={refTourStep1}
-      />
+
+        />
+
+        <label htmlFor={inputFileId} className={`${styleForButton}`} ref={refTourStep1}>
+          <Upload className='mr-2' size={sizeOfIcon} /> Upload file
+        </label>
+
+      </div>
     )
   }
   /*####################
@@ -1049,7 +1067,7 @@ export default function Home() {
           <CSVLink
             filename={"dataTable.csv"}
             data={csvData}
-            className={`${styleforDownloadButton}`}
+            className={`${styleForButton}`}
           >
             Download file
           </CSVLink>
@@ -1128,7 +1146,7 @@ export default function Home() {
           <CSVLink
             filename={"loadingsTable.csv"}
             data={loadingsTableData}
-            className={`${styleforDownloadButton}`}
+            className={`${styleForButton}`}
           >
             Download file
           </CSVLink>
@@ -1210,7 +1228,7 @@ export default function Home() {
           <CSVLink
             filename={"topfivecontributors.csv"}
             data={topFiveContributorsTableData}
-            className={`${styleforDownloadButton}`}
+            className={`${styleForButton}`}
           >
             Download file
           </CSVLink>

@@ -32,7 +32,7 @@ def generate_scree_plot():
     dataAfterStandardization = standardScalerObject.fit_transform(
         convertedData.T)
 
-    pcaObject = PCA(n_components=10)
+    pcaObject = PCA(n_components=8)
     pcaObject.fit_transform(dataAfterStandardization)
     #########################
     # End of CODE SIMILAR TO "generatePCA.py"
