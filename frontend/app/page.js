@@ -88,6 +88,9 @@ export default function Home() {
   const [isPCA2DVisible, setIsPCA2DVisible] = useState(false);
   const [isPCA3DVisible, setIsPCA3DVisible] = useState(false);
 
+  // The name of uploaded file, used to show the name of the uploaded file on the screen
+  const [uploadedFileName, setUploadedFileName] = useState("");
+
   // The name of the PCA 2D and PCA 3D, just used for naming the title of the buttons
   const namePCA2D = "PCA 2D";
   const namePCA3D = "PCA 3D";
@@ -232,6 +235,7 @@ export default function Home() {
           setCsvData(results.data);
         },
       });
+      setUploadedFileName(e.target.files[0].name)
     }
   };
   /*####################
@@ -300,11 +304,10 @@ export default function Home() {
     Swal.fire({
       title: "Do you want to clear all?",
       icon: "warning",
-      showDenyButton: true,
       confirmButtonColor: '#272E3F',
-      // showCancelButton: true,
       confirmButtonText: "Yes",
-      denyButtonText: `No`
+      showCancelButton: true,
+      cancelButtonText: "No",
     }).then((result) => {
       // If the user clicks on the "Yes" button, then we will clear the csvData, and reset the file input value to null
       if (result.isConfirmed) {
@@ -594,7 +597,6 @@ export default function Home() {
         <label htmlFor={inputFileId} className={`${styleForButton}`} ref={refTourStep1}>
           <Upload className='mr-2' size={sizeOfIcon} /> Upload file
         </label>
-
       </div>
     )
   }
@@ -1633,20 +1635,29 @@ export default function Home() {
 
 
   /*####################
-  # The following code is only about the NUMBER OF SAMPLES
+  # The following code is only about the FILE INFORMATION, such as the file name, the number of samples, etc.
   ####################*/
-  const renderNumberSamples = () => {
+  const renderFileInformation = () => {
     if (csvData.length === 0) {
       return null;
     }
     return (
-      <p className='my-3'>
-        Number of samples: <strong>{csvData ? csvData.length : "0"}</strong>
-      </p>
+      <div className='my-5'>
+        {/* Render file name */}
+        {uploadedFileName && (
+          <p>
+            File name: <span className='font-semibold'>{uploadedFileName}</span>
+          </p>
+        )}
+        {/* Render number of samples */}
+        <p>
+          Number of samples:  <span className='font-semibold'>{csvData ? csvData.length : "0"}</span>
+        </p>
+      </div>
     )
   }
   /*####################
-  # End of the NUMBER OF SAMPLES
+  # End of the FILE INFORMATION
   ####################*/
 
 
@@ -1687,7 +1698,7 @@ export default function Home() {
       </div>
 
       <div className='mt-16'>
-        {renderNumberSamples()}
+        {renderFileInformation()}
         {renderDataTable()}
         {renderScreePlot()}
         {renderPCAPlotGeneral(isPCA2DVisible, isPCA3DVisible)}
