@@ -53,7 +53,7 @@ import { CSVLink } from 'react-csv';
 export default function Home() {
 
   // Define the backend port
-  const BACKEND_PORT = 6666
+  const BACKEND_PORT = 7000
 
   /*####################
   # The following code is used to only about setup INITIAL VARIABLES
