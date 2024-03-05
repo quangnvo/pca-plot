@@ -53,7 +53,7 @@ import { CSVLink } from 'react-csv';
 export default function Home() {
 
   // Define the backend port
-  const BACKEND_PORT = 8080
+  const BACKEND_PORT = 6666
 
   /*####################
   # The following code is used to only about setup INITIAL VARIABLES
@@ -134,12 +134,14 @@ export default function Home() {
       target: () => refTourStep2.current,
       title: 'Scree plot',
       description: <div>
-        <p>
-          A scree plot in PCA is a chart that shows the eigenvalues (variances) of each principal component in descending order.
-        </p>
-        <p>
-          It helps identify the optimal number of principal components by locating the point where the decrease in eigenvalues becomes less significant, often called the “elbow” point.
-        </p>
+        <ul className='list-disc list-inside'>
+          <li>
+            A scree plot in PCA is a chart that shows the eigenvalues (variances) of each principal component in descending order.
+          </li>
+          <li>
+            It helps identify the optimal number of principal components by locating the point where the decrease in eigenvalues becomes less significant, often called the “elbow” point.
+          </li>
+        </ul>
       </div>,
       cover: (
         <img
@@ -153,15 +155,17 @@ export default function Home() {
       target: () => refTourStep3.current,
       title: 'PCA plot',
       description: <div>
-        <p>
-          A PCA plot is useful in multivariate analysis that helps to understand the interrelationships among a set of variables.
-        </p>
-        <p>
-          It allows us to identify patterns and trends in the data, and to observe the overall spread of the data in terms of the principal components.
-        </p>
-        <p>
-          The principal components are linear combinations of the original variables, constructed in such a way that they are uncorrelated and capture the maximum possible information.
-        </p>
+        <ul className='list-disc list-inside'>
+          <li>
+            A PCA plot is useful in multivariate analysis that helps to understand the interrelationships among a set of variables.
+          </li>
+          <li>
+            It allows us to identify patterns and trends in the data, and to observe the overall spread of the data in terms of the principal components.
+          </li>
+          <li>
+            The principal components are linear combinations of the original variables, constructed in such a way that they are uncorrelated and capture the maximum possible information.
+          </li>
+        </ul>
       </div>,
       cover: (
         <img
@@ -175,12 +179,14 @@ export default function Home() {
       target: () => refTourStep4.current,
       title: 'Loadings table',
       description: <div>
-        <p>
-          In PCA, a loadings table shows the contribution of each original variable to each principal component.
-        </p>
-        <p>
-          The larger the absolute value (positive or negative) of a loading, the stronger the influence of the corresponding variable on the respective component.
-        </p>
+        <ul className='list-disc list-inside'>
+          <li>
+            In PCA, a loadings table shows the contribution of each original variable to each principal component.
+          </li>
+          <li>
+            The larger the absolute value (positive or negative) of a loading, the stronger the influence of the corresponding variable on the respective component.
+          </li>
+        </ul>
       </div>,
       cover: (
         <img
@@ -194,12 +200,14 @@ export default function Home() {
       target: () => refTourStep5.current,
       title: 'Top 5 contributors',
       description: <div>
-        <p>
-          The top-5-contributors table typically lists the five variables that contribute the most to each principal component.
-        </p>
-        <p>
-          The contribution of a variable is determined by its loading, with larger absolute values indicating stronger contributions.
-        </p>
+        <ul className='list-disc list-inside'>
+          <li>
+            The top-5-contributors table typically lists the five variables that contribute the most to each principal component.
+          </li>
+          <li>
+            The contribution of a variable is determined by its loading, with larger absolute values indicating stronger contributions.
+          </li>
+        </ul>
       </div>,
       cover: (
         <img
@@ -606,11 +614,14 @@ export default function Home() {
           onChange={handleFileUpload}
           // The "hidden" is used to hide the file input, then we will use the label to trigger the file input instead
           className='hidden'
-        // The ref={refTourStep1} is used to tell the tour that this is the target of the first step, the "Tour" is like the tutorial for the user
-
         />
 
-        <label htmlFor={inputFileId} className={`${styleForButton}`} ref={refTourStep1}>
+        <label
+          htmlFor={inputFileId}
+          className={`${styleForButton}`}
+          // The ref={refTourStep1} is used to tell the tour that this is the target of the first step, the "Tour" is like the tutorial for the user
+          ref={refTourStep1}
+        >
           <Upload className='mr-2' size={sizeOfIcon} /> Upload file
         </label>
       </div>
