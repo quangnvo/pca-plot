@@ -5,7 +5,7 @@
 "use client"
 
 // The useState, useRef are used to create the state and reference to the DOM element
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 // The Plot from the react-plotly.js library is used to render the plot
 import Plot from 'react-plotly.js';
@@ -237,6 +237,26 @@ export default function Home() {
   /*####################
   # The following code is only about FUNCTIONS, such as clearUploadedFile, generateScreePlot, generatePCAPlot, etc.
   ####################*/
+
+  /*####################
+  # FUNCTIONS --- useEffect
+  ####################*/
+  useEffect(() => {
+    const fetchDataFromDB = async () => {
+      try {
+        const response = await axios.get(`http://localhost:${BACKEND_PORT}/api/getDataFromDB`);
+        setCsvData(response.data);
+      } catch (error) {
+        console.error('Error fetching data: ', error);
+      }
+    };
+
+    fetchDataFromDB();
+  }, []);
+  /*####################
+  # End of FUNCTIONS --- useEffect
+  ####################*/
+
 
   /*####################
   # FUNCTIONS --- Handle file upload
