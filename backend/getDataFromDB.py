@@ -16,22 +16,24 @@ visualizations = db.visualizations
 
 @bp.route('/api/getDataFromDB', methods=['GET', 'POST'])
 def getDataFromDB():
-    print("!!!! already in getDataFromDB")
+    configNumber = request.json['config']
 
-    # VERY IMPORTANT: the config number here must be in the JSON string format
-    db_entry_id = ObjectId(loads('"65e84abc977b1859ace57211"'))
-    print("db_entry_id ne: ", db_entry_id)
-    db_entry = db.visualizations.find_one({"_id": db_entry_id})
-    try:
-        # Converts entry from .json into pandas parquet
-        data = pd.read_parquet(
-            BytesIO(db_entry['filtered_dataframe'])).to_json(orient='records')
-    except:
-        # The mockup db_entry stores the empty transformed_dataframe as a list, so don't convert that one.
-        # Convert transformed into pandas parquet
-        if type(db_entry['transformed_dataframe']) == bytes:
+    if configNumber != "undefined":
+        # VERY IMPORTANT: the config number here must be in the JSON string format, so we need to put it as f'"{configNumber}"'
+        # For example, it should be like '"123123123"', with double quotes and single quotes
+        db_entry_id = ObjectId(loads(f'"{configNumber}"'))
+        print("db_entry_id ne: ", db_entry_id)
+        db_entry = db.visualizations.find_one({"_id": db_entry_id})
+        try:
+            # Converts entry from .json into pandas parquet
             data = pd.read_parquet(
-                BytesIO(db_entry['transformed_dataframe'])).to_json(orient='records')
-        else:
-            data = db_entry['transformed_dataframe']
+                BytesIO(db_entry['filtered_dataframe'])).to_json(orient='records')
+        except:
+            # The mockup db_entry stores the empty transformed_dataframe as a list, so don't convert that one.
+            # Convert transformed into pandas parquet
+            if type(db_entry['transformed_dataframe']) == bytes:
+                data = pd.read_parquet(
+                    BytesIO(db_entry['transformed_dataframe'])).to_json(orient='records')
+            else:
+                data = db_entry['transformed_dataframe']
     return Response(data, mimetype="application/json")

@@ -59,9 +59,19 @@ export default function Home() {
   // Define the backend port
   const BACKEND_PORT = 7000
 
-  // Get the config number from the URL
+  /*####################
+  # GET THE CONFIG NUMBER FROM THE URL
+  ####################*/
+  // Create the searchParams object, which can be used to extract the query parameters from the URL
   const searchParams = useSearchParams()
+  // Get the config number from the URL, like the "config" in the URL "http://localhost:3000/?config=123123"
   const configNumber = searchParams.get("config")
+  const configNumberObject = {
+    config: configNumber
+  }
+  /*####################
+  # End of GET THE CONFIG NUMBER FROM THE URL
+  ####################*/
 
   /*####################
   # The following code is used to only about setup INITIAL VARIABLES
@@ -252,7 +262,7 @@ export default function Home() {
   useEffect(() => {
     const fetchDataFromDB = async () => {
       try {
-        const response = await axios.get(`http://localhost:${BACKEND_PORT}/api/getDataFromDB`);
+        const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/getDataFromDB`, configNumberObject);
         setCsvData(response.data);
       } catch (error) {
         console.error('Error fetching data: ', error);
