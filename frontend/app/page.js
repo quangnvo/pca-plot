@@ -50,10 +50,18 @@ import Swal from 'sweetalert2'
 // The react-csv library is used to download the table as a csv file
 import { CSVLink } from 'react-csv';
 
+// This useSearchParams is used to get the query parameters from the URL, like the "aaa" in the URL "http://localhost:3000/?aaa=123123"
+import { useSearchParams } from "next/navigation"
+
+
 export default function Home() {
 
   // Define the backend port
   const BACKEND_PORT = 7000
+
+  // Get the config number from the URL
+  const searchParams = useSearchParams()
+  const configNumber = searchParams.get("config")
 
   /*####################
   # The following code is used to only about setup INITIAL VARIABLES
