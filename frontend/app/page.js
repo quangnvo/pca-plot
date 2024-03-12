@@ -1554,43 +1554,63 @@ export default function Home() {
   # COLORS --- Functions --- Reset all color for PCA 2D and PCA 3D
   ####################*/
   const ResetAll = () => {
-    // Change the color of the samples in the PCA plot back to the default color
-    const newColorGroups = [...colorGroups];
-    newColorGroups.forEach((eachGroup, indexOfEachGroup) => {
-      eachGroup.colorCode = defaultColor;
-      eachGroup.sampleNames.forEach((sampleName, indexOfSampleName) => {
-        if (isPCA2DVisible) {
-          handleChangeColorInPlot2D(sampleName, defaultColor);
-        } else if (isPCA3DVisible) {
-          handleChangeColorInPlot3D(sampleName, defaultColor);
-        }
-      })
-    })
-    setColorGroups([
-      {
-        groupId: "1",
-        name: "Group 1",
-        colorCode: defaultColor,
-        sampleNames: []
-      },
-      {
-        groupId: "2",
-        name: "Group 2",
-        colorCode: defaultColor,
-        sampleNames: []
-      },
-    ]);
-    // Make the groupOptions back to the default, which means set them back to have 2 groups, and the color of each group is the default color
-    setGroupOptions([
-      {
-        label: "Group 1",
-        value: `1, ${defaultColor}`
-      },
-      {
-        label: "Group 2",
-        value: `2, ${defaultColor}`
-      },
-    ]);
+    Swal.fire({
+      title: "Do you want to reset all colors back to the default?",
+      icon: "warning",
+      confirmButtonColor: '#272E3F',
+      confirmButtonText: "Yes",
+      showCancelButton: true,
+      cancelButtonText: "No",
+    }).then((result) => {
+      // If the user clicks on the "Yes" button, then we will reset all color back to the default
+      if (result.isConfirmed) {
+        // Change the color of the samples in the PCA plot back to the default color
+        const newColorGroups = [...colorGroups];
+        newColorGroups.forEach((eachGroup, indexOfEachGroup) => {
+          eachGroup.colorCode = defaultColor;
+          eachGroup.sampleNames.forEach((sampleName, indexOfSampleName) => {
+            if (isPCA2DVisible) {
+              handleChangeColorInPlot2D(sampleName, defaultColor);
+            } else if (isPCA3DVisible) {
+              handleChangeColorInPlot3D(sampleName, defaultColor);
+            }
+          })
+        })
+        setColorGroups([
+          {
+            groupId: "1",
+            name: "Group 1",
+            colorCode: defaultColor,
+            sampleNames: []
+          },
+          {
+            groupId: "2",
+            name: "Group 2",
+            colorCode: defaultColor,
+            sampleNames: []
+          },
+        ]);
+        // Make the groupOptions back to the default, which means set them back to have 2 groups, and the color of each group is the default color
+        setGroupOptions([
+          {
+            label: "Group 1",
+            value: `1, ${defaultColor}`
+          },
+          {
+            label: "Group 2",
+            value: `2, ${defaultColor}`
+          },
+        ]);
+        // Then show the alert message to tell the user that everything is done
+        Swal.fire({
+          title: "Done!",
+          icon: "success",
+          showConfirmButton: false,
+          // The timer is used to auto close the alert
+          timer: 1500,
+        });
+      }
+    });
   }
   /*####################
   # End of COLORS --- Functions --- Reset all color for PCA 2D and PCA 3D
