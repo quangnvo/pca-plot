@@ -867,6 +867,8 @@ export default function Home() {
         if (!isFileUploaded()) {
           return;
         }
+        // Set the selected groups to empty object, this is used to reset the selected groups
+        setSelectedGroups({});
         // Now user clicks on the PCA 2D, then we will check the current visibility of the PCA 2D and PCA 3D, then we will update the visibility of the PCA 2D and PCA 3D
         // Click on the PCA 2D button --> if PCA 2D plot and PCA 3D plot not show yet --> then show PCA 2D plot
         if (isPCA2DVisible == false && isPCA3DVisible == false) {
@@ -894,6 +896,8 @@ export default function Home() {
         </p>
       ),
       onClick: () => {
+        // Set the selected groups to empty object, this is used to reset the selected groups
+        setSelectedGroups({});
         // Check if the file is uploaded, if not, then show the alert message and return
         if (!isFileUploaded()) {
           return;
@@ -1343,11 +1347,17 @@ export default function Home() {
   /*####################
   # COLORS --- Setup variables --- For PCA 2D and PCA 3D
   ####################*/
-  // The "nameOfSamples" is an array of objects, each object has the format
-  // {
-  //    name: "H2O_30m_A",
-  //    groupId: ""
-  // }
+  // The "nameOfSamples" is an array of objects, each object will have the format like this later:
+  // nameOfSamples = [
+  //    {
+  //      name: "H2O_30m_A",
+  //      groupId: ""
+  //    },
+  //    {
+  //      name: "H2O_30m_B",
+  //      groupId: ""
+  //    },
+  // ]
   const [nameOfSamples, setNameOfSamples]
     = useState([]);
 
@@ -1380,6 +1390,10 @@ export default function Home() {
       value: `2, ${defaultColor}`
     },
   ]);
+
+  // This "selectedGroups" is used to store the selected group for each sample, like "H2O_30m_A" - "Group 1", "H2O_30m_B" - "Group 1", etc.
+  // The purpose for this is linked with the resetAll function, when user click on the "Reset all" button, then the selected group for each sample will be reset to "", and the color of the samples on the plot will be reset to the default color, and also the "sampleNames" array of the group will be reset to empty array.
+  const [selectedGroups, setSelectedGroups] = useState({});
   /*####################
   # End of COLORS --- Setup variables --- For PCA 2D and PCA 3D
   ####################*/
@@ -1405,8 +1419,41 @@ export default function Home() {
   /*####################
   # COLORS --- Functions --- Change color for PCA 2D and PCA 3D
   ####################*/
+
+  // The function "handleChangeGroupForEachSample" is call when user click on the which color group belong to each sample. For example, "H2O_30m_A" - user chooses "Group 1", "H2O_30m_B" - user chooses "Group 1", etc.
+  const handleChangeGroupForEachSample = (sampleName, value) => {
+    // Because at the above, we set the "value" of the each object in the "groupOptions" to be "1, defaultColor", "2, defaultColor"
+    // So here, we will split the "value" to get the "groupId" and "colorCode", like groupId = "1", colorCode = defaultColor
+    let [groupId, colorCode] = value.split(", ");
+    // The flow of the code here is similar to the "handleChangeColorInPlot2D" and "handleChangeColorInPlot3D", so the flow will be explained in details at here, and then can see again the "handleChangeColorInPlot2D" and "handleChangeColorInPlot3D" functions
+    // Firstly, we copy the "colorGroups" array to a new array.
+    // Copying old array to new array is a step in update the state, as we should not update the state directly
+    // ==> we should update the state by using the "setColorGroups" function
+    // If we update the state directly, then the screen WILL NOT be re-rendered
+    // ==> so the color of the samples on the plot will not be updated.
+    const newColorGroups = [...colorGroups];
+    // Then, we find the index of the group in the array, like if user chooses "Group 1" for "H2O_30m_A" 
+    // ==> then we will find where is the "Group 1" in the array newColorGroups
+    // ==> then we will add "H2O_30m_A" to the "sampleNames" array of "Group 1"
+    const indexOfColorGroup = newColorGroups.findIndex(group => group.groupId === groupId);
+    // If the group is found in the array
+    if (indexOfColorGroup !== -1) {
+      // ==> then we will add the sample to the "sampleNames" array of the group
+      newColorGroups[indexOfColorGroup].sampleNames.push(sampleName);
+    }
+    // Then we will update the state with the new array
+    // Now the "sampleNames" array of the group is updated, like "H2O_30m_A" is already added to the "sampleNames" array of "Group 1" 
+    setColorGroups(newColorGroups);
+    if (isPCA2DVisible) {
+      handleChangeColorInPlot2D(sampleName, colorCode);
+    } else if (isPCA3DVisible) {
+      handleChangeColorInPlot3D(sampleName, colorCode);
+    }
+  }
+
   // The function "handleChangeColorInPlot2D" is used to change the color of the sample in the 2D PCA plot
   const handleChangeColorInPlot2D = (sampleName, colorCode) => {
+    // The flow of the code here is similar to the "handleChangeGroupForEachSample" function, so check the comments in the "handleChangeGroupForEachSample" function for more details
     const newPcaPlotData = { ...pcaPlotData }
     const index = newPcaPlotData.data.findIndex(sample => sample.name === sampleName);
     if (index !== -1) {
@@ -1417,45 +1464,13 @@ export default function Home() {
 
   // The function "handleChangeColorInPlot3D" is used to change the color of the sample in the 3D PCA plot
   const handleChangeColorInPlot3D = (sampleName, colorCode) => {
+    // The flow of the code here is similar to the "handleChangeGroupForEachSample" function, so check the comments in the "handleChangeGroupForEachSample" function for more details
     const newPcaPlotData = { ...pcaPlot3DData }
     const index = newPcaPlotData.data.findIndex(sample => sample.name === sampleName);
     if (index !== -1) {
       newPcaPlotData.data[index].marker.color = colorCode;
     }
     setPcaPlot3DData(newPcaPlotData);
-  }
-
-
-  // The function "handleChangeGroupForEachSample" is call when user click on the which color group belong to each sample. For example, "H2O_30m_A" - user chooses "Group 1", "H2O_30m_B" - user chooses "Group 1", etc.
-  const handleChangeGroupForEachSample = (sampleName, value) => {
-
-    // Because at the above, we set the "value" of the each object in the groupOptions to be "1, defaultColor", "2, defaultColor", etc.
-    // So here, we will split the "value" to get the "groupId" and "colorCode", like groupId = "1", colorCode = defaultColor, etc.
-    let [groupId, colorCode] = value.split(", ");
-
-    // Copy the colorGroups array to a new array.
-    // Copying old array to new array is a step in update the state, as we should not update the state directly. We should update the state by using the "setColorGroups" function
-    // If we update the state directly, then the UI will not be re-rendered, so the color of the samples on the plot will not be updated.
-    const newColorGroups = [...colorGroups];
-
-    // Find the index of the group in the array, like if user choose "Group 1" for "H2O_30m_A", then we will find where is the "Group 1" in the array newColorGroups, then later we will add "H2O_30m_A" to the "sampleNames" array of "Group 1"
-    const indexOfColorGroup = newColorGroups.findIndex(group => group.groupId === groupId);
-
-    // If the group is found in the array
-    if (indexOfColorGroup !== -1) {
-      // Then we will add the sample to the "sampleNames" array of the group
-      newColorGroups[indexOfColorGroup].sampleNames.push(sampleName);
-    }
-
-    // Then we will update the state with the new array
-    // Now the "sampleNames" array of the group is updated, like "H2O_30m_A" is already added to the "sampleNames" array of "Group 1" 
-    setColorGroups(newColorGroups);
-
-    if (isPCA2DVisible) {
-      handleChangeColorInPlot2D(sampleName, colorCode);
-    } else if (isPCA3DVisible) {
-      handleChangeColorInPlot3D(sampleName, colorCode);
-    }
   }
 
   // The function "handleChangeGroupColorInPlot2D" is used to change the color of the group in the 2D PCA plot
@@ -1482,23 +1497,18 @@ export default function Home() {
     setPcaPlot3DData(newPcaPlotData);
   }
 
-
   // This function is used to handle the color change of the group, when user changes the color of the group, like Group 1 which color, Group 2 which color, etc.
   const handleColorOfGroupChange = (indexOfTheGroup, newColor) => {
-
     // Set the new color to the colorGroups array
     const newColorGroups = [...colorGroups];
     newColorGroups[indexOfTheGroup].colorCode = newColor;
     setColorGroups(newColorGroups);
-
-
     // Update the color of the samples in the PCA plot
     if (isPCA2DVisible) {
       handleChangeGroupColorInPlot2D(indexOfTheGroup, newColor);
     } else if (isPCA3DVisible) {
       handleChangeGroupColorInPlot3D(indexOfTheGroup, newColor);
     }
-
     // Update the groupOptions, this is used to update the color of the group in the dropdown, like "Group 1 - which color", "Group 2 - which color", etc.
     // The groupOptions is the required format to use in the antd library <Select> component
     const newOptions = [...groupOptions];
@@ -1528,32 +1538,11 @@ export default function Home() {
     newGroupOptions.push(newGroupOption);
     setGroupOptions(newGroupOptions);
   }
-  /*####################
-   # End of COLORS --- Functions --- Change color for PCA 2D and PCA 3D
-   ####################*/
-
 
   /*####################
-  # COLORS --- Functions --- Change color for Scree plot
-  ####################*/
-  const changeColorForScreePlot = (newColor) => {
-    console.log("newColor: ", newColor)
-    console.log("screePlotData: ", screePlotData)
-
-    const newScreePlotData = { ...screePlotData }
-    newScreePlotData.data[0].marker.color = newColor;
-    setScreePlotData(newScreePlotData);
-    setColorForScreePlot(newColor);
-  }
-  /*####################
-  # End of COLORS --- Functions --- Change color for Scree plot
-  ####################*/
-
-
-  /*####################
-  # COLORS --- Functions --- Reset all color for PCA 2D and PCA 3D
-  ####################*/
-  const ResetAll = () => {
+ # COLORS --- Functions --- Change color for PCA 2D and PCA 3D --- Reset all color for PCA 2D and PCA 3D
+ ####################*/
+  const resetAll = () => {
     Swal.fire({
       title: "Do you want to reset all colors back to the default?",
       icon: "warning",
@@ -1601,6 +1590,8 @@ export default function Home() {
             value: `2, ${defaultColor}`
           },
         ]);
+        // Reset the selected groups to empty object, so like "H2O_30m_A" - "", "H2O_30m_B" - "", etc.
+        setSelectedGroups({});
         // Then show the alert message to tell the user that everything is done
         Swal.fire({
           title: "Done!",
@@ -1613,7 +1604,28 @@ export default function Home() {
     });
   }
   /*####################
-  # End of COLORS --- Functions --- Reset all color for PCA 2D and PCA 3D
+  # End of COLORS --- Functions --- Change color for PCA 2D and PCA 3D --- Reset all color for PCA 2D and PCA 3D
+  ####################*/
+
+  /*####################
+   # End of COLORS --- Functions --- Change color for PCA 2D and PCA 3D
+   ####################*/
+
+
+  /*####################
+  # COLORS --- Functions --- Change color for Scree plot
+  ####################*/
+  const changeColorForScreePlot = (newColor) => {
+    console.log("newColor: ", newColor)
+    console.log("screePlotData: ", screePlotData)
+
+    const newScreePlotData = { ...screePlotData }
+    newScreePlotData.data[0].marker.color = newColor;
+    setScreePlotData(newScreePlotData);
+    setColorForScreePlot(newColor);
+  }
+  /*####################
+  # End of COLORS --- Functions --- Change color for Scree plot
   ####################*/
 
   /*####################
@@ -1674,7 +1686,7 @@ export default function Home() {
               {/* Button "Reset all of PCA" */}
               <Button
                 variant="outline"
-                onClick={ResetAll}
+                onClick={resetAll}
               >
                 Reset all
               </Button>
@@ -1691,7 +1703,7 @@ export default function Home() {
     if (!isPCA2DVisible && !isPCA3DVisible) {
       return null;
     }
-    if (pcaPlotData) {
+    if (pcaPlotData || pcaPlot3DData) {
       return (
         <div className='grid grid-cols-3 gap-x-6 gap-y-3 mt-5'>
           {nameOfSamples.map((sample, index) => {
@@ -1700,11 +1712,12 @@ export default function Home() {
               className='grid grid-cols-2 items-center'
             >
               <p>{sample.name}</p>
-
               <Select
-                onChange={(value) =>
-                  handleChangeGroupForEachSample(sample.name, value)
-                }
+                value={selectedGroups[sample.name]}
+                onChange={(value) => {
+                  handleChangeGroupForEachSample(sample.name, value);
+                  setSelectedGroups(prevState => ({ ...prevState, [sample.name]: value }));
+                }}
                 className='w-3/5'
                 options={groupOptions}
               />
@@ -1712,28 +1725,7 @@ export default function Home() {
           })}
         </div>
       )
-    } else if (pcaPlot3DData) {
-      return (
-        <div className='grid grid-cols-3 gap-x-6 gap-y-3 my-7'>
-          {nameOfSamples.map((sample, index) => {
-            return <div
-              key={index}
-              className='grid grid-cols-2 items-center'
-            >
-              <p>{sample.name}</p>
-
-              <Select
-                onChange={(value) =>
-                  handleChangeGroupForEachSample(sample.name, value)
-                }
-                className='w-3/5'
-                options={groupOptions}
-              />
-            </div>
-          })}
-        </div>
-      )
-    }
+    } 
   }
   /*####################
   # End of COLORS --- Render --- Color section for PCA 2D and PCA 3D
@@ -1832,6 +1824,10 @@ export default function Home() {
         <div className='flex gap-2'>
           {renderButtonUploadFile()}
           {renderButtonGenerateScreePlot()}
+
+          {/* Render Button PCA 2D and 3D */}
+          {/* At here we put the DropdownAntd, which is a Dropdown component from antd library, it will take the "pcaOptions" as the things will show up when user clicks */}
+          {/* The "pcaOptions" is the "PCA 2D" and "PCA 3D" */}
           <DropdownAntd
             menu={{
               items: pcaOptions,
@@ -1841,6 +1837,8 @@ export default function Home() {
           >
             {renderButtonPCAPlot()}
           </DropdownAntd>
+          {/* End of Render Button PCA 2D and 3D */}
+
           {renderButtonGenerateLoadingsTable()}
           {renderButtonGenerateTopFiveContributorsTable()}
           {renderButtonClearUploadedFile()}
@@ -1856,12 +1854,16 @@ export default function Home() {
         {renderTopFiveContributorsTable()}
       </div>
 
+      {/* Tour */}
       {/* This is the "tour" as a tutorial for user, and this <Tour> should be put at the end */}
+      {/* The "Tour" is hidden, until the user click the button "Begin a tour" */}
+      {/* When user clicks the button "Begin a tour", the isTourOpen will change to be "true" */}
       <Tour
         steps={tourSteps}
         open={isTourOpen}
         onClose={() => setIsTourOpen(false)}
       />
+      {/* End of Tour */}
     </div>
   );
   /*####################
