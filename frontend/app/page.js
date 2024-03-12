@@ -259,18 +259,18 @@ export default function Home() {
   /*####################
   # FUNCTIONS --- useEffect
   ####################*/
-  useEffect(() => {
-    const fetchDataFromDB = async () => {
-      try {
-        const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/getDataFromDB`, configNumberObject);
-        setCsvData(response.data);
-      } catch (error) {
-        console.error('Error fetching data: ', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchDataFromDB = async () => {
+  //     try {
+  //       const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/getDataFromDB`, configNumberObject);
+  //       setCsvData(response.data);
+  //     } catch (error) {
+  //       console.error('Error fetching data: ', error);
+  //     }
+  //   };
 
-    fetchDataFromDB();
-  }, []);
+  //   fetchDataFromDB();
+  // }, []);
   /*####################
   # End of FUNCTIONS --- useEffect
   ####################*/
@@ -1549,6 +1549,53 @@ export default function Home() {
   # End of COLORS --- Functions --- Change color for Scree plot
   ####################*/
 
+
+  /*####################
+  # COLORS --- Functions --- Reset all color for PCA 2D and PCA 3D
+  ####################*/
+  const ResetAll = () => {
+    // Change the color of the samples in the PCA plot back to the default color
+    const newColorGroups = [...colorGroups];
+    newColorGroups.forEach((eachGroup, indexOfEachGroup) => {
+      eachGroup.colorCode = defaultColor;
+      eachGroup.sampleNames.forEach((sampleName, indexOfSampleName) => {
+        if (isPCA2DVisible) {
+          handleChangeColorInPlot2D(sampleName, defaultColor);
+        } else if (isPCA3DVisible) {
+          handleChangeColorInPlot3D(sampleName, defaultColor);
+        }
+      })
+    })
+    setColorGroups([
+      {
+        groupId: "1",
+        name: "Group 1",
+        colorCode: defaultColor,
+        sampleNames: []
+      },
+      {
+        groupId: "2",
+        name: "Group 2",
+        colorCode: defaultColor,
+        sampleNames: []
+      },
+    ]);
+    // Make the groupOptions back to the default, which means set them back to have 2 groups, and the color of each group is the default color
+    setGroupOptions([
+      {
+        label: "Group 1",
+        value: `1, ${defaultColor}`
+      },
+      {
+        label: "Group 2",
+        value: `2, ${defaultColor}`
+      },
+    ]);
+  }
+  /*####################
+  # End of COLORS --- Functions --- Reset all color for PCA 2D and PCA 3D
+  ####################*/
+
   /*####################
   # End of COLORS --- Functions
   ####################*/
@@ -1592,14 +1639,28 @@ export default function Home() {
 
               </div>
             ))}
-            {/* Button Add Group, to add the group of color */}
-            <Button
-              variant="secondary"
-              size="icon"
-              onClick={addGroupColor}
-            >
-              <Plus />
-            </Button>
+
+            <div className='flex items-center gap-2'>
+              {/* Button "Add Group", to add the group of color */}
+              <Button
+                variant="secondary"
+                size="icon"
+                onClick={addGroupColor}
+              >
+                <Plus />
+              </Button>
+              {/* End of Button "Add Group*/}
+
+              {/* Button "Reset all of PCA" */}
+              <Button
+                variant="outline"
+                onClick={ResetAll}
+              >
+                Reset all
+              </Button>
+              {/* End of Button "Reset all of PCA" */}
+            </div>
+
           </div>
         </div>
       );
@@ -1727,8 +1788,16 @@ export default function Home() {
   ####################*/
   return (
     <div className='container mt-4 flex flex-col'>
+
+      <ul class="list-disc pl-5">
+        <li class="mb-1 text-red-600">Button - create button reset color</li>
+        <li class="mb-1 text-red-600">Fix bug - when change the pca plot, keep the color and update it</li>
+        <li class="mb-1 text-red-600">Adjust the column order in the Loadings table</li>
+      </ul>
+
       <div className="flex py-3 justify-between sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
 
+        {/* Button "Begin a tour" */}
         <div>
           <Button
             variant="outline"
@@ -1737,6 +1806,7 @@ export default function Home() {
             <Rocket className='mr-2' size={sizeOfIcon} /> Begin a tour
           </Button>
         </div>
+        {/* End of Button "Begin a tour" */}
 
 
         <div className='flex gap-2'>
