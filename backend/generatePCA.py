@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from flask import Blueprint, jsonify, request
 from sklearn.decomposition import PCA
@@ -6,6 +7,18 @@ from sklearn.preprocessing import StandardScaler
 # Create a Blueprint for the generatePCA.py file
 # The blueprint is used to define the route and will be added to the main app.py file
 bp = Blueprint('generatePCA', __name__)
+
+
+def is_num_delimiter(s):
+    # This function checks if a string is a number
+    # It is used to identify the columns that contain non-numeric values
+    # The reason we use s.replace(',', '') is that the data may contain comma as the decimal delimiter
+    try:
+        float(s.replace(',', ''))
+    except ValueError:
+        return False
+    else:
+        return True
 
 
 @bp.route('/api/generate_pca', methods=['POST'])
@@ -18,12 +31,17 @@ def generate_pca():
     # Convert the data into a DataFrame
     convertedData = pd.DataFrame(data=initialData)
 
-    # Assume that the first column is the column that contains the names of the genes (like "gene1", "gene2", etc.), so the code here will set the first column to become "the index of the DataFrame"
-    # ==> so that the Dataframe will not use it for the calculations
-    # First, we take the name of the first column in the DataFrame
-    nameOfTheFirstColumn = list(initialData[0].keys())[0]
-    # Then based on that name, let the first column be the index of the DataFrame
-    convertedData.set_index(nameOfTheFirstColumn, inplace=True)
+    # Identify columns in the first row that contain non-numeric values
+    non_numeric_columns = [col for col in convertedData.columns if not is_num_delimiter(
+        convertedData[col].iloc[0])]
+    print("🚀🚀🚀 non_numeric_columns: ", non_numeric_columns)
+
+    # If there are more than one non-numeric columns, drop all but the first one
+    if len(non_numeric_columns) > 1:
+        convertedData.drop(non_numeric_columns[1:], axis=1, inplace=True)
+
+    # Set the first non-numeric column as the index of the DataFrame
+    convertedData.set_index(non_numeric_columns[0], inplace=True)
 
     # Replace comma with dot in the DataFrame
     convertedData = convertedData.replace(',', '.', regex=True)

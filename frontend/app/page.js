@@ -1725,7 +1725,7 @@ export default function Home() {
           })}
         </div>
       )
-    } 
+    }
   }
   /*####################
   # End of COLORS --- Render --- Color section for PCA 2D and PCA 3D
@@ -1802,8 +1802,7 @@ export default function Home() {
     <div className='container mt-4 flex flex-col'>
 
       <ul class="list-disc pl-5">
-        <li class="mb-1 text-red-600">Button - create button reset color</li>
-        <li class="mb-1 text-red-600">Fix bug - when change the pca plot, keep the color and update it</li>
+        <li class="mb-1 text-red-600">Fix bug hard code of the data table</li>
         <li class="mb-1 text-red-600">Adjust the column order in the Loadings table</li>
       </ul>
 
