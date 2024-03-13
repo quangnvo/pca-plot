@@ -1,5 +1,5 @@
-// This "use client" is IMPORTANT and need to put on the top of the file, as it is used to tell the Next.js (a React framework) that this file is used in the client side, not in the server side. 
-// If not put "use client" at here, then the Next.js will think that this file is used in the server side, as the server side is the default.
+// This "use client" is IMPORTANT and need to put on the top of the file, as it is used to run the file in the client side, not in the server side. 
+// If we don't put "use client" at here, then it will think that this file is used in the server side, as the server side is the default.
 // Because in the following code, we use the "useState", "useRef", etc. which are the React hooks, and they are used in the client side, not in the server side, so we need to put "use client" here.
 // A server component cannot use React hooks like useState, useEffect, etc. This is because a server component is rendered once on the server and doesn't re-render. On the other hand, a client component is a normal React component with access to hooks and re-renders as the user interacts, clicks the buttons, changes the color, etc. with the app.
 "use client"
@@ -30,7 +30,6 @@ import {
 // The icons used in the UI
 import {
   Plus,
-  Minus,
   Rocket,
   Trash,
   BarChartBig,
@@ -64,8 +63,14 @@ export default function Home() {
   ####################*/
   // Create the searchParams object, which can be used to extract the query parameters from the URL
   const searchParams = useSearchParams()
-  // Get the config number from the URL, like the "config" in the URL "http://localhost:3000/?config=123123"
+  // Get the config number from the URL
+  // ==> for example, the URL "http://localhost:3000/?config=123123" has the config number is "123123"
   const configNumber = searchParams.get("config")
+  // Create the object that contains the config number, this is used to send the config number to the backend
+  // The configNumberObject has the format like this:
+  // configNumberObject = {
+  //   config: "123123"
+  // }
   const configNumberObject = {
     config: configNumber
   }
@@ -85,10 +90,11 @@ export default function Home() {
   // The "useState" function is a React hook function that is used to create the combo of "something" and "setSomething"
   // The purpose of using "useState" is that it is used to "trigger the re-render of the UI" when the "something is updated"
 
-  // For example, at the beginning, screePlotData = null, then nothing on the screen yet, then we call API to calculate the scree plot data, then we need to store the data get from API to the screePlotData and render it to the screen.
+  // For example, at the beginning, screePlotData = null, then nothing on the screen yet,
+  // ==> then we call API to calculate the scree plot data
+  // ==> then we need to store the data get from API to the screePlotData and render it to the screen.
   // If we just assign the screePlotData = "data_from_API", it will not re-render the UI, so the scree plot will not be shown on the screen.
   // So we need to use "useState()"
-
   const [csvData, setCsvData] = useState([]);
   const [screePlotData, setScreePlotData] = useState(null);
   const [pcaPlotData, setPcaPlotData] = useState(null);
@@ -115,9 +121,11 @@ export default function Home() {
   // The "defaultColor" is used to set the default color of the group
   const defaultColor = "#272E3F";
 
-  // The id for the file input, used to reset the file input value to null
+  // The id for the file input, which will be used later to reset the file input value to null
+  // The reason we need to reset the file input value to null is that if we don't reset the file input value to null, then the user can't upload the same file again after they uploaded it once
   const inputFileId = "fileInput";
 
+  // The acceptFileTypes is used to allow the user to upload the file with the following types, like .csv, .xlsx, .xls
   const acceptFileTypes = ".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel";
 
   // The styles for the buttons, sections, etc.
@@ -129,6 +137,7 @@ export default function Home() {
 
   // Variables for the "tour"
   const [isTourOpen, setIsTourOpen] = useState(false);
+  // This refTourStep1, refTourStep2, etc. are used to tell the "Tour" that this is the target of which step
   const refTourStep1 = useRef(null);
   const refTourStep2 = useRef(null);
   const refTourStep3 = useRef(null);
@@ -139,6 +148,7 @@ export default function Home() {
   const tourSteps = [
     // Tour step 1
     {
+      // Setup target for the step
       target: () => refTourStep1.current,
       title: 'Upload file',
       description: <div>
@@ -259,6 +269,7 @@ export default function Home() {
   /*####################
   # FUNCTIONS --- useEffect
   ####################*/
+  // useEffect(() => {...}, []);: This is a React Hook that runs the function provided as the first argument after the component has rendered. The second argument is an array of dependencies. If any of the dependencies change, the function will run again. In this case, the array [] is empty, which means the function will only run once after the component appears on the screen.
   useEffect(() => {
     const fetchDataFromDB = async () => {
       try {
@@ -268,8 +279,8 @@ export default function Home() {
         console.error('Error fetching data: ', error);
       }
     };
-
     fetchDataFromDB();
+    // The array [] is empty, which means the function will only run once after the component appears on the screen
   }, []);
   /*####################
   # End of FUNCTIONS --- useEffect
@@ -288,7 +299,7 @@ export default function Home() {
       // Using PapaParse, a library used for parsing, to parse the file
       Papa.parse(file, {
         header: true,
-        // The "skipEmptyLines: true" is important, because if we don't use it, then the empty lines in the csv file will be parsed as an empty object, and it will cause the error when we try to render the table
+        // The "skipEmptyLines: true" is IMPORTANT, because if we don't use it, then the empty lines in the csv file will be parsed as an empty object, and it will cause the error when we try to render the table
         skipEmptyLines: true,
         complete: (results) => {
           // Then set the parsed data to the csvData
@@ -310,6 +321,7 @@ export default function Home() {
     if (csvData.length === 0) {
       return;
     }
+    // The real all actions to clear the uploaded file and reset the UI are in this "showAlertForClear" function, so check the "showAlertForClear" function below for more details
     showAlertForClear();
   }
   /*####################
@@ -318,8 +330,29 @@ export default function Home() {
 
 
   /*####################
+   # FUNCTIONS --- Show alert message
+   ####################*/
+  // This function is like a template for showing the alert message, which is used in the "isFileUploaded" function
+  const showAlert = (title, message, icon) => {
+    Swal.fire({
+      title: title,
+      text: message,
+      icon: icon,
+      showConfirmButton: false,
+      showCancelButton: true,
+      // cancelButtonColor: '#272E3F',
+    })
+  }
+  /*####################
+  # End of FUNCTIONS --- Show alert message
+  ####################*/
+
+
+  /*####################
   # FUNCTIONS --- Check if the file is uploaded
   ####################*/
+  // This function is used to check if the file is uploaded, if not, then show the alert message and return false
+  // For example, if the user clicks on the "Generate Scree plot" button, then we need to check if the file is uploaded, if not, then show the alert message and return false
   const isFileUploaded = () => {
     if (csvData.length > 0) {
       return true;
@@ -341,25 +374,7 @@ export default function Home() {
 
 
   /*####################
-  # FUNCTIONS --- Show alert message
-  ####################*/
-  const showAlert = (title, message, icon) => {
-    Swal.fire({
-      title: title,
-      text: message,
-      icon: icon,
-      showConfirmButton: false,
-      showCancelButton: true,
-      // cancelButtonColor: '#272E3F',
-    })
-  }
-  /*####################
-  # End of FUNCTIONS --- Show alert message
-  ####################*/
-
-
-  /*####################
-  # FUNCTIONS --- Show alert message with options, like "OK" button, "Cancel" button, etc.
+  # FUNCTIONS --- Show alert message with options, like with "Yes" button, "No" button
   ####################*/
   const showAlertForClear = () => {
     Swal.fire({
@@ -376,7 +391,7 @@ export default function Home() {
         setCsvData([]);
         // Reset the file input value to null, this is important because if we don't reset the file input value to null, then the user can't upload the same file again after they uploaded it once
         document.getElementById(inputFileId).value = null;
-        // Then we will hide the scree plot, PCA plot, loadings table, top 5 contributors table
+        // Then we will hide the scree plot, PCA plot, loadings table, top 5 contributors table on the screen by setting the visibility to "false"
         setIsScreePlotVisible(false);
         setIsLoadingsTableVisible(false);
         setIsTopFiveContributorsTableVisible(false);
@@ -399,32 +414,29 @@ export default function Home() {
 
 
   /*####################
-  # FUNCTIONS --- Generate random data
-  ####################*/
-  const generateRandomData = async () => {
-    if (!isFileUploaded()) {
-      return;
-    }
-    try {
-      // Send a GET request to the backend to generate random data
-      // then backend will return the random data
-      // then put the random generated data to the "csvData" by using "setCsvData"
-      const response = await axios.get(`http://localhost:${BACKEND_PORT}/api/generate_data`);
-      setCsvData(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-  /*####################
-  # End of FUNCTIONS --- Generate random data
-  ####################*/
-
-
-  /*####################
   # FUNCTIONS --- Generate Scree plot
   ####################*/
+  // The "generateScreePlot" function will generate the things like following:
+  // {
+  //    data: [
+  //      .....
+  //    ],
+  //    layout: {
+  //      .....
+  //    }
+  // }
+  // To see what is "....." for detail, check the "generateScreePlot.py" file in the "backend" folder
+  // This format will be use in the "Plot" component from the "react-plotly.js" library
+  // So the <Plot> will be used like this:
+  // <Plot
+  //    data={screePlotData.data}
+  //    layout={screePlotData.layout}
+  // />
+  // In which "screePlotData.data" is the "data" from backend, and "screePlotData.layout" is the "layout" from backend.
+  // ==> so check the "generateScreePlot.py" file in the "backend" folder for more details of "data" and "layout"
   const generateScreePlot = async () => {
-    // Check if the file is uploaded, if not, then show the alert message and return
+    // Check if the file is uploaded or not
+    // ==> if not, then show the alert message to tell the user to upload the file first, then return
     if (!isFileUploaded()) {
       return;
     }
@@ -432,8 +444,8 @@ export default function Home() {
     if (!isScreePlotVisible) {
       try {
         // Send a POST request with the "csvData" to the backend
-        // then backend will return the scree plot data
-        // then put the scree plot data to the "screePlotData" by using "setScreePlotData"
+        // ==> then backend will return the scree plot data
+        // ==> then put the scree plot data to the "screePlotData" by using "setScreePlotData"
         const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_scree_plot`, csvData);
         setScreePlotData(response.data);
         // Reset the color of the scree plot
@@ -442,7 +454,7 @@ export default function Home() {
         console.error(error);
       }
     }
-    // Then we will toggle the visibility of the scree plot. If it's visible, then we will make it invisible, and vice versa
+    // ==> Then we will toggle the visibility of the scree plot. If it's visible, then we will make it invisible, and vice versa
     setIsScreePlotVisible(!isScreePlotVisible);
   }
   /*####################
@@ -454,15 +466,16 @@ export default function Home() {
   # FUNCTIONS --- Generate PCA plot 2D
   ####################*/
   const generatePCAPlot = async () => {
+    // Check if the file is uploaded or not
     if (!isFileUploaded()) {
       return;
     }
     try {
       const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca`, csvData);
-      console.log("🚀🚀🚀 data for 2D plot", response.data)
       setPcaPlotData(response.data);
 
-      // Extract the names of the sample replicates in the PCA plot, such as "H2O_30m_A", "H2O_30m-B", "H2O_30m-C", "PNA79_30m_A", "PNA79_30m_B", "PNA79_30m_C", etc.
+      // Extract the names of the sample replicates in the PCA plot and put them into the "names" array
+      // The names are like "H2O_30m_A", "H2O_30m-B", "H2O_30m-C", "PNA79_30m_A", "PNA79_30m_B", "PNA79_30m_C", etc.
       const names = []
       response.data.data.forEach((eachItem, index) => {
         names.push({
@@ -470,10 +483,9 @@ export default function Home() {
           groupId: ""
         })
       })
-      console.log("🚀🚀🚀 names", names)
+      // Then set the "names" array to the "nameOfSamples" state by using "setNameOfSamples" function
       setNameOfSamples(names);
-
-      // This is used to reset the color groups
+      // This setColorGroups is used to reset the color groups
       setColorGroups([
         {
           groupId: "1",
@@ -488,8 +500,7 @@ export default function Home() {
           sampleNames: []
         },
       ]);
-
-      // This is used to reset the group options that are required to use in the antd library <Select> component
+      // This setGroupOptions is used to reset the group options that are required to use in the antd library <Select> component
       setGroupOptions([
         {
           label: "Group 1",
@@ -500,7 +511,6 @@ export default function Home() {
           value: `2, ${defaultColor}`
         },
       ]);
-
     } catch (error) {
       console.error(error);
     }
@@ -513,16 +523,15 @@ export default function Home() {
   /*####################
   # FUNCTIONS --- Generate PCA plot 3D
   ####################*/
+  // The flow of the "generatePCAPlot3D" function is similar to the "generatePCAPlot" function
   const generatePCAPlot3D = async () => {
     if (!isFileUploaded()) {
       return;
     }
     try {
       const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca_3d`, csvData);
-      console.log("🚀🚀🚀 data for 3D plot", response.data)
       setPcaPlot3DData(response.data);
 
-      // Extract the names of the sample replicates in the PCA plot, such as "H2O_30m_A", "H2O_30m-B", "H2O_30m-C", "PNA79_30m_A", "PNA79_30m_B", "PNA79_30m_C", etc.
       const names = []
       response.data.data.forEach((eachItem, index) => {
         names.push({
@@ -530,10 +539,8 @@ export default function Home() {
           groupId: ""
         })
       })
-      console.log("🚀🚀🚀 names", names)
       setNameOfSamples(names);
 
-      // This is used to reset the color groups
       setColorGroups([
         {
           groupId: "1",
@@ -549,7 +556,6 @@ export default function Home() {
         },
       ]);
 
-      // This is used to reset the group options that are required to use in the antd library <Select> component
       setGroupOptions([
         {
           label: "Group 1",
@@ -560,7 +566,6 @@ export default function Home() {
           value: `2, ${defaultColor}`
         },
       ]);
-
     } catch (error) {
       console.error(error);
     }
@@ -573,6 +578,7 @@ export default function Home() {
   /*####################
   # FUNCTIONS --- Generate Loadings table
   ####################*/
+  // The flow of the "generateLoadingsTable" function is similar to the "generateScreePlot" function
   const generateLoadingsTable = async () => {
     if (!isFileUploaded()) {
       return;
@@ -595,6 +601,7 @@ export default function Home() {
   /*####################
   # FUNCTIONS --- Generate Top 5 contributors table
   ####################*/
+  // The flow of the "generateTopFiveContributors" function is similar to the "generateScreePlot" function
   const generateTopFiveContributors = async () => {
     if (!isFileUploaded()) {
       return;
@@ -624,28 +631,12 @@ export default function Home() {
   ####################*/
 
   /*####################
-  # BUTTONS --- Render button to generate random data
-  ####################*/
-  const renderButtonGenerateRandomData = () => {
-    return (
-      <Button onClick={generateRandomData} >
-        Random data
-      </Button>
-    )
-  }
-  /*####################
-  # End of BUTTONS --- Render button to generate random data
-  ####################*/
-
-
-  /*####################
   # BUTTONS --- Render button to upload file
   ####################*/
   const renderButtonUploadFile = () => {
     return (
       <div>
         <Input
-          // The "id" is used to select the file input by using the document.getElementById(inputFileId), then we can reset the file input value to null
           id={inputFileId}
           type='file'
           accept={acceptFileTypes}
@@ -655,6 +646,7 @@ export default function Home() {
         />
 
         <label
+          // The "htmlFor" must be the same as the "id" of the file input, then when we click on the label, it will trigger the file input
           htmlFor={inputFileId}
           className={`${styleForButton}`}
           // The ref={refTourStep1} is used to tell the tour that this is the target of the first step, the "Tour" is like the tutorial for the user
@@ -712,29 +704,25 @@ export default function Home() {
   # BUTTONS --- Render button to generate PCA plot
   ####################*/
   const renderButtonPCAPlot = () => {
+    // If the PCA 2D plot is visible, then show the button with the name "PCA 2D"
     if (isPCA2DVisible) {
       return (
-        <Button
-          variant="default"
-
-        >
+        <Button variant="default">
           <ScatterChart className='mr-2' size={sizeOfIcon} /> {namePCA2D}
         </Button>
       )
+      // If the PCA 3D plot is visible, then show the button with the name "PCA 3D"
     } else if (isPCA3DVisible) {
       return (
-        <Button
-          variant="default"
-
-        >
+        <Button variant="default">
           <ScatterChart className='mr-2' size={sizeOfIcon} /> {namePCA3D}
         </Button>
       )
+      // If the PCA 2D and PCA 3D plot are not visible, then show the button with the name "PCA plot"
     } else {
       return (
         <Button
           variant="outline"
-
           ref={refTourStep3}
         >
           <ScatterChart className='mr-2' size={sizeOfIcon} /> PCA plot
@@ -792,7 +780,7 @@ export default function Home() {
     return (
       <CSVLink
         data={dataWillBeDownloaded}
-        filename={"data.csv"}
+        filename={nameOfDownloadedFile}
         className={`${styleForButton}`}
       >
         <Download className='mr-2' size={sizeOfIcon} /> Download file
@@ -1811,11 +1799,6 @@ export default function Home() {
   ####################*/
   return (
     <div className='container mt-4 flex flex-col'>
-
-      <ul class="list-disc pl-5">
-        <li class="mb-1 text-red-600">Adjust the column order in the Loadings table</li>
-      </ul>
-
       <div className="flex py-3 justify-between sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
 
         {/* Button "Begin a tour" */}
