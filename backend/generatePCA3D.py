@@ -9,10 +9,11 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
 
-def is_num_delimiter(s):
-    # This function checks if a string is a number
-    # It is used to identify the columns that contain non-numeric values
-    # The reason we use s.replace(',', '') is that the data may contain comma as the decimal delimiter
+def is_number_or_not(s):
+    # This "is_number_or_not" function checks if a string is a number
+    # The name "is_number_or_not" is not really a nice name for this function, but "is_number" is a function already built-in in Python, and the "is_number" only check the number with dot ".", so the comma "," will not be recognized as a number.
+    # That's why we use "is_number_or_not", in which we use s.replace(',', '') to handle the data that may contain comma as the decimal delimiter
+    # This function is used to identify the columns that contain non-numeric values
     try:
         float(s.replace(',', ''))
     except ValueError:
@@ -29,7 +30,7 @@ def generate_pca_3d():
     initialData = request.json
     convertedData = pd.DataFrame(data=initialData)
 
-    non_numeric_columns = [col for col in convertedData.columns if not is_num_delimiter(
+    non_numeric_columns = [col for col in convertedData.columns if not is_number_or_not(
         convertedData[col].iloc[0])]
     if len(non_numeric_columns) > 1:
         convertedData.drop(non_numeric_columns[1:], axis=1, inplace=True)

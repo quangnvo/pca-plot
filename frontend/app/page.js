@@ -49,7 +49,7 @@ import Swal from 'sweetalert2'
 // The react-csv library is used to download the table as a csv file
 import { CSVLink } from 'react-csv';
 
-// This useSearchParams is used to get the query parameters from the URL, like the "aaa" in the URL "http://localhost:3000/?aaa=123123"
+// This useSearchParams is used to get the query parameters from the URL, like the "123123" in the URL "http://localhost:3000/?config=123123"
 import { useSearchParams } from "next/navigation"
 
 
