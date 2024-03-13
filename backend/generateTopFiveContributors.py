@@ -11,6 +11,17 @@ from sklearn.preprocessing import StandardScaler
 bp = Blueprint('generateTopFiveContributors', __name__)
 
 
+def is_num_delimiter(s):
+    # This function checks if a string is a number
+    # It is used to identify the columns that contain non-numeric values
+    # The reason we use s.replace(',', '') is that the data may contain comma as the decimal delimiter
+    try:
+        float(s.replace(',', ''))
+    except ValueError:
+        return False
+    else:
+        return True
+
 @bp.route('/api/generate_top_five_contributors', methods=['POST'])
 def generate_top_five_contributors():
 
@@ -20,8 +31,14 @@ def generate_top_five_contributors():
     initialData = request.json
     convertedData = pd.DataFrame(data=initialData)
 
-    nameOfTheFirstColumn = list(initialData[0].keys())[0]
-    convertedData.set_index(nameOfTheFirstColumn, inplace=True)
+    non_numeric_columns = [col for col in convertedData.columns if not is_num_delimiter(
+        convertedData[col].iloc[0])]
+    if len(non_numeric_columns) > 1:
+        convertedData.drop(non_numeric_columns[1:], axis=1, inplace=True)
+    convertedData.set_index(non_numeric_columns[0], inplace=True)
+
+    # Store the name of the first column
+    first_column_name = non_numeric_columns[0]
 
     convertedData = convertedData.replace(',', '.', regex=True)
     convertedData = convertedData.astype(float)
@@ -79,7 +96,7 @@ def generate_top_five_contributors():
         for gene, value in contributors.items():
             top_five_contributors.append({
                 "Principal component": pc,
-                "Gene": gene,
+                first_column_name: gene,
                 "Loadings": value
             })
     #########################

@@ -259,18 +259,18 @@ export default function Home() {
   /*####################
   # FUNCTIONS --- useEffect
   ####################*/
-  // useEffect(() => {
-  //   const fetchDataFromDB = async () => {
-  //     try {
-  //       const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/getDataFromDB`, configNumberObject);
-  //       setCsvData(response.data);
-  //     } catch (error) {
-  //       console.error('Error fetching data: ', error);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchDataFromDB = async () => {
+      try {
+        const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/getDataFromDB`, configNumberObject);
+        setCsvData(response.data);
+      } catch (error) {
+        console.error('Error fetching data: ', error);
+      }
+    };
 
-  //   fetchDataFromDB();
-  // }, []);
+    fetchDataFromDB();
+  }, []);
   /*####################
   # End of FUNCTIONS --- useEffect
   ####################*/
@@ -1189,27 +1189,29 @@ export default function Home() {
   }));
 
   const columnForLoadingsTable = loadingsTableData.length > 0
-    ? Object.keys(loadingsTableData[0]).map((nameOfEachColumn) => {
-      let column = {
-        title: nameOfEachColumn,
-        dataIndex: nameOfEachColumn,
-        key: nameOfEachColumn,
-        width: 100,
-        sortDirections: ['descend', 'ascend'],
-      };
-      if (!nameOfEachColumn.includes("PC")) {
-        column = {
-          ...column,
-          ...renderSearchingDropdown(nameOfEachColumn),
+    ? Object.keys(loadingsTableData[0])
+      .sort((a, b) => a.includes("PC") - b.includes("PC"))
+      .map((nameOfEachColumn) => {
+        let column = {
+          title: nameOfEachColumn,
+          dataIndex: nameOfEachColumn,
+          key: nameOfEachColumn,
+          width: 100,
+          sortDirections: ['descend', 'ascend'],
         };
-      } else {
-        column = {
-          ...column,
-          sorter: (a, b) => a[nameOfEachColumn] - b[nameOfEachColumn],
-        };
-      }
-      return column;
-    })
+        if (!nameOfEachColumn.includes("PC")) {
+          column = {
+            ...column,
+            ...renderSearchingDropdown(nameOfEachColumn),
+          };
+        } else {
+          column = {
+            ...column,
+            sorter: (a, b) => a[nameOfEachColumn] - b[nameOfEachColumn],
+          };
+        }
+        return column;
+      })
     : [];
 
   // Render the loadings table to show that which features contribute how much to the principal components
@@ -1265,28 +1267,37 @@ export default function Home() {
 
   const columnForTopFiveContributorsTable = topFiveContributorsTableData.length > 0
     ? [
-      // The first column is the Principal component, the name "Principal component" should match exactly with the name in the backend file generateTopFiveContributors.py
-      {
-        title: "Principal component",
-        dataIndex: "Principal component",
-        key: "Principal component",
-        width: 100,
-        ...renderSearchingDropdown("Principal component"),
-      },
-      ...Object.keys(topFiveContributorsTableData[0]).filter(nameOfEachColumn => nameOfEachColumn !== "Principal component").map((nameOfEachColumn) => {
+      // First column
+      ...Object.keys(topFiveContributorsTableData[0]).filter(nameOfEachColumn => nameOfEachColumn !== "Principal component" && nameOfEachColumn !== "Loadings").map((nameOfEachColumn) => {
         let column = {
           title: nameOfEachColumn,
           dataIndex: nameOfEachColumn,
           key: nameOfEachColumn,
           width: 100,
+          ...renderSearchingDropdown(nameOfEachColumn),
         };
-        // The name "Gene" should match exactly with the name in the backend file generateTopFiveContributors.py
-        if (nameOfEachColumn === "Gene") {
-          column = {
-            ...column,
-            ...renderSearchingDropdown(nameOfEachColumn),
-          };
-        }
+        return column;
+      }),
+      // Loadings column
+      ...Object.keys(topFiveContributorsTableData[0]).filter(nameOfEachColumn => nameOfEachColumn === "Loadings").map((nameOfEachColumn) => {
+        let column = {
+          title: nameOfEachColumn,
+          dataIndex: nameOfEachColumn,
+          key: nameOfEachColumn,
+          width: 100,
+          sorter: (a, b) => a[nameOfEachColumn] - b[nameOfEachColumn],
+        };
+        return column;
+      }),
+      // Principal component column
+      ...Object.keys(topFiveContributorsTableData[0]).filter(nameOfEachColumn => nameOfEachColumn === "Principal component").map((nameOfEachColumn) => {
+        let column = {
+          title: nameOfEachColumn,
+          dataIndex: nameOfEachColumn,
+          key: nameOfEachColumn,
+          width: 100,
+          ...renderSearchingDropdown(nameOfEachColumn),
+        };
         return column;
       })
     ]
@@ -1802,7 +1813,6 @@ export default function Home() {
     <div className='container mt-4 flex flex-col'>
 
       <ul class="list-disc pl-5">
-        <li class="mb-1 text-red-600">Fix bug hard code of the data table</li>
         <li class="mb-1 text-red-600">Adjust the column order in the Loadings table</li>
       </ul>
 

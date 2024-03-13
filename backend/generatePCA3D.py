@@ -8,6 +8,19 @@ from flask import Blueprint, jsonify, request
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
+
+def is_num_delimiter(s):
+    # This function checks if a string is a number
+    # It is used to identify the columns that contain non-numeric values
+    # The reason we use s.replace(',', '') is that the data may contain comma as the decimal delimiter
+    try:
+        float(s.replace(',', ''))
+    except ValueError:
+        return False
+    else:
+        return True
+
+
 bp = Blueprint('generatePCA3D', __name__)
 
 
@@ -15,8 +28,13 @@ bp = Blueprint('generatePCA3D', __name__)
 def generate_pca_3d():
     initialData = request.json
     convertedData = pd.DataFrame(data=initialData)
-    nameOfTheFirstColumn = list(initialData[0].keys())[0]
-    convertedData.set_index(nameOfTheFirstColumn, inplace=True)
+
+    non_numeric_columns = [col for col in convertedData.columns if not is_num_delimiter(
+        convertedData[col].iloc[0])]
+    if len(non_numeric_columns) > 1:
+        convertedData.drop(non_numeric_columns[1:], axis=1, inplace=True)
+    convertedData.set_index(non_numeric_columns[0], inplace=True)
+
     convertedData = convertedData.replace(',', '.', regex=True)
     convertedData = convertedData.astype(float)
     convertedData = convertedData.dropna()

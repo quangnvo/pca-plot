@@ -4,8 +4,7 @@ import generatePCA3D
 import generateSampleData
 import generateScreePlot
 import generateTopFiveContributors
-
-# import getDataFromDB
+import getDataFromDB
 from flask import Flask
 from flask_cors import CORS
 
@@ -20,7 +19,7 @@ def home():
     return f"Flask server is running on port {PORT}!"
 
 
-# app.register_blueprint(getDataFromDB.bp)
+app.register_blueprint(getDataFromDB.bp)
 app.register_blueprint(generateSampleData.bp)
 app.register_blueprint(generatePCA.bp)
 app.register_blueprint(generateScreePlot.bp)

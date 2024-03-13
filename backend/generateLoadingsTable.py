@@ -11,6 +11,17 @@ from sklearn.preprocessing import StandardScaler
 bp = Blueprint('generateLoadingsTable', __name__)
 
 
+def is_num_delimiter(s):
+    # This function checks if a string is a number
+    # It is used to identify the columns that contain non-numeric values
+    # The reason we use s.replace(',', '') is that the data may contain comma as the decimal delimiter
+    try:
+        float(s.replace(',', ''))
+    except ValueError:
+        return False
+    else:
+        return True
+
 @bp.route('/api/generate_loadings_table', methods=['POST'])
 def generate_loadings_table():
 
@@ -20,8 +31,14 @@ def generate_loadings_table():
     initialData = request.json
     convertedData = pd.DataFrame(data=initialData)
 
-    nameOfTheFirstColumn = list(initialData[0].keys())[0]
-    convertedData.set_index(nameOfTheFirstColumn, inplace=True)
+    non_numeric_columns = [col for col in convertedData.columns if not is_num_delimiter(
+        convertedData[col].iloc[0])]
+    if len(non_numeric_columns) > 1:
+        convertedData.drop(non_numeric_columns[1:], axis=1, inplace=True)
+    convertedData.set_index(non_numeric_columns[0], inplace=True)
+
+    # Store the name of the first column
+    first_column_name = non_numeric_columns[0]
 
     convertedData = convertedData.replace(',', '.', regex=True)
     convertedData = convertedData.astype(float)
@@ -70,7 +87,7 @@ def generate_loadings_table():
     # Then convert the DataFrame to a list of dictionaries
     # The purpose of this is to make it easier to convert the data to a JSON object
     # reset_index(): This function resets the index of the DataFrame and makes it a column in the DataFrame.
-    # rename(columns={'index': 'Gene'}): This function renames the column labeled ‘index’ to ‘Gene’.
+    # rename(columns={'index': first_column_name}): This function renames the column labeled ‘index’ to first_column_name.
     # to_dict('records'): This function converts the DataFrame into a list of dictionaries. The ‘records’ argument means that each item in the list will be a dictionary representing a row in the DataFrame, where the "keys" are the "column names" and the "values" are the "data in the row".
     #
     # For example, if loadings_df like this:
@@ -92,7 +109,7 @@ def generate_loadings_table():
     #   }
     # ]
     loadings_list = loadings_df.reset_index().rename(
-        columns={'index': 'Gene'}).to_dict('records')
+        columns={'index': first_column_name}).to_dict('records')
 
     # Then convert the list of dictionaries to a JSON object
     result_json = jsonify(loadings_list)

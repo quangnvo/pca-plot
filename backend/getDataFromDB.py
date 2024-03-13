@@ -1,8 +1,8 @@
 from io import BytesIO
 
 import pandas as pd
-from bson.json_util import ObjectId, dumps, loads
-from flask import Blueprint, Response, jsonify, request
+from bson.json_util import ObjectId, loads
+from flask import Blueprint, Response, request
 from pymongo import MongoClient
 
 # Create a Blueprint for the generatePCA.py file
