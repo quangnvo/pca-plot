@@ -628,6 +628,20 @@ export default function Home() {
           data: response.data.loadingsPlotCoordinates,
           layout: response.data.layout
         });
+
+        // Set the color for the top 5 contributors plot  
+        const ColorDataFromBackend = response.data.loadingsPlotCoordinates.map(item => ({
+          pcName: item.x[0],
+          colorCode: item.marker.color
+        }));
+
+        const uniqueColorForTopFiveContributorsPlot = ColorDataFromBackend.filter((item, index, self) =>
+          index === self.findIndex((t) => (
+            t.pcName === item.pcName
+          ))
+        );
+
+        setColorForTopFiveContributorsPlot(uniqueColorForTopFiveContributorsPlot);
       } catch (error) {
         console.error(error);
       }
@@ -1006,13 +1020,6 @@ export default function Home() {
   const renderTopFiveContributorsPlot = () => {
     // If the topFiveContributorsPlotData is not null, then continue to render the top 5 contributors plot
     if (topFiveContributorsPlotData) {
-      const topFiveContributorsPlotDataLayout = {
-        ...topFiveContributorsPlotData.layout,
-        xaxis: {
-          categoryorder: 'array',
-          categoryarray: topFiveContributorsPlotData.data.map(d => d.name)
-        }
-      }
       return (
         <div className={`${spaceBetweenSections}`} >
           <p className={`${styleForSectionHeading}`}>
@@ -1023,12 +1030,19 @@ export default function Home() {
               useResizeHandler
               style={{ width: "100%", height: "500px" }}
               data={topFiveContributorsPlotData.data}
-              layout={topFiveContributorsPlotDataLayout}
+              layout={topFiveContributorsPlotData.layout}
               // key={Math.random()} is very IMPORTANT here, because it will force the Plot to re-render when the data is changed. 
               // Otherwise, the Plot will not re-render, so the color of the samples on the plot will not be updated.
               key={Math.random()}
             />
           </div>
+
+          {/* Color selection for the Top 5 contributors plot */}
+          {colorForTopFiveContributorsPlot.length > 0 && (
+            <div className={`${spaceBetweenColorSectionAndPlot}`}>
+              {renderColorSectionForTopFiveContributorsPlot()}
+            </div>
+          )}
         </div>
       )
     }
@@ -1489,6 +1503,9 @@ export default function Home() {
   // ==> and the color of the samples on the plot will be reset to the default color
   // ==> and also the "sampleNames" array of the group will be reset to empty array.
   const [selectedGroups, setSelectedGroups] = useState({});
+
+  // The "colorForTopFiveContributorsPlot" is used to store the color of the top 5 contributors plot
+  const [colorForTopFiveContributorsPlot, setColorForTopFiveContributorsPlot] = useState([]);
   /*####################
   # End of COLORS --- Setup variables --- For PCA 2D and PCA 3D
   ####################*/
@@ -1778,6 +1795,44 @@ export default function Home() {
   # End of COLORS --- Functions --- Change color for Scree plot
   ####################*/
 
+
+  /*####################
+  # COLORS --- Functions --- Change color for Top 5 contributors plot
+  ####################*/
+  const changeColorForTopFiveContributorPlot = (newColor, pcName) => {
+    // Change the color on the "selecting color bar"
+    const newColorForTopFiveContributorsPlot = [...colorForTopFiveContributorsPlot];
+    const indexOfPcName = newColorForTopFiveContributorsPlot.findIndex(item => item.pcName === pcName);
+    newColorForTopFiveContributorsPlot[indexOfPcName].colorCode = newColor;
+    setColorForTopFiveContributorsPlot(newColorForTopFiveContributorsPlot);
+    // Change color on the top 5 contributors plot
+    const newTopFiveContributorsPlotData = topFiveContributorsPlotData.data.map(item => {
+      if (item.x[0] === pcName) {
+        return {
+          ...item,
+          marker: {
+            ...item.marker,
+            color: newColor
+          }
+        };
+      } else {
+        return item;
+      }
+    });
+
+    // Update the state with the new data
+    setTopFiveContributorsPlotData({
+      ...topFiveContributorsPlotData,
+      data: newTopFiveContributorsPlotData
+    });
+  };
+
+
+  /*####################
+  # End of COLORS --- Functions --- Change color for Top 5 contributors plot
+  ####################*/
+
+
   /*####################
   # End of COLORS --- Functions
   ####################*/
@@ -1925,6 +1980,31 @@ export default function Home() {
   ####################*/
 
   /*####################
+  # COLORS --- Render --- Color section Top 5 contributors plot
+  ####################*/
+  const renderColorSectionForTopFiveContributorsPlot = () => {
+    return <div className='grid grid-cols-2 md:grid-cols-5 gap-2'>
+      {colorForTopFiveContributorsPlot.map((eachItem, index) => {
+        return <div
+          key={index}
+          className='flex gap-2 items-center'
+        >
+          <span>{eachItem.pcName}</span>
+          <Input
+            type="color"
+            className='cursor-pointer w-32 h-10 rounded-md border border-gray-300'
+            value={eachItem.colorCode}
+            onChange={(e) => changeColorForTopFiveContributorPlot(e.target.value, eachItem.pcName)}
+          />
+        </div>
+      })}
+    </div>
+  }
+  /*####################
+  # End of COLORS --- Render --- Color section Top 5 contributors plot
+  ####################*/
+
+  /*####################
   # End of COLORS --- Render
   ####################*/
 
@@ -1960,6 +2040,7 @@ export default function Home() {
   # End of the FILE INFORMATION
   ####################*/
 
+  console.log("!!! colorForTopFiveContributorsPlot", colorForTopFiveContributorsPlot)
 
   /*####################
   # The following code is to render the FINAL UI of the page

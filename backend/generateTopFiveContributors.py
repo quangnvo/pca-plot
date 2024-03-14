@@ -50,8 +50,8 @@ def generate_top_five_contributors():
     dataAfterStandardization = standardScalerObject.fit_transform(
         convertedData.T)
 
-    pcaObject = PCA(n_components=5)
-    pcaData = pcaObject.fit_transform(dataAfterStandardization)
+    pcaObject = PCA(n_components=4)
+    pcaObject.fit_transform(dataAfterStandardization)
     #########################
     # End of CODE SIMILAR TO "generatePCA.py"
     #########################
@@ -102,24 +102,20 @@ def generate_top_five_contributors():
                 "Loadings": value
             })
 
-    # aaaaaaaaaaaaa
     # The default colors of the points in the PCA plot
     defaultColor = "#272E3F"
     defaultBorderColor = "#000000"
     defaultTileFontColor = "#000000"
 
-    print("🚀🚀🚀 top_five_contributors:            ",top_five_contributors)
-
-    # aaaaaaaaaaaaa
     pcaScatterCoordinates = [
         {
             'type': 'scatter',
             'mode': 'markers',
             'name': contributor[first_column_name],
-            'x': [contributor["Principal component"]] * len(top_five_contributors),
+            'x': [contributor["Principal component"]],
             'y': [contributor["Loadings"]],
             'marker': {
-                'size': 12,
+                'size': 24,
                 'color': defaultColor,
                 'line': {
                     'color': defaultBorderColor,
