@@ -110,10 +110,16 @@ def generate_top_five_contributors():
     pcaScatterCoordinates = [
         {
             'type': 'scatter',
-            'mode': 'markers',
+            # The mode is 'markers+text' is IMPORTANT here, because it will show the name next to the point on the chart
+            # If we use 'markers' only, the name will not be shown
+            'mode': 'markers+text',
             'name': contributor[first_column_name],
             'x': [contributor["Principal component"]],
             'y': [contributor["Loadings"]],
+            # "text" here is the name of the contributor (which means the name of the gene in the original data set)
+            'text': [contributor[first_column_name]],
+            # Position the text, we have "top", "bottom", "left", "top center", etc.
+            'textposition': 'right',
             'marker': {
                 'size': 24,
                 'color': defaultColor,

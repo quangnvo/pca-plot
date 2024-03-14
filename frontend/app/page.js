@@ -1797,7 +1797,7 @@ export default function Home() {
 
 
   /*####################
-  # COLORS --- Functions --- Change color for Top 5 contributors plot
+  # COLORS --- Functions --- Change color for Top 5 contributors plot --- changeColorForTopFiveContributorPlot
   ####################*/
   const changeColorForTopFiveContributorPlot = (newColor, pcName) => {
     // Change the color on the "selecting color bar"
@@ -1826,12 +1826,55 @@ export default function Home() {
       data: newTopFiveContributorsPlotData
     });
   };
-
-
   /*####################
-  # End of COLORS --- Functions --- Change color for Top 5 contributors plot
+  # End of COLORS --- Functions --- Change color for Top 5 contributors plot --- changeColorForTopFiveContributorPlot
   ####################*/
 
+  /*####################
+  # COLORS --- Functions --- Change color for Top 5 contributors plot --- resetAllForTopFiveContributorsPlot
+  ####################*/
+  const resetAllForTopFiveContributorsPlot = () => {
+    Swal.fire({
+      title: "Do you want to reset all colors back to the default?",
+      icon: "warning",
+      confirmButtonColor: '#272E3F',
+      confirmButtonText: "Yes",
+      showCancelButton: true,
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const newColorForTopFiveContributorsPlot = colorForTopFiveContributorsPlot.map(item => {
+          return {
+            ...item,
+            colorCode: defaultColor
+          }
+        });
+        setColorForTopFiveContributorsPlot(newColorForTopFiveContributorsPlot);
+        const newTopFiveContributorsPlotData = topFiveContributorsPlotData.data.map(item => {
+          return {
+            ...item,
+            marker: {
+              ...item.marker,
+              color: defaultColor
+            }
+          };
+        });
+        setTopFiveContributorsPlotData({
+          ...topFiveContributorsPlotData,
+          data: newTopFiveContributorsPlotData
+        });
+        Swal.fire({
+          title: "Done!",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    });
+  }
+  /*####################
+  # End of COLORS --- Functions --- Change color for Top 5 contributors plot --- resetAllForTopFiveContributorsPlot
+  ####################*/
 
   /*####################
   # End of COLORS --- Functions
@@ -1998,6 +2041,15 @@ export default function Home() {
           />
         </div>
       })}
+
+      {/* Button Reset All for top 5 contributors plot */}
+      <Button
+        variant="outline"
+        onClick={resetAllForTopFiveContributorsPlot}
+      >
+        Reset all
+      </Button>
+      {/* End of Button Reset All for top 5 contributors plot */}
     </div>
   }
   /*####################
@@ -2054,11 +2106,11 @@ export default function Home() {
         {/* NAVBAR --- Left side */}
 
 
-        <div className='hidden'>
+        <div className=''>
           <Button
             variant="outline"
             onClick={() => setIsTourOpen(true)}
-            className='invisible'
+            // className='invisible'
           >
             <Rocket className='mr-2' size={sizeOfIcon} /> Begin a tour
           </Button>
