@@ -37,6 +37,7 @@ import {
   Table as TableIcon,
   Upload,
   Download,
+  Trash2,
 } from 'lucide-react';
 import { SearchOutlined } from '@ant-design/icons';
 
@@ -101,6 +102,7 @@ export default function Home() {
   const [pcaPlot3DData, setPcaPlot3DData] = useState(null);
   const [loadingsTableData, setLoadingsTableData] = useState([]);
   const [topFiveContributorsTableData, setTopFiveContributorsTableData] = useState([]);
+  const [topFiveContributorsPlotData, setTopFiveContributorsPlotData] = useState(null);
 
   // The following variables are used to control the visibility of the things, like the bulb light switch on and off.
   // For example, if isScreePlotVisible = true, then the scree plot will be visible, if isScreePlotVisible = false, then the scree plot will be invisible
@@ -619,7 +621,13 @@ export default function Home() {
     if (!isTopFiveContributorsTableVisible) {
       try {
         const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_top_five_contributors`, csvData);
-        setTopFiveContributorsTableData(response.data);
+        console.log("!!!!!!!! response.data", response.data)
+        setTopFiveContributorsTableData(response.data.top_five_contributors);
+        // The "loadingsPlotCoordinates" and "layout" are from the backend file "generateTopFiveContributors.py"
+        setTopFiveContributorsPlotData({
+          data: response.data.loadingsPlotCoordinates,
+          layout: response.data.layout
+        });
       } catch (error) {
         console.error(error);
       }
@@ -989,6 +997,45 @@ export default function Home() {
   }
   /*####################
   # End of PLOTS --- Render PCA plot 2D and 3D
+  ####################*/
+
+
+  /*####################
+  # PLOTS --- Render Top 5 contributors Plot
+  ####################*/
+  const renderTopFiveContributorsPlot = () => {
+    // If the topFiveContributorsPlotData is not null, then continue to render the top 5 contributors plot
+    if (topFiveContributorsPlotData) {
+      const topFiveContributorsPlotDataLayout = {
+        ...topFiveContributorsPlotData.layout,
+        xaxis: {
+          categoryorder: 'array',
+          categoryarray: topFiveContributorsPlotData.data.map(d => d.name)
+        }
+      }
+      return (
+        <div className={`${spaceBetweenSections}`} >
+          <p className={`${styleForSectionHeading}`}>
+            Top 5 contributors plot
+          </p>
+          <div className='border border-gray-200 rounded-lg overflow-hidden'>
+            <Plot
+              useResizeHandler
+              style={{ width: "100%", height: "500px" }}
+              data={topFiveContributorsPlotData.data}
+              layout={topFiveContributorsPlotDataLayout}
+              // key={Math.random()} is very IMPORTANT here, because it will force the Plot to re-render when the data is changed. 
+              // Otherwise, the Plot will not re-render, so the color of the samples on the plot will not be updated.
+              key={Math.random()}
+            />
+          </div>
+        </div>
+      )
+    }
+  }
+
+  /*####################
+  # End of PLOTS --- Render Top 5 contributors Plot
   ####################*/
 
   /*####################
@@ -1643,6 +1690,7 @@ export default function Home() {
   # End of COLORS --- Functions --- Change color for PCA 2D and PCA 3D --- addGroupColor
   ####################*/
 
+
   /*####################
   # COLORS --- Functions --- Change color for PCA 2D and PCA 3D --- resetAll
   ####################*/
@@ -1756,12 +1804,13 @@ export default function Home() {
       return (
         <div>
           {/* This will render groups, like "Group 1 - which color", "Group 2 - which color", etc. */}
-          <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 items-center'>
+          <div className='grid grid-cols-2 md:grid-cols-4 gap-4 items-center'>
             {colorGroups.map((eachColorGroup, indexOfEachColorGroup) => (
               <div
                 key={indexOfEachColorGroup}
                 className='flex gap-2 items-center'
               >
+                {/* Name of the group, like "Group 1", "Group 2", "Group 3", etc. */}
                 <div className='w-[75px]'>
                   <span>{eachColorGroup.name}</span>
                 </div>
@@ -2041,6 +2090,7 @@ export default function Home() {
         {renderPCAPlotGeneral(isPCA2DVisible, isPCA3DVisible)}
         {renderLoadingsTable()}
         {renderTopFiveContributorsTable()}
+        {renderTopFiveContributorsPlot()}
       </div>
 
       {/* Tour */}

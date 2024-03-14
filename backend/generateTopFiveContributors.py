@@ -23,6 +23,7 @@ def is_number_or_not(s):
     else:
         return True
 
+
 @bp.route('/api/generate_top_five_contributors', methods=['POST'])
 def generate_top_five_contributors():
 
@@ -49,8 +50,8 @@ def generate_top_five_contributors():
     dataAfterStandardization = standardScalerObject.fit_transform(
         convertedData.T)
 
-    pcaObject = PCA(n_components=2)
-    pcaObject.fit_transform(dataAfterStandardization)
+    pcaObject = PCA(n_components=5)
+    pcaData = pcaObject.fit_transform(dataAfterStandardization)
     #########################
     # End of CODE SIMILAR TO "generatePCA.py"
     #########################
@@ -100,12 +101,66 @@ def generate_top_five_contributors():
                 first_column_name: gene,
                 "Loadings": value
             })
+
+    # aaaaaaaaaaaaa
+    # The default colors of the points in the PCA plot
+    defaultColor = "#272E3F"
+    defaultBorderColor = "#000000"
+    defaultTileFontColor = "#000000"
+
+    print("🚀🚀🚀 top_five_contributors:            ",top_five_contributors)
+
+    # aaaaaaaaaaaaa
+    pcaScatterCoordinates = [
+        {
+            'type': 'scatter',
+            'mode': 'markers',
+            'name': contributor[first_column_name],
+            'x': [contributor["Principal component"]] * len(top_five_contributors),
+            'y': [contributor["Loadings"]],
+            'marker': {
+                'size': 12,
+                'color': defaultColor,
+                'line': {
+                    'color': defaultBorderColor,
+                    'width': 2,
+                }
+            },
+        } for contributor in top_five_contributors
+    ]
+
+    # Prepare the layout for the PCA plot
+    layoutPCAPlotForReact = {
+        'xaxis': {
+            'title': 'Principal Component',
+            'titlefont': {
+                'size': 20,
+                'color': defaultTileFontColor,
+            },
+        },
+        'yaxis': {
+            'title': 'Loadings',
+            'titlefont': {
+                'size': 20,
+                'color': defaultTileFontColor,
+            },
+        },
+        'autosize': True,
+        'hovermode': 'closest',
+        'showlegend': True,
+        'height': 400,
+    }
+
     #########################
     # End of FIND THE TOP FIVE CONTRIBUTORS FOR EACH PRINCIPAL COMPONENT
     #########################
 
     # Convert the list to JSON
-    result_json = jsonify(top_five_contributors)
+    result_json = jsonify({
+        "top_five_contributors": top_five_contributors,
+        "loadingsPlotCoordinates": pcaScatterCoordinates,
+        "layout": layoutPCAPlotForReact
+    })
 
     # Return the JSON data
     return result_json
