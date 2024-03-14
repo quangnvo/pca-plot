@@ -109,6 +109,16 @@
   background: #272e3f !important;
 }
 
+.font-outline {
+  text-shadow:
+    /* Right and down */ 1px 1px #000,
+    /* Left and down */ -1px 1px #000,
+    /* Right and up */ 1px -1px #000,
+    /* Left and up */ -1px -1px #000,
+    /* This is an additional shadow that is offset by 1.5 pixels to the right and down. The color of this shadow is a semi-transparent black (rgba(0, 0, 0, 0.2)), which creates a soft shadow effect. */
+      1.5px 1.5px 0px rgba(0, 0, 0, 0.2);
+}
+
 @layer base {
   * {
     @apply border-border;

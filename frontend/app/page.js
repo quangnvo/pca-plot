@@ -114,6 +114,9 @@ export default function Home() {
   // The name of uploaded file, used to show the name of the uploaded file on the screen
   const [uploadedFileName, setUploadedFileName] = useState("");
 
+  // This "isNavbarMobileOpen" is used to control the visibility of the mobile navbar when user use a smaller screen, like the mobile screen
+  const [isNavbarMobileOpen, setIsNavbarMobileOpen] = useState(false)
+
   // The name of the PCA 2D and PCA 3D, just used for naming the title of the buttons
   const namePCA2D = "PCA 2D";
   const namePCA3D = "PCA 3D";
@@ -131,7 +134,7 @@ export default function Home() {
   // The styles for the buttons, sections, etc.
   const spaceBetweenSections = "mb-[75px]";
   const spaceBetweenColorSectionAndPlot = "mt-[15px]";
-  const styleForSectionHeading = "mb-[15px] text-3xl font-bold"
+  const styleForSectionHeading = "mb-[15px] text-2xl md:text-3xl font-bold"
   const styleForButton = "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 cursor-pointer"
   const sizeOfIcon = "20px"
 
@@ -281,6 +284,13 @@ export default function Home() {
     };
     fetchDataFromDB();
     // The array [] is empty, which means the function will only run once after the component appears on the screen
+
+    // aaaaaaaaaaaaaaa
+    window.addEventListener(
+      "resize",
+      () => window.innerWidth >= 960 && setIsNavbarMobileOpen(false)
+    );
+    // aaaaaaaaaaaaaaa
   }, []);
   /*####################
   # End of FUNCTIONS --- useEffect
@@ -1746,7 +1756,7 @@ export default function Home() {
       return (
         <div>
           {/* This will render groups, like "Group 1 - which color", "Group 2 - which color", etc. */}
-          <div className='grid grid-cols-5 gap-4 items-center'>
+          <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 items-center'>
             {colorGroups.map((eachColorGroup, indexOfEachColorGroup) => (
               <div
                 key={indexOfEachColorGroup}
@@ -1766,7 +1776,6 @@ export default function Home() {
                     onChange={(e) => handleColorOfGroupChange(indexOfEachColorGroup, e.target.value)}
                   />
                 </div>
-
               </div>
             ))}
 
@@ -1810,7 +1819,7 @@ export default function Home() {
     }
     if (pcaPlotData || pcaPlot3DData) {
       return (
-        <div className='grid grid-cols-3 gap-x-6 gap-y-3 mt-5'>
+        <div className='grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-3 mt-5'>
           {nameOfSamples.map((sample, index) => {
             return <div
               key={index}
@@ -1823,7 +1832,7 @@ export default function Home() {
                   handleChangeGroupForEachSample(sample.name, value);
                   setSelectedGroups(prevState => ({ ...prevState, [sample.name]: value }));
                 }}
-                className='w-3/5'
+                className='md:w-3/5'
                 options={groupOptions}
               />
             </div>
@@ -1903,27 +1912,37 @@ export default function Home() {
   ####################*/
 
 
-
   /*####################
   # The following code is to render the FINAL UI of the page
   ####################*/
   return (
     <div className='container mt-4 flex flex-col'>
-      <div className="flex py-3 justify-between sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
 
-        {/* Button "Begin a tour" */}
-        <div>
+
+      {/* NAVBAR */}
+      <div className="flex py-3 justify-between sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
+        {/* NAVBAR --- Left side */}
+
+
+        <div className='hidden'>
           <Button
             variant="outline"
             onClick={() => setIsTourOpen(true)}
+            className='invisible'
           >
             <Rocket className='mr-2' size={sizeOfIcon} /> Begin a tour
           </Button>
+
+          <div className="invisible scroll-m-20 text-2xl md:text-3xl font-bold tracking-tight">
+            <span className="text-yellow-300 font-outline">
+              PCA Generator
+            </span>
+          </div>
         </div>
-        {/* End of Button "Begin a tour" */}
+        {/* End of NAVBAR --- Left side */}
 
-
-        <div className='flex gap-2'>
+        {/* NAVBAR --- Right side */}
+        <div className="hidden lg:flex lg:gap-2 lg:justify-end">
           {renderButtonUploadFile()}
           {renderButtonGenerateScreePlot()}
 
@@ -1945,8 +1964,76 @@ export default function Home() {
           {renderButtonGenerateTopFiveContributorsTable()}
           {renderButtonClearUploadedFile()}
         </div>
+        {/* End of NAVBAR --- Right side */}
+
+        {/* Icon Hamburger */}
+        {/* For when user use the mobile screen */}
+        <button
+          className="h-6 w-6 text-inherit lg:hidden dark:text-white"
+          onClick={() => { setIsNavbarMobileOpen(!isNavbarMobileOpen) }}
+        >
+          {isNavbarMobileOpen ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              className="h-6 w-6"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          )}
+        </button>
       </div>
 
+      {/* NAVBAR --- on mobile --- PUT THIS OUTSIDE THE NAV)*/}
+      {isNavbarMobileOpen && (
+        <div className="flex flex-col gap-5 p-5 border border-gray-900 rounded-xl">
+          {renderButtonUploadFile()}
+          {renderButtonGenerateScreePlot()}
+
+          {/* Render Button PCA 2D and 3D */}
+          {/* At here we put the DropdownAntd, which is a Dropdown component from antd library, it will take the "pcaOptions" as the things will show up when user clicks */}
+          {/* The "pcaOptions" is the "PCA 2D" and "PCA 3D" */}
+          <DropdownAntd
+            menu={{
+              items: pcaOptions,
+            }}
+            placement="bottomLeft"
+            arrow
+          >
+            {renderButtonPCAPlot()}
+          </DropdownAntd>
+          {/* End of Render Button PCA 2D and 3D */}
+
+          {renderButtonGenerateLoadingsTable()}
+          {renderButtonGenerateTopFiveContributorsTable()}
+          {renderButtonClearUploadedFile()}
+        </div>
+      )}
+      {/* End of NAVBAR --- on mobile --- PUT THIS OUTSIDE THE NAV)*/}
+      {/* End of NAVBAR */}
+
+      {/*  */}
       <div className='mt-16'>
         {renderFileInformation()}
         {renderDataTable()}
