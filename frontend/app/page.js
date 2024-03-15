@@ -108,10 +108,11 @@ export default function Home() {
   // For example, if isScreePlotVisible = true, then the scree plot will be visible, if isScreePlotVisible = false, then the scree plot will be invisible
   // This is controlled by the buttons in the BUTTONS section below
   const [isScreePlotVisible, setIsScreePlotVisible] = useState(false);
-  const [isLoadingsTableVisible, setIsLoadingsTableVisible] = useState(false);
-  const [isTopFiveContributorsTableVisible, setIsTopFiveContributorsTableVisible] = useState(false);
   const [isPCA2DVisible, setIsPCA2DVisible] = useState(false);
   const [isPCA3DVisible, setIsPCA3DVisible] = useState(false);
+  const [isLoadingsTableVisible, setIsLoadingsTableVisible] = useState(false);
+  const [isTopFiveContributorsTableVisible, setIsTopFiveContributorsTableVisible] = useState(false);
+  const [isTopFiveContributorsPlotVisible, setIsTopFiveContributorsPlotVisible] = useState(false);
 
   // The name of uploaded file, used to show the name of the uploaded file on the screen
   const [uploadedFileName, setUploadedFileName] = useState("");
@@ -285,14 +286,14 @@ export default function Home() {
       }
     };
     fetchDataFromDB();
-    // The array [] is empty, which means the function will only run once after the component appears on the screen
 
-    // aaaaaaaaaaaaaaa
+    // This is used to open the hamburger menu on the smaller screen when user make the screen smaller
     window.addEventListener(
       "resize",
       () => window.innerWidth >= 960 && setIsNavbarMobileOpen(false)
     );
-    // aaaaaaaaaaaaaaa
+
+    // The array [] is empty, which means the function will only run once after the component appears on the screen
   }, []);
   /*####################
   # End of FUNCTIONS --- useEffect
@@ -405,10 +406,11 @@ export default function Home() {
         document.getElementById(inputFileId).value = null;
         // Then we will hide the scree plot, PCA plot, loadings table, top 5 contributors table on the screen by setting the visibility to "false"
         setIsScreePlotVisible(false);
-        setIsLoadingsTableVisible(false);
-        setIsTopFiveContributorsTableVisible(false);
         setIsPCA2DVisible(false);
         setIsPCA3DVisible(false);
+        setIsLoadingsTableVisible(false);
+        setIsTopFiveContributorsTableVisible(false);
+        setIsTopFiveContributorsPlotVisible(false);
         // Then show the alert message to tell the user that everything is cleared
         Swal.fire({
           title: "Cleared!",
@@ -438,7 +440,7 @@ export default function Home() {
   //    }
   // }
   // To see what is "....." for detail, check the "generateScreePlot.py" file in the "backend" folder
-  // This format will be use in the "Plot" component from the "react-plotly.js" library
+  // This format will be used in the "Plot" component from the "react-plotly.js" library
   // So the <Plot> will be used like this:
   // <Plot
   //    data={screePlotData.data}
@@ -459,6 +461,7 @@ export default function Home() {
         // ==> then backend will return the scree plot data
         // ==> then put the scree plot data to the "screePlotData" by using "setScreePlotData"
         const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_scree_plot`, csvData);
+        console.log("!!!! 🚀🚀🚀 scree plot data: ", response.data)
         setScreePlotData(response.data);
         // Reset the color of the scree plot
         setColorForScreePlot(defaultColor);
@@ -647,6 +650,7 @@ export default function Home() {
       }
     }
     setIsTopFiveContributorsTableVisible(!isTopFiveContributorsTableVisible);
+    setIsTopFiveContributorsPlotVisible(!isTopFiveContributorsPlotVisible);
   }
   /*####################
   # End of FUNCTIONS --- Generate Top 5 contributors table
@@ -1018,6 +1022,9 @@ export default function Home() {
   # PLOTS --- Render Top 5 contributors Plot
   ####################*/
   const renderTopFiveContributorsPlot = () => {
+    if (!isTopFiveContributorsTableVisible) {
+      return null;
+    }
     // If the topFiveContributorsPlotData is not null, then continue to render the top 5 contributors plot
     if (topFiveContributorsPlotData) {
       return (
@@ -2110,16 +2117,9 @@ export default function Home() {
           <Button
             variant="outline"
             onClick={() => setIsTourOpen(true)}
-            // className='invisible'
           >
             <Rocket className='mr-2' size={sizeOfIcon} /> Begin a tour
           </Button>
-
-          <div className="invisible scroll-m-20 text-2xl md:text-3xl font-bold tracking-tight">
-            <span className="text-yellow-300 font-outline">
-              PCA Generator
-            </span>
-          </div>
         </div>
         {/* End of NAVBAR --- Left side */}
 

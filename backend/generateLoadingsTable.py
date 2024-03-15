@@ -53,7 +53,7 @@ def generate_loadings_table():
     # If not specified, then default value of n_components is min(n_samples, n_features)
     # For example, if the number of samples is 24 and the number of genes is 1000, then the default value of n_components will be 24
     # If the number of samples is 24 and the number of genes is 10, then the default value of n_components will be 10
-    pcaObject = PCA(n_components=2)
+    pcaObject = PCA(n_components=4)
     pcaObject.fit_transform(dataAfterStandardization)
 
     #########################
