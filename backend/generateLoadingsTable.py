@@ -12,10 +12,7 @@ bp = Blueprint('generateLoadingsTable', __name__)
 
 
 def is_number_or_not(s):
-    # This "is_number_or_not" function checks if a string is a number
-    # The name "is_number_or_not" is not really a nice name for this function, but "is_number" is a function already built-in in Python, and the "is_number" only check the number with dot ".", so the comma "," will not be recognized as a number.
-    # That's why we use "is_number_or_not", in which we use s.replace(',', '') to handle the data that may contain comma as the decimal delimiter
-    # This function is used to identify the columns that contain non-numeric values
+    # Check file "generatePCA.py" for the detail explanation
     try:
         if isinstance(s, str):
             s = s.replace(',', '')
@@ -24,6 +21,7 @@ def is_number_or_not(s):
         return False
     else:
         return True
+
 
 @bp.route('/api/generate_loadings_table', methods=['POST'])
 def generate_loadings_table():

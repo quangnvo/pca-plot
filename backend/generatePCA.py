@@ -15,8 +15,10 @@ def is_number_or_not(s):
     # That's why we use "is_number_or_not", in which we use s.replace(',', '') to handle the data that may contain comma as the decimal delimiter
     # This function is used to identify the columns that contain non-numeric values
     try:
+        # If the value is a string, then replace the comma with an empty string, then check if it is a number
         if isinstance(s, str):
             s = s.replace(',', '')
+        # If the value is already a number, then convert it to a float
         float(s)
     except ValueError:
         return False
