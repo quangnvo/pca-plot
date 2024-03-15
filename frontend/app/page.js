@@ -461,7 +461,6 @@ export default function Home() {
         // ==> then backend will return the scree plot data
         // ==> then put the scree plot data to the "screePlotData" by using "setScreePlotData"
         const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_scree_plot`, csvData);
-        console.log("!!!! 🚀🚀🚀 scree plot data: ", response.data)
         setScreePlotData(response.data);
         // Reset the color of the scree plot
         setColorForScreePlot(defaultColor);
@@ -624,7 +623,6 @@ export default function Home() {
     if (!isTopFiveContributorsTableVisible) {
       try {
         const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_top_five_contributors`, csvData);
-        console.log("!!!!!!!! response.data", response.data)
         setTopFiveContributorsTableData(response.data.top_five_contributors);
         // The "loadingsPlotCoordinates" and "layout" are from the backend file "generateTopFiveContributors.py"
         setTopFiveContributorsPlotData({
@@ -2099,7 +2097,7 @@ export default function Home() {
   # End of the FILE INFORMATION
   ####################*/
 
-  console.log("!!! colorForTopFiveContributorsPlot", colorForTopFiveContributorsPlot)
+
 
   /*####################
   # The following code is to render the FINAL UI of the page

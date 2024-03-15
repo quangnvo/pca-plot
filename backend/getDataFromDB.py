@@ -22,7 +22,6 @@ def getDataFromDB():
         # VERY IMPORTANT: the config number here must be in the JSON string format, so we need to put it as f'"{configNumber}"'
         # For example, it should be like '"123123123"', with double quotes and single quotes
         db_entry_id = ObjectId(loads(f'"{configNumber}"'))
-        print("db_entry_id ne: ", db_entry_id)
         db_entry = db.visualizations.find_one({"_id": db_entry_id})
         try:
             # Converts entry from .json into pandas parquet
