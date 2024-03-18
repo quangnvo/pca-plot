@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input"
 import {
   Table,
   Select,
+  // At here, we change the name from "Input" to "InputAntd", "Dropdown" to "DropdownAntd" because to avoid the conflict with the same name "Input" and "Dropdown" imported from the @/components/ui/ above 
   Input as InputAntd,
   Dropdown as DropdownAntd,
   Tour,
@@ -34,10 +35,10 @@ import {
   Trash,
   BarChartBig,
   ScatterChart,
-  Table as TableIcon,
   Upload,
   Download,
-  Trash2,
+  // At here, we change the name from "Table" to "TableIcon" because to avoid the conflict with the same name "Table" imported from "antd" library
+  Table as TableIcon,
 } from 'lucide-react';
 import { SearchOutlined } from '@ant-design/icons';
 
@@ -56,8 +57,9 @@ import { useSearchParams } from "next/navigation"
 
 export default function Home() {
 
-  // Define the backend port
+  // Define the backend url and port
   const BACKEND_PORT = 7000
+  const BACKEND_URL = `http://localhost:${BACKEND_PORT}`
 
   /*####################
   # GET THE CONFIG NUMBER FROM THE URL
@@ -279,7 +281,7 @@ export default function Home() {
   useEffect(() => {
     const fetchDataFromDB = async () => {
       try {
-        const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/getDataFromDB`, configNumberObject);
+        const response = await axios.post(`${BACKEND_URL}/api/getDataFromDB`, configNumberObject);
         setCsvData(response.data);
       } catch (error) {
         console.error('Error fetching data: ', error);
@@ -460,7 +462,7 @@ export default function Home() {
         // Send a POST request with the "csvData" to the backend
         // ==> then backend will return the scree plot data
         // ==> then put the scree plot data to the "screePlotData" by using "setScreePlotData"
-        const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_scree_plot`, csvData);
+        const response = await axios.post(`${BACKEND_URL}/api/generate_scree_plot`, csvData);
         setScreePlotData(response.data);
         // Reset the color of the scree plot
         setColorForScreePlot(defaultColor);
@@ -485,7 +487,7 @@ export default function Home() {
       return;
     }
     try {
-      const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca`, csvData);
+      const response = await axios.post(`${BACKEND_URL}/api/generate_pca`, csvData);
       setPcaPlotData(response.data);
 
       // Extract the names of the sample replicates in the PCA plot and put them into the "names" array
@@ -543,7 +545,7 @@ export default function Home() {
       return;
     }
     try {
-      const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_pca_3d`, csvData);
+      const response = await axios.post(`${BACKEND_URL}/api/generate_pca_3d`, csvData);
       setPcaPlot3DData(response.data);
 
       const names = []
@@ -599,7 +601,7 @@ export default function Home() {
     }
     if (!isLoadingsTableVisible) {
       try {
-        const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_loadings_table`, csvData);
+        const response = await axios.post(`${BACKEND_URL}/api/generate_loadings_table`, csvData);
         setLoadingsTableData(response.data);
       } catch (error) {
         console.error(error);
@@ -622,7 +624,7 @@ export default function Home() {
     }
     if (!isTopFiveContributorsTableVisible) {
       try {
-        const response = await axios.post(`http://localhost:${BACKEND_PORT}/api/generate_top_five_contributors`, csvData);
+        const response = await axios.post(`${BACKEND_URL}/api/generate_top_five_contributors`, csvData);
         setTopFiveContributorsTableData(response.data.top_five_contributors);
         // The "loadingsPlotCoordinates" and "layout" are from the backend file "generateTopFiveContributors.py"
         setTopFiveContributorsPlotData({
@@ -2078,6 +2080,11 @@ export default function Home() {
     if (csvData.length === 0) {
       return null;
     }
+
+    // aaaaaaaaaaaaaa
+    console.log("🚀🚀🚀 csvData: ", csvData)
+    // aaaaaaaaaaaaaa
+
     return (
       <div className='my-5'>
         {/* Render file name */}
@@ -2086,6 +2093,10 @@ export default function Home() {
             File name: <span className='font-semibold'>{uploadedFileName}</span>
           </p>
         )}
+        {/* Render number of genes */}
+        <p>
+          Number of genes:  <span className='font-semibold'>{csvData ? csvData.length : "0"}</span>
+        </p>
         {/* Render number of samples */}
         <p>
           Number of samples:  <span className='font-semibold'>{csvData ? csvData.length : "0"}</span>
@@ -2105,12 +2116,14 @@ export default function Home() {
   return (
     <div className='container mt-4 flex flex-col'>
 
+      <ul className='list-disc list-inside'>
+        <li className='text-red-500'>Let the PCA 2D open as default</li>
+        <li className='text-red-500'>Modify the "number of samples", "number of genes"</li>
+      </ul>
 
       {/* NAVBAR */}
       <div className="flex py-3 justify-between sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
         {/* NAVBAR --- Left side */}
-
-
         <div className=''>
           <Button
             variant="outline"
@@ -2125,7 +2138,6 @@ export default function Home() {
         <div className="hidden lg:flex lg:gap-2 lg:justify-end">
           {renderButtonUploadFile()}
           {renderButtonGenerateScreePlot()}
-
           {/* Render Button PCA 2D and 3D */}
           {/* At here we put the DropdownAntd, which is a Dropdown component from antd library, it will take the "pcaOptions" as the things will show up when user clicks */}
           {/* The "pcaOptions" is the "PCA 2D" and "PCA 3D" */}
@@ -2139,7 +2151,6 @@ export default function Home() {
             {renderButtonPCAPlot()}
           </DropdownAntd>
           {/* End of Render Button PCA 2D and 3D */}
-
           {renderButtonGenerateLoadingsTable()}
           {renderButtonGenerateTopFiveContributorsTable()}
           {renderButtonClearUploadedFile()}
@@ -2183,6 +2194,7 @@ export default function Home() {
             </svg>
           )}
         </button>
+        {/* End of Icon Hamburger */}
       </div>
 
       {/* NAVBAR --- on mobile --- PUT THIS OUTSIDE THE NAV)*/}
@@ -2190,7 +2202,6 @@ export default function Home() {
         <div className="flex flex-col gap-5 p-5 border border-gray-900 rounded-xl">
           {renderButtonUploadFile()}
           {renderButtonGenerateScreePlot()}
-
           {/* Render Button PCA 2D and 3D */}
           {/* At here we put the DropdownAntd, which is a Dropdown component from antd library, it will take the "pcaOptions" as the things will show up when user clicks */}
           {/* The "pcaOptions" is the "PCA 2D" and "PCA 3D" */}
@@ -2204,7 +2215,6 @@ export default function Home() {
             {renderButtonPCAPlot()}
           </DropdownAntd>
           {/* End of Render Button PCA 2D and 3D */}
-
           {renderButtonGenerateLoadingsTable()}
           {renderButtonGenerateTopFiveContributorsTable()}
           {renderButtonClearUploadedFile()}
@@ -2213,7 +2223,6 @@ export default function Home() {
       {/* End of NAVBAR --- on mobile --- PUT THIS OUTSIDE THE NAV)*/}
       {/* End of NAVBAR */}
 
-      {/*  */}
       <div className='mt-16'>
         {renderFileInformation()}
         {renderDataTable()}
