@@ -122,6 +122,10 @@ export default function Home() {
   // This "isNavbarMobileOpen" is used to control the visibility of the mobile navbar when user use a smaller screen, like the mobile screen
   const [isNavbarMobileOpen, setIsNavbarMobileOpen] = useState(false)
 
+  // The number of samples
+  // The number of samples will be checked in the "useEffect" function below
+  const [numberOfSamples, setNumberOfSamples] = useState(0);
+
   // The name of the PCA 2D and PCA 3D, just used for naming the title of the buttons
   const namePCA2D = "PCA 2D";
   const namePCA3D = "PCA 3D";
@@ -275,6 +279,63 @@ export default function Home() {
   ####################*/
 
   /*####################
+  # FUNCTIONS --- Check if a string is a number
+  ####################*/
+  // This "isNumber" function is used to check if a string is a number or not
+  // The "value.replace(/\./g, '').replace(',', '.')" is used to replace all dot (.) in the string with nothing, and then replacing all commas (,) with dots (.). This is done in order to handle cases where numbers are written with commas as decimal separators (for example: "1452.11" ==> this is number; "1452,11" ==> this is also number).
+  // parseFloat(value) is used to convert the modified string to a float number.
+  // !isNaN(parseFloat(value)) checks if the result of parseFloat is not a NaN (Not a Number) value
+  // ==> If the string can be converted to a number, parseFloat will return that number and isNaN will return false.
+  // ==> so parseFloat(value) will return a number, and isNaN(parseFloat(value)) will return false
+  // ==> so !isNaN(parseFloat(value)) will return true
+  // For example, if value = "152,2"
+  // ==> value.replace(/\./g, '').replace(',', '.') will return "152.2"
+  // ==> parseFloat(value) will return 152.2
+  // ==> isNaN(parseFloat(value)) will return false
+  // ==> !isNaN(parseFloat(value)) will return true
+  // ==> so 152,2 is a number
+  // isFinite(value) checks if the converted number is a finite number.
+  const isNumber = (value) => {
+    value = value.replace(/\./g, '').replace(',', '.');
+    return !isNaN(parseFloat(value)) && isFinite(value);
+  }
+  // The following are the test cases for the "isNumber" function:
+  // console.log("123", isNumber("123")) // ===> true
+  // console.log("123.123", isNumber("123.123")) // ===> true
+  // console.log("123,123", isNumber("123,123")) // ===>  true
+  // console.log("123.123.123", isNumber("123.123.123")) // ===>  false
+  // console.log("123,123,123", isNumber("123,123,123")) // ===>  false
+  // console.log("123abc", isNumber("123abc")) // ===>  false
+  // console.log("abc", isNumber("abc")) // ===>  false
+  // console.log("abc123", isNumber("abc123")) // ===>  false
+  /*####################
+  # End of FUNCTIONS --- Check if a string is a number
+  ####################*/
+
+
+  /*####################
+  # FUNCTIONS --- Count number of samples
+  ####################*/
+  const countNumberOfSamples = (data) => {
+
+    const firstRow = data[0];
+    let count = 0;
+    console.log("🚀🚀 firstRow: ", firstRow)
+    for (const key in firstRow) {
+      if (isNumber(firstRow[key])) {
+        count++;
+      }
+    }
+    console.log("🚀🚀 count: ", count)
+    setNumberOfSamples(count);
+  }
+
+  /*####################
+  # End of FUNCTIONS --- Check number of samples
+  ####################*/
+
+
+  /*####################
   # FUNCTIONS --- useEffect
   ####################*/
   // useEffect(() => {...}, []);: This is a React Hook that runs the function provided as the first argument after the component has rendered. The second argument is an array of dependencies. If any of the dependencies change, the function will run again. In this case, the array [] is empty, which means the function will only run once after the component appears on the screen.
@@ -319,9 +380,12 @@ export default function Home() {
         complete: (results) => {
           // Then set the parsed data to the csvData
           setCsvData(results.data);
+          // Then check the number of samples
+          countNumberOfSamples(results.data);
         },
       });
       setUploadedFileName(e.target.files[0].name)
+
     }
   };
   /*####################
@@ -2093,13 +2157,13 @@ export default function Home() {
             File name: <span className='font-semibold'>{uploadedFileName}</span>
           </p>
         )}
+        {/* Render number of samples */}
+        <p>
+          Number of samples:  <span className='font-semibold'>{csvData ? numberOfSamples : "0"}</span>
+        </p>
         {/* Render number of genes */}
         <p>
           Number of genes:  <span className='font-semibold'>{csvData ? csvData.length : "0"}</span>
-        </p>
-        {/* Render number of samples */}
-        <p>
-          Number of samples:  <span className='font-semibold'>{csvData ? csvData.length : "0"}</span>
         </p>
       </div>
     )
