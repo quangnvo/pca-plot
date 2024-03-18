@@ -296,6 +296,10 @@ export default function Home() {
   // ==> so 152,2 is a number
   // isFinite(value) checks if the converted number is a finite number.
   const isNumber = (value) => {
+    // If the value is not a string, then convert it to a string
+    if (typeof value !== 'string') {
+      value = value.toString();
+    }
     value = value.replace(/\./g, '').replace(',', '.');
     return !isNaN(parseFloat(value)) && isFinite(value);
   }
@@ -341,10 +345,51 @@ export default function Home() {
   useEffect(() => {
     const fetchDataFromDB = async () => {
       try {
-        const response = await axios.post(`${BACKEND_URL}/api/getDataFromDB`, configNumberObject);
-        setCsvData(response.data);
-        const responseFromGeneratePCAPlot = await axios.post(`${BACKEND_URL}/api/generate_pca`, response.data);
+        const responseFromMongoDB = await axios.post(`${BACKEND_URL}/api/getDataFromDB`, configNumberObject);
+        countNumberOfSamples(responseFromMongoDB.data);
+        setCsvData(responseFromMongoDB.data);
+
+        const responseFromGeneratePCAPlot = await axios.post(`${BACKEND_URL}/api/generate_pca`, responseFromMongoDB.data);
         setPcaPlotData(responseFromGeneratePCAPlot.data);
+
+        // Extract the names of the sample replicates in the PCA plot and put them into the "names" array
+        // The names are like "H2O_30m_A", "H2O_30m-B", "H2O_30m-C", "PNA79_30m_A", "PNA79_30m_B", "PNA79_30m_C", etc.
+        const names = []
+        responseFromGeneratePCAPlot.data.data.forEach((eachItem, index) => {
+          names.push({
+            name: eachItem.name,
+            groupId: ""
+          })
+        })
+        // Then set the "names" array to the "nameOfSamples" state by using "setNameOfSamples" function
+        setNameOfSamples(names);
+        // This setColorGroups is used to reset the color groups
+        setColorGroups([
+          {
+            groupId: "1",
+            name: "Group 1",
+            colorCode: defaultColor,
+            sampleNames: []
+          },
+          {
+            groupId: "2",
+            name: "Group 2",
+            colorCode: defaultColor,
+            sampleNames: []
+          },
+        ]);
+        // This setGroupOptions is used to reset the group options that are required to use in the antd library <Select> component
+        setGroupOptions([
+          {
+            label: "Group 1",
+            value: `1, ${defaultColor}`
+          },
+          {
+            label: "Group 2",
+            value: `2, ${defaultColor}`
+          },
+        ]);
+
         setIsPCA2DVisible(true);
       } catch (error) {
         console.error('Error fetching data: ', error);
@@ -1031,10 +1076,14 @@ export default function Home() {
             <p className={`${styleForSectionHeading}`}>
               PCA-2D plot
             </p>
-            <div className='border border-gray-200 rounded-lg overflow-hidden'>
+            <div
+              className='border border-gray-200 rounded-lg overflow-hidden'
+              style={{ height: "500px" }}
+            >
               <Plot
                 useResizeHandler
-                style={{ width: "100%", height: "100%" }}
+                // The height 100% is proportional to the height of the parent element
+                style={{ width: "80%", height: "100%" }}
                 data={pcaPlotData.data}
                 layout={pcaPlotData.layout}
                 // key={Math.random()} is very IMPORTANT here, because it will force the Plot to re-render when the data is changed. 
@@ -1046,7 +1095,7 @@ export default function Home() {
             {/* The code for COLORS section is very below, so check the "renderColorSection" and "renderSampleNamesWithGroupChoice" at the nearly bottom of the file */}
             <div className={`${spaceBetweenColorSectionAndPlot}`}>
               {renderColorSection()}
-              {renderSampleNamesWithGroupChoice(isPCA2DVisible, isPCA3DVisible)}
+              {renderSampleNamesWithGroupChoice()}
             </div>
           </div>
         )
@@ -2034,7 +2083,7 @@ export default function Home() {
   /*####################
   # COLORS --- Render --- Color section for PCA 2D and PCA 3D --- renderSampleNamesWithGroupChoice
   ####################*/
-  const renderSampleNamesWithGroupChoice = (isPCA2DVisible, isPCA3DVisible) => {
+  const renderSampleNamesWithGroupChoice = () => {
     if (!isPCA2DVisible && !isPCA3DVisible) {
       return null;
     }
@@ -2147,11 +2196,6 @@ export default function Home() {
     if (csvData.length === 0) {
       return null;
     }
-
-    // aaaaaaaaaaaaaa
-    console.log("🚀🚀🚀 csvData: ", csvData)
-    // aaaaaaaaaaaaaa
-
     return (
       <div className='my-5'>
         {/* Render file name */}
@@ -2182,11 +2226,6 @@ export default function Home() {
   ####################*/
   return (
     <div className='container mt-4 flex flex-col'>
-
-      <ul className='list-disc list-inside'>
-        <li className='text-red-500'>Let the PCA 2D open as default</li>
-        <li className='text-red-500'>Modify the "number of samples", "number of genes"</li>
-      </ul>
 
       {/* NAVBAR */}
       <div className="flex py-3 justify-between sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
