@@ -317,7 +317,6 @@ export default function Home() {
   # FUNCTIONS --- Count number of samples
   ####################*/
   const countNumberOfSamples = (data) => {
-
     const firstRow = data[0];
     let count = 0;
     console.log("🚀🚀 firstRow: ", firstRow)
@@ -344,11 +343,15 @@ export default function Home() {
       try {
         const response = await axios.post(`${BACKEND_URL}/api/getDataFromDB`, configNumberObject);
         setCsvData(response.data);
+        const responseFromGeneratePCAPlot = await axios.post(`${BACKEND_URL}/api/generate_pca`, response.data);
+        setPcaPlotData(responseFromGeneratePCAPlot.data);
+        setIsPCA2DVisible(true);
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
     };
     fetchDataFromDB();
+
 
     // This is used to open the hamburger menu on the smaller screen when user make the screen smaller
     window.addEventListener(
