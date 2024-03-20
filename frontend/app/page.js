@@ -1077,9 +1077,13 @@ export default function Home() {
   /*####################
   # BUTTONS --- Render button to generate Top 5 contributors table
   ####################*/
+  // The flow of the "renderButtonGenerateTopFiveContributorsTable" function is same to the "renderButtonGenerateScreePlot" function
   const renderButtonGenerateTopFiveContributorsTable = () => {
     return (
       <Button
+        // When user click on the button "Top 5 contributors", then we will call the "generateTopFiveContributors" function
+        // ==> so check the function "generateTopFiveContributors" above for more details
+        // When check the "generateTopFiveContributors" function, check the "generateTopFiveContributors.py" file in the "backend" folder to see the flow of the code in the backend as well
         onClick={generateTopFiveContributors}
         variant={isTopFiveContributorsTableVisible ? "default" : "outline"}
         ref={refTourStep5}
@@ -1119,6 +1123,7 @@ export default function Home() {
     return (
       <Button
         variant="outline"
+        // When user click on the button "Begin a tour", then we will call the "setIsTourOpen" function to set the "isTourOpen" state to "true" to open the tour
         onClick={() => setIsTourOpen(true)}
       >
         <Rocket className='mr-2' size={sizeOfIcon} /> Begin a tour
@@ -1129,7 +1134,6 @@ export default function Home() {
   # End of BUTTONS --- renderButtonBeginATour
   ####################*/
 
-
   /*####################
   # End of BUTTONS
   ####################*/
@@ -1137,6 +1141,7 @@ export default function Home() {
 
 
   /*####################
+  # PLOTS 
   # The following code is only about function used to render PLOTS, such as renderScreePlot, renderPCAPlot, etc.
   ####################*/
 
@@ -1146,7 +1151,7 @@ export default function Home() {
   const renderScreePlot = () => {
     // If the scree plot is visible, then continue 
     if (isScreePlotVisible) {
-      // If the screePlotData is not null, then continue to render the scree plot
+      // If the screePlotData is not null, which means it has data, then we continue to render the scree plot
       if (screePlotData) {
         return (
           <div className={`${spaceBetweenSections}`}>
@@ -1155,7 +1160,9 @@ export default function Home() {
             </p>
             <div className='p-3 border border-gray-200 rounded-lg'>
               {/* The <Plot/> component at here is from the react-plotly.js library */}
+              {/* The "height" in the Plot can be set as px or % ; If set as %, it is proportional to the parent <div> component */}
               <Plot
+                // The "useResizeHandler" is used to make the plot responsive, so when the window is smaller or bigger, the plot will be smaller or bigger as well
                 useResizeHandler
                 style={{ width: "100%", height: "500px" }}
                 data={screePlotData.data}
@@ -1255,10 +1262,11 @@ export default function Home() {
   # PLOTS --- Render Top 5 contributors Plot
   ####################*/
   const renderTopFiveContributorsPlot = () => {
+    // The flow of the "renderTopFiveContributorsPlot" function is same to the "renderScreePlot" function
     if (!isTopFiveContributorsTableVisible) {
       return null;
     }
-    // If the topFiveContributorsPlotData is not null, then continue to render the top 5 contributors plot
+    // If the topFiveContributorsPlotData is not null, which means it has data, then continue to render the top 5 contributors plot
     if (topFiveContributorsPlotData) {
       return (
         <div className={`${spaceBetweenSections}`} >
@@ -1299,18 +1307,19 @@ export default function Home() {
 
 
   /*####################
+  # TABLE
   # The following code is only about function used to render TABLE, such as renderDataTable, renderLoadingsTable, etc.
   ####################*/
 
   /*####################
-  # TABLE --- Searching Dropdown
-  * The following code is used to render the searching dropdown, which can be used in any table
+  # TABLE --- Searching Dropdown Feature
+  * The following code is used to render the searching dropdown feature, which can be used in any table
   ####################*/
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
 
-  // The function handleSearch is used to search the data in the table
+  // The function handleSearch is used to search the data in a column of the table
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     // The confirm() is a predefined function from the antd library, it's used to confirm the search
     confirm();
@@ -1350,7 +1359,7 @@ export default function Home() {
           onPressEnter={() => handleSearch(selectedKeys, confirm, nameOfColumn)}
         />
 
-        <div className="flex gap-2 justify-end">
+        <div className="flex gap-2 justify-end mt-2">
 
           {/* Button Search */}
           <Button
@@ -1385,7 +1394,6 @@ export default function Home() {
       />
     ),
 
-    // The "record" is the data of the table
     onFilter: (value, record) =>
       record[nameOfColumn].toString().toLowerCase().includes(value.toLowerCase()),
 
@@ -1396,6 +1404,8 @@ export default function Home() {
     },
 
     render: (text) =>
+      // The "Highlighter" is from the "react-highlight-words" library
+      // This is used to highlight the searched text in the table
       searchedColumn === nameOfColumn ? (
         <Highlighter
           highlightStyle={{
@@ -1411,23 +1421,27 @@ export default function Home() {
       ),
   });
   /*####################
-  # End of TABLE --- Searching Dropdown
+  # End of TABLE --- Searching Dropdown Feature
   ####################*/
 
 
   /*####################
   # TABLE --- Data Table
-  # The following code is only about the Data Table, which is the table that shows the data from the csv file that user uploaded
+  # The following code is only about the Data Table, which is the table that shows the data from the csv file that user uploaded or the data from the MongoDB
   ####################*/
-  // Firstly, we convert the data from the csv file that user uploaded to the format required by "Ant Design" (antd). The Ant Design Table belongs to the library "antd" which is used for the UI. Link: https://ant.design/components/table
+  // Firstly, we convert the data from the csv file that user uploaded or the data from the MongoDB to the format required by "antd" library
   // Usually, the data required by antd table is the "data" and the "columns"
+  // So here we have the "dataForCsvTable" and the "columnForCsvTable"
 
-  // Convert csvData to the "dataForCsvTable" format required by antd
+  // Prepare step for rendering the data table
+  // Convert csvData to the "dataForCsvTable" format required by "antd"
+  // At here, we just simply add the "key" to each row, so that the "antd" library can know which row is which
   const dataForCsvTable = csvData.map((eachRow, index) => ({
     key: index,
     ...eachRow,
   }));
 
+  // Prepare step for rendering the data table
   // Set the columns for the antd table
   const columnForCsvTable = csvData.length > 0
     ? Object.keys(csvData[0]).map((nameOfEachColumn, index) => {
@@ -1442,17 +1456,18 @@ export default function Home() {
       if (index === 0) {
         column = {
           ...column,
+          // If it's the first column, then we will add the searching dropdown to the column
           ...renderSearchingDropdown(nameOfEachColumn),
           width: 150,
           // The fixed: 'left' is used to freeze a column, and because now we are inside the condition of (index === 0), so the first column is frozen 
           fixed: 'left',
         };
       }
-      // Check if the column data is numeric
+        // So if it's not the first column, and the column data is not numeric, then we will add the sorting dropdown to the column
       else if (!isNaN(csvData[0][nameOfEachColumn])) {
-        // If the column data is numeric, then we will add the sorter to the column, so that the user can click on the column header to sort the data
         column = {
           ...column,
+          // If the column data is numeric, then we will add the sorter to the column, so that the user can click on the column header to sort the data
           sorter: (a, b) => a[nameOfEachColumn] - b[nameOfEachColumn],
         };
       }
@@ -1460,7 +1475,7 @@ export default function Home() {
     })
     : [];
 
-  // Render the data table from the csv file that user uploaded
+  // Render the data table
   const renderDataTable = () => {
     if (csvData.length === 0) {
       return null;
@@ -1479,7 +1494,9 @@ export default function Home() {
         </div>
         {/* The table */}
         <Table
+          // The "columns" is the columns of the table, in which we put the "columnForCsvTable" here
           columns={columnForCsvTable}
+          // The "dataSource" is the data of the table, in which we put the "dataForCsvTable" here
           dataSource={dataForCsvTable}
           scroll={{
             x: 1500,
@@ -1501,11 +1518,16 @@ export default function Home() {
   # The following code is only about the Loadings Table, which is the table that shows which genes contribute how much to the principal components
   ####################*/
   // The flow of "TABLE --- Loadings Table" is similar to the "TABLE --- Data Table" above
+  // It also requires the "data" and the "columns" to render the table
+  // So here we prepare the "dataForLoadingsTable" and the "columnForLoadingsTable"
+
+  // Prepare step for rendering the loadings table
   const dataForLoadingsTable = loadingsTableData.map((eachRow, index) => ({
     key: index,
     ...eachRow,
   }));
 
+  // Prepare step for rendering the loadings table
   const columnForLoadingsTable = loadingsTableData.length > 0
     ? Object.keys(loadingsTableData[0])
       .sort((a, b) => a.includes("PC") - b.includes("PC"))
@@ -1532,7 +1554,7 @@ export default function Home() {
       })
     : [];
 
-  // Render the loadings table to show that which features contribute how much to the principal components
+  // Render the loadings table
   const renderLoadingsTable = () => {
     // If isLoadingsTableVisible = false, then the loadings table will not be shown, so we will return null
     if (!isLoadingsTableVisible) {
@@ -1667,6 +1689,7 @@ export default function Home() {
 
 
   /*####################
+  # COLORS
   # The following code is only about COLORS, such as changing color of the points in the PCA plot, changing color of the groups, etc.
   ####################*/
 
@@ -1775,7 +1798,7 @@ export default function Home() {
   /*####################
   # COLORS --- Functions --- Change color for PCA 2D and PCA 3D --- handleChangeGroupForEachSample
   ####################*/
-  // The function "handleChangeGroupForEachSample" is call when user click on the which color group belong to each sample.
+  // The function "handleChangeGroupForEachSample" is called when user clicks on the which color group belonging to each sample.
   // For example:
   // "H2O_30m_A" - user chooses "Group 1"
   // "H2O_30m_B" - user chooses "Group 1"
@@ -1951,6 +1974,7 @@ export default function Home() {
   /*####################
   # COLORS --- Functions --- Change color for PCA 2D and PCA 3D --- resetAll
   ####################*/
+  // The function "resetAll" is used to reset all color back to the default
   const resetAll = () => {
     Swal.fire({
       title: "Do you want to reset all colors back to the default?",
@@ -2339,6 +2363,7 @@ export default function Home() {
 
 
   /*####################
+  # FINAL UI
   # The following code is to render the FINAL UI of the page
   ####################*/
   return (
@@ -2353,7 +2378,8 @@ export default function Home() {
         {/* End of NAVBAR --- Left side */}
 
         {/* NAVBAR --- Right side */}
-        <div className="hidden lg:flex lg:gap-2 lg:justify-end">
+        {/* For rendering all buttons */}
+        <div className="flex gap-2 justify-end">
           {renderButtonUploadFile()}
           {renderButtonGenerateScreePlot()}
           {/* Render Button PCA 2D and 3D */}
@@ -2402,6 +2428,6 @@ export default function Home() {
     </div>
   );
   /*####################
-  # End of the code to render the final UI of the page
+  # End of FINAL UI
   ####################*/
 }
