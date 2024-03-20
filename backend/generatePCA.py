@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 from flask import Blueprint, jsonify, request
 from sklearn.decomposition import PCA
@@ -32,6 +31,8 @@ def generate_pca():
     # GET INITIAL DATA, DO INITIAL PREPARATIONS
     #########################
     # Get the data from the request
+    # The data is sent from the frontend as a JSON object
+    # Read the file "frontend/app/page.js", at the function "generatePCAPlot" to see how the data is sent to backend here
     initialData = request.json
     # Convert the data into a DataFrame
     convertedData = pd.DataFrame(data=initialData)
@@ -40,7 +41,7 @@ def generate_pca():
     non_numeric_columns = [col for col in convertedData.columns if not is_number_or_not(
         convertedData[col].iloc[0])]
 
-    # If there are more than one non-numeric columns, drop all but the first one
+    # If there are more than one non-numeric columns, remove all but the first one
     if len(non_numeric_columns) > 1:
         convertedData.drop(non_numeric_columns[1:], axis=1, inplace=True)
 
@@ -64,7 +65,7 @@ def generate_pca():
     standardScalerObject = StandardScaler()
     # Pass the data into the scaling object ==> data will be standardized
     # The data is transposed because the StandardScaler object expects the data to be in the form of [n_samples, n_features].
-    # Samples (rows) are like "H2O_30m_A", "H2O_30m_B", etc., and features (columns) are like "gene1", "gene2", etc.
+    # So after transposing, samples (rows) are somethings like "H2O_30m_A", "H2O_30m_B", etc.; and features (columns) are somethings like "gene1", "gene2", etc.
     dataAfterStandardization = standardScalerObject.fit_transform(
         convertedData.T)
     #########################
@@ -116,6 +117,7 @@ def generate_pca():
     # Prepare the layout for the PCA plot
     layoutPCAPlotForReact = {
         # The title of the plot, which will be displayed above the plot
+        # If we want to display the title, just uncomment the following code
         # 'title': {
         #     'text': 'PCA Plot',
         #     'font': {
@@ -148,6 +150,7 @@ def generate_pca():
     }
 
     # Combine the data and the layout into a dictionary and return it as a JSON object
+    # So in the frontend, at the file "frontend/app/page.js", at the function "generatePCAPlot", it will receive a JSON object, which contains the "data" and the "layout" for the PCA plot
     result = {
         'data': pcaScatterCoordinates,
         'layout': layoutPCAPlotForReact
