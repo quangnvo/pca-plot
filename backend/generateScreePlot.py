@@ -48,6 +48,8 @@ def generate_scree_plot():
     dataAfterStandardization = standardScalerObject.fit_transform(
         convertedData.T)
 
+    # At here we can put the number of principal components that we want to generate
+    # For example, if we want to generate 8 principal components, then we can put n_components=8
     pcaObject = PCA(n_components=8)
     pcaObject.fit_transform(dataAfterStandardization)
     #########################
@@ -62,7 +64,7 @@ def generate_scree_plot():
     labels = ['PC' + str(x) for x in range(1, len(percentageOfVariance)+1)]
 
     # Get the cumulative variance
-    # The cumsum() method returns a list of the cumulative sum of the elements in the array, and the result will be like [52.5, 72.9, 85.1, 92.3, 97.2, 100.0]
+    # The cumsum() method returns a list of the cumulative sum of the elements in the array, and the obtained result will be like [52.5, 72.9, 85.1, 92.3, 97.2, 100.0]
     cumulativeVariance = np.cumsum(percentageOfVariance)
 
     # Find the index where the cumulative variance exceeds 80%
@@ -110,13 +112,15 @@ def generate_scree_plot():
 
     # Create the layout for the scree plot in Plotly format
     layoutScreePlotForReact = {
-        'title': {
-            # 'text': 'Scree Plot',
-            'font': {
-                'size': 30,
-                'color': defaultTitleColor,
-            },
-        },
+        # This is the title of the plot, which will be displayed above the plot
+        # If we want to display the title, just uncomment the following code
+        # 'title': {
+        #     'text': 'Scree Plot',
+        #     'font': {
+        #         'size': 30,
+        #         'color': defaultTitleColor,
+        #     },
+        # },
         'xaxis': {
             'title': 'Principal component',
             'titlefont': {
@@ -154,6 +158,9 @@ def generate_scree_plot():
         ]
     }
 
+    # Return the result in JSON format to frontend
+    # Check the frontend file "frontend/app/page.js", at the function "generateScreePlot", to see how the frontend will receive the data and used it to generate the scree plot
+    # In brief, in frontend, weuse <Plot> component from "react-plotly.js", and we put the "data" and "layout" which received from backend here into the <Plot> component, then the scree plot will be displayed
     result = {
         'data': screePlotFormatData,
         'layout': layoutScreePlotForReact
