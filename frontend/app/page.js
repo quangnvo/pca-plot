@@ -939,7 +939,7 @@ export default function Home() {
   # BUTTONS --- Render button to generate PCA plot
   ####################*/
   // The "pcaOptions" is the required format to use in the antd library <DropdownAntd> component
-  // This one is used to show the PCA plot selection dropdown when user hovers to the "PCA plot" button, so it will show the "PCA 2D" and "PCA 3D" options
+  // This one is used to show the PCA plot selection dropdown when user hovers to the "PCA plot" button, so it will show the "PCA 2D" and "PCA 3D" options when user hovers
   // The "pcaOptions" will be used at very bottom of this file, in the "return" section, in the "DropdownAntd" component
   const pcaOptions = [
     // PCA 2D button
@@ -950,24 +950,28 @@ export default function Home() {
           {namePCA2D}
         </p>
       ),
+      // "onClick" here is trigger when user clicks on the "PCA 2D" button
       onClick: () => {
-        // Check if the file is uploaded, if not, then show the alert message and return
+        // Check if the file is uploaded or having data
+        // If not, then show the alert message and return
         if (!isFileUploadedOrIsHavingData()) {
           return;
         }
         // Set the selected groups to empty object, this is used to reset the selected groups
+        // This is for COLORS
         setSelectedGroups({});
         // Now user clicks on the PCA 2D, then we will check the current visibility of the PCA 2D and PCA 3D, then we will update the visibility of the PCA 2D and PCA 3D
-        // Click on the PCA 2D button --> if PCA 2D plot and PCA 3D plot not show yet --> then show PCA 2D plot
+        // We have different cases below:
+        // Case 1: Click on the PCA 2D button --> if PCA 2D plot and PCA 3D plot not show yet --> then show PCA 2D plot
         if (isPCA2DVisible == false && isPCA3DVisible == false) {
           generatePCAPlot();
           setIsPCA2DVisible(true);
         }
-        // Click on the PCA 2D button --> if PCA 2D plot is showing and PCA 3D plot not show --> then hide PCA 2D plot
+        // Case 2: Click on the PCA 2D button --> if PCA 2D plot is showing and PCA 3D plot not show --> then hide PCA 2D plot
         if (isPCA2DVisible == true && isPCA3DVisible == false) {
           setIsPCA2DVisible(false);
         }
-        // Click on the PCA 2D button --> if PCA 2D plot not show and PCA 3D plot is showing --> then hide PCA 3D plot and show PCA 2D plot
+        // Case 3: Click on the PCA 2D button --> if PCA 2D plot not show and PCA 3D plot is showing --> then hide PCA 3D plot and show PCA 2D plot
         if (isPCA2DVisible == false && isPCA3DVisible == true) {
           generatePCAPlot();
           setIsPCA2DVisible(true);
@@ -985,23 +989,25 @@ export default function Home() {
       ),
       onClick: () => {
         // Set the selected groups to empty object, this is used to reset the selected groups
+        // This is for COLORS
         setSelectedGroups({});
         // Check if the file is uploaded, if not, then show the alert message and return
         if (!isFileUploadedOrIsHavingData()) {
           return;
         }
-        // Click on the PCA 3D button --> if PCA 2D plot and PCA 3D plot not show yet --> then show PCA 3D plot
+        // Similar to PCA 2D button above, we also have different cases below:
+        // Case 1: Click on the PCA 3D button --> if PCA 2D plot and PCA 3D plot not show yet --> then show PCA 3D plot
         if (isPCA2DVisible == false && isPCA3DVisible == false) {
           generatePCAPlot3D();
           setIsPCA3DVisible(true);
         }
-        // Click on the PCA 3D button --> if PCA 2D plot is showing and PCA 3D plot not show --> then hide PCA 2D plot and show PCA 3D plot
+        // Case 2: Click on the PCA 3D button --> if PCA 2D plot is showing and PCA 3D plot not show --> then hide PCA 2D plot and show PCA 3D plot
         if (isPCA2DVisible == true && isPCA3DVisible == false) {
           generatePCAPlot3D();
           setIsPCA2DVisible(false);
           setIsPCA3DVisible(true);
         }
-        // Click on the PCA 3D button --> if PCA 2D plot not show and PCA 3D plot is showing --> then hide PCA 3D plot
+        // Case 3: Click on the PCA 3D button --> if PCA 2D plot not show and PCA 3D plot is showing --> then hide PCA 3D plot
         if (isPCA2DVisible == false && isPCA3DVisible == true) {
           setIsPCA3DVisible(false);
         }
@@ -1012,6 +1018,7 @@ export default function Home() {
   // The "renderButtonPCAPlot" function here is used to render the button "PCA Plot" or "PCA 2D" or "PCA 3D" based on the current visibility of the PCA 2D and PCA 3D
   // The "renderButtonPCAPlot" function is NOT related to the "pcaOptions" above
   // The "renderButtonPCAPlot" function is also used in at very bottom of this file, in the "return" section, in the "DropdownAntd" component
+  // ==> so check the "DropdownAntd" component at very bottom of this file to see the "pcaOptions" and "renderButtonPCAPlot" in the "DropdownAntd" component
   const renderButtonPCAPlot = () => {
     // If the PCA 2D plot is visible, then show the button with the name "PCA 2D"
     if (isPCA2DVisible) {
@@ -1047,9 +1054,13 @@ export default function Home() {
   /*####################
   # BUTTONS --- Render button to generate Loadings table
   ####################*/
+  // The flow of the "renderButtonGenerateLoadingsTable" function is same to the "renderButtonGenerateScreePlot" function
   const renderButtonGenerateLoadingsTable = () => {
     return (
       <Button
+        // When user click on the button "Loadings table", then we will call the "generateLoadingsTable" function
+        // ==> so check the function "generateLoadingsTable" above for more details
+        // When check the "generateLoadingsTable" function, check the "generateLoadingsTable.py" file in the "backend" folder to see the flow of the code in the backend as well
         onClick={generateLoadingsTable}
         variant={isLoadingsTableVisible ? "default" : "outline"}
         ref={refTourStep4}
