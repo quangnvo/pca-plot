@@ -25,12 +25,9 @@ def getDataFromDB():
         db_entry_id = ObjectId(loads(f'"{configNumber}"'))
         db_entry = db.visualizations.find_one({"_id": db_entry_id})
         try:
-            # Converts entry from .json into pandas parquet
             data = pd.read_parquet(
                 BytesIO(db_entry['filtered_dataframe'])).to_json(orient='records')
         except:
-            # The mockup db_entry stores the empty transformed_dataframe as a list, so don't convert that one.
-            # Convert transformed into pandas parquet
             if type(db_entry['transformed_dataframe']) == bytes:
                 data = pd.read_parquet(
                     BytesIO(db_entry['transformed_dataframe'])).to_json(orient='records')
