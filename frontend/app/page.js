@@ -383,7 +383,7 @@ export default function Home() {
     const fetchDataFromDB = async () => {
       try {
         // At here we send a POST request to the backend to get the data from the MongoDB, with the config number.
-        // When reading at here, read the file "getDataFromDB.py" in the "backend" folder to see the flow of the code in the backend
+        // While reading at here, read the file "getDataFromDB.py" in the "backend" folder to see the flow of the code in the backend
         const responseFromMongoDB = await axios.post(`${BACKEND_URL}/api/getDataFromDB`, configNumberObject);
         // After getting the data from the MongoDB, we count the number of samples and update the csvData
         countNumberOfSamples(responseFromMongoDB.data);

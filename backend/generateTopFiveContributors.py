@@ -79,21 +79,29 @@ def generate_top_five_contributors():
         columns=labelPrincipalComponents
     )
 
-  # Get the top 5 contributors for each principal component
     top_five_contributors = []
 
     # The "labelPrincipalComponents" is ["PC1", "PC2", "PC3", ...]
+    # So "for pc in labelPrincipalComponents" will iterate over each element in the "labelPrincipalComponents" list, which is "PC1", "PC2", "PC3", ...
     for pc in labelPrincipalComponents:
-        # loadings_df[pc].map(abs): This applies the absolute value function to each element in the column pc of the DataFrame loadings_df
-        # sort_values(ascending=False): This sorts the values in the column pc of the DataFrame loadings_df in descending order
-        # head(5): This gets the first 5 elements in the sorted column pc of the DataFrame loadings_df
-        # .index.to_series(): This gets the index of these top 5 rows and converts it into a pandas Series.
-        # .map(loadings_df[pc]): This maps the indices back to the original values in the pc column of loadings_df. The result is a Series of the top 5 contributors to the principal component pc, indexed by their gene names.
+        # loadings_df[pc].map(abs): This make the value to be absolute to each element in the column "pc" of the "loadings_df"
+        # sort_values(ascending=False): Then this sorts the absolute values in the column "pc" of the "loadings_df" in descending order
+        # head(5): Then, this gets the first 5 elements in the sorted column pc of the DataFrame loadings_df
+        # .index.to_series(): This gets the index of these top 5 rows and converts it into a pandas Series. The index is basically the gene name, like "gene47", "gene89", "gene136", "gene277", "gene342"
+        # .map(loadings_df[pc]): This maps the index back to the original values in the "pc" column of "loadings_df". So, the result will like this:
+        # |-----------|----------|
+        # |  gene47   |  0.0782  |
+        # |  gene89   |  0.0775  |
+        # |  gene136  |  0.0773  |
+        # |  gene277  |  0.0761  |
+        # |  gene342  |  0.0758  |
+        # |-----------|----------|
+
         contributors = loadings_df[pc].map(abs).sort_values(
             ascending=False).head(5).index.to_series().map(loadings_df[pc])
 
-        # for gene, value in contributors.items(): This loop iterates over each item in the contributors Series. Each item is a tuple where the first element is the gene name (index) and the second element is the corresponding value.
-        # top_five_contributors.append({"Principal component": pc, "Gene": gene, "Loadings": value}): This line appends a dictionary to the top_five_contributors list. The dictionary contains three key-value pairs: the principal component label, the gene name, and the corresponding value.
+        # for gene, value in contributors.items(): This loop iterates over each item in the "contributors".
+        # top_five_contributors.append({"Principal component": pc, "Gene": gene, "Loadings": value}): This line appends a dictionary to the "top_five_contributors" list.
         for gene, value in contributors.items():
             top_five_contributors.append({
                 "Principal component": pc,
@@ -157,9 +165,13 @@ def generate_top_five_contributors():
     #########################
 
     # Convert the list to JSON
+    # Read the frontend file "frontend/app/page.js" at the function "generateTopFiveContributors" to see the flow in frontend
     result_json = jsonify({
+        # this one for the top 5 contributors TABLE
         "top_five_contributors": top_five_contributors,
+        # this one for the top 5 contributors PLOT
         "loadingsPlotCoordinates": pcaScatterCoordinates,
+        # this one for the top 5 contributors PLOT
         "layout": layoutPCAPlotForReact
     })
 

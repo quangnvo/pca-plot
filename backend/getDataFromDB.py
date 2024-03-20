@@ -16,6 +16,7 @@ visualizations = db.visualizations
 
 @bp.route('/api/getDataFromDB', methods=['GET', 'POST'])
 def getDataFromDB():
+    # While reading here, read the frontend file "frontend/app/page.js", at the function "fetchDataFromDB" to see the flow in frontend
     configNumber = request.json['config']
 
     if configNumber != "undefined":
