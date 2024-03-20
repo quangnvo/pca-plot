@@ -4,6 +4,9 @@
 // A server component cannot use React hooks like useState, useEffect, etc. This is because a server component is rendered once on the server and doesn't re-render. On the other hand, a client component is a normal React component with access to hooks and re-renders as the user interacts, clicks the buttons, changes the color, etc. with the app.
 "use client"
 
+/*####################
+# IMPORT
+####################*/
 // The useState, useRef are used to create the state and reference to the DOM element
 import { useState, useRef, useEffect } from 'react';
 
@@ -53,7 +56,9 @@ import { CSVLink } from 'react-csv';
 
 // This useSearchParams is used to get the query parameters from the URL, like the "123123" in the URL "http://localhost:3000/?config=123123"
 import { useSearchParams } from "next/navigation"
-
+/*####################
+# End of IMPORT
+####################*/
 
 export default function Home() {
 
@@ -63,14 +68,19 @@ export default function Home() {
 
   /*####################
   # GET THE CONFIG NUMBER FROM THE URL
+  # This is used to get the config number from the URL, then send it to the backend to get the data from the MongoDB
+  # This is done when the page is loaded inside the MicroMix page
+  # This part is linked with the "useEffect" part below, so when read the "useEffect" part below, come back to this part to see the flow of the code
   ####################*/
-  // Create the searchParams object, which can be used to extract the query parameters from the URL
+  // By using useSearchParams, we create the "searchParams" object, which can be used to extract the query parameters from the URL
   const searchParams = useSearchParams()
-  // Get the config number from the URL
+  // Then get the config number from the URL by using "searchParams.get("config")"
+  // It can be "searchParams.get("aaaaa")", "searchParams.get("bbbbb")", etc. depending on the query parameters name in the URL
   // ==> for example, the URL "http://localhost:3000/?config=123123" has the config number is "123123"
   const configNumber = searchParams.get("config")
-  // Create the object that contains the config number, this is used to send the config number to the backend
-  // The configNumberObject has the format like this:
+  // Create the object that contains the config number, the purpose is to send this object to the backend to get the data from the MongoDB
+  // ==> The backend file should look at is: "getDataFromDB.py"
+  // The configNumberObject will have the format like this:
   // configNumberObject = {
   //   config: "123123"
   // }
@@ -82,7 +92,7 @@ export default function Home() {
   ####################*/
 
   /*####################
-  # The following code is used to only about setup INITIAL VARIABLES
+  # INITIAL VARIABLES
   ####################*/
 
   // We have "csvData", "setCsvData" ; "pcaPlotData", "setPcaPlotData" ;  etc.
@@ -94,9 +104,9 @@ export default function Home() {
   // The purpose of using "useState" is that it is used to "trigger the re-render of the UI" when the "something is updated"
 
   // For example, at the beginning, screePlotData = null, then nothing on the screen yet,
-  // ==> then we call API to calculate the scree plot data
+  // ==> then when user clicks on the "Scree plot" button, it will call API to calculate the scree plot data
   // ==> then we need to store the data get from API to the screePlotData and render it to the screen.
-  // If we just assign the screePlotData = "data_from_API", it will not re-render the UI, so the scree plot will not be shown on the screen.
+  // If we just simply assign the screePlotData = "data_from_API", it will not re-render the UI, so the scree plot will not be shown on the screen.
   // So we need to use "useState()"
   const [csvData, setCsvData] = useState([]);
   const [screePlotData, setScreePlotData] = useState(null);
@@ -108,7 +118,7 @@ export default function Home() {
 
   // The following variables are used to control the visibility of the things, like the bulb light switch on and off.
   // For example, if isScreePlotVisible = true, then the scree plot will be visible, if isScreePlotVisible = false, then the scree plot will be invisible
-  // This is controlled by the buttons in the BUTTONS section below
+  // This is controlled by the buttons in the BUTTONS section below (very below)
   const [isScreePlotVisible, setIsScreePlotVisible] = useState(false);
   const [isPCA2DVisible, setIsPCA2DVisible] = useState(false);
   const [isPCA3DVisible, setIsPCA3DVisible] = useState(false);
@@ -116,28 +126,28 @@ export default function Home() {
   const [isTopFiveContributorsTableVisible, setIsTopFiveContributorsTableVisible] = useState(false);
   const [isTopFiveContributorsPlotVisible, setIsTopFiveContributorsPlotVisible] = useState(false);
 
-  // The name of uploaded file, used to show the name of the uploaded file on the screen
+  // This is the name of uploaded file, it will be used to show the name of the uploaded file on the screen
+  // This is just for uploaded file, but the MicroMix already has the data, so this can be IGNORED
   const [uploadedFileName, setUploadedFileName] = useState("");
 
-  // This "isNavbarMobileOpen" is used to control the visibility of the mobile navbar when user use a smaller screen, like the mobile screen
-  const [isNavbarMobileOpen, setIsNavbarMobileOpen] = useState(false)
-
   // The number of samples
-  // The number of samples will be checked in the "useEffect" function below
+  // The number of samples will be calculated in the "useEffect" function below, so check the "useEffect" function below 
   const [numberOfSamples, setNumberOfSamples] = useState(0);
 
   // The name of the PCA 2D and PCA 3D, just used for naming the title of the buttons
   const namePCA2D = "PCA 2D";
   const namePCA3D = "PCA 3D";
 
-  // The "defaultColor" is used to set the default color of the group
+  // The "defaultColor" is used to set the default color on the plots, like the scree plot, PCA plot, etc.
+  // The hexcode for many color can be found at https://htmlcolorcodes.com/
   const defaultColor = "#272E3F";
 
   // The id for the file input, which will be used later to reset the file input value to null
   // The reason we need to reset the file input value to null is that if we don't reset the file input value to null, then the user can't upload the same file again after they uploaded it once
+  // This is just for uploaded file function, but the MicroMix already has the data, so this can be IGNORED
   const inputFileId = "fileInput";
-
   // The acceptFileTypes is used to allow the user to upload the file with the following types, like .csv, .xlsx, .xls
+  // This is just for uploaded file function, but the MicroMix already has the data, so this can be IGNORED
   const acceptFileTypes = ".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel";
 
   // The styles for the buttons, sections, etc.
@@ -147,7 +157,9 @@ export default function Home() {
   const styleForButton = "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 cursor-pointer"
   const sizeOfIcon = "20px"
 
-  // Variables for the "tour"
+  // Variables for the "Begin a Tour" button
+  // The "isTourOpen" is used to control the visibility of the tour
+  // The "setIsTourOpen" is used to update the "isTourOpen"
   const [isTourOpen, setIsTourOpen] = useState(false);
   // This refTourStep1, refTourStep2, etc. are used to tell the "Tour" that this is the target of which step
   const refTourStep1 = useRef(null);
@@ -159,8 +171,13 @@ export default function Home() {
 
   const tourSteps = [
     // Tour step 1
+    // ==> This is a popup that will show up when the user clicks on the "Begin a Tour" button
+    // ==> It has a structure with: target, title, description, cover
+    // ==> The "target" is used to tell the "Tour" that this is the target of the first step
+    // ==> The "title" is the title of popup
+    // ==> The "description" is the description of the popup
+    // ==> The "cover" is the image that will be shown on the popup
     {
-      // Setup target for the step
       target: () => refTourStep1.current,
       title: 'Upload file',
       description: <div>
@@ -170,6 +187,7 @@ export default function Home() {
       </div>,
     },
     // Tour step 2
+    // ==> similar to the Tour step 1
     {
       target: () => refTourStep2.current,
       title: 'Scree plot',
@@ -191,6 +209,7 @@ export default function Home() {
       ),
     },
     // Tour step 3
+    // ==> similar to the Tour step 1
     {
       target: () => refTourStep3.current,
       title: 'PCA plot',
@@ -215,6 +234,7 @@ export default function Home() {
       ),
     },
     // Tour step 4
+    // ==> similar to the Tour step 1
     {
       target: () => refTourStep4.current,
       title: 'Loadings table',
@@ -236,6 +256,7 @@ export default function Home() {
       ),
     },
     // Tour step 5
+    // ==> similar to the Tour step 1
     {
       target: () => refTourStep5.current,
       title: 'Top 5 contributors',
@@ -257,6 +278,7 @@ export default function Home() {
       ),
     },
     // Tour step 6
+    // ==> similar to the Tour step 1
     {
       target: () => refTourStep6.current,
       title: 'Clear',
@@ -267,7 +289,6 @@ export default function Home() {
       </div>,
     },
   ];
-
   /*####################
   # End of INITIAL VARIABLES
   ####################*/
@@ -275,6 +296,7 @@ export default function Home() {
 
 
   /*####################
+  # FUNCTIONS
   # The following code is only about FUNCTIONS, such as clearUploadedFile, generateScreePlot, generatePCAPlot, etc.
   ####################*/
 
@@ -282,7 +304,9 @@ export default function Home() {
   # FUNCTIONS --- Check if a string is a number
   ####################*/
   // This "isNumber" function is used to check if a string is a number or not
-  // The "value.replace(/\./g, '').replace(',', '.')" is used to replace all dot (.) in the string with nothing, and then replacing all commas (,) with dots (.). This is done in order to handle cases where numbers are written with commas as decimal separators (for example: "1452.11" ==> this is number; "1452,11" ==> this is also number).
+  // The "value.replace(/\./g, '').replace(',', '.')" is used to replace all dot (.) in the string with nothing, and then replacing all commas (,) with dots (.).
+  // ==> This is done in order to handle cases where numbers are written with commas as decimal separators
+  // ==> for example: "1452.11" => this is number; "1452,11" => this is also number.
   // parseFloat(value) is used to convert the modified string to a float number.
   // !isNaN(parseFloat(value)) checks if the result of parseFloat is not a NaN (Not a Number) value
   // ==> If the string can be converted to a number, parseFloat will return that number and isNaN will return false.
@@ -293,7 +317,7 @@ export default function Home() {
   // ==> parseFloat(value) will return 152.2
   // ==> isNaN(parseFloat(value)) will return false
   // ==> !isNaN(parseFloat(value)) will return true
-  // ==> so 152,2 is a number
+  // ==> so finally, 152,2 is a number
   // isFinite(value) checks if the converted number is a finite number.
   const isNumber = (value) => {
     // If the value is not a string, then convert it to a string
@@ -320,10 +344,17 @@ export default function Home() {
   /*####################
   # FUNCTIONS --- Count number of samples
   ####################*/
+  // This "countNumberOfSamples" function is used to count the number of samples in the data
+  // The "data" is the data that is got from the MongoDB
+  // So the idea is to check the first row of the data
+  // ==> then check each item in the first row, if it is a number, then count++; if it is not a number, then skip (like "H2O_30m_A" => not a number, so skip)
+  // ==> finally, the "count" will be the number of samples
+  // Then set the "count" to the "numberOfSamples" state by using "setNumberOfSamples" function
+  // So the "numberOfSamples" will be used to show the number of samples on the screen
+  // The place where "numberOfSamples" is used can be found at the function "renderFileInformation" at very below
   const countNumberOfSamples = (data) => {
     const firstRow = data[0];
     let count = 0;
-    console.log("🚀🚀 firstRow: ", firstRow)
     for (const key in firstRow) {
       if (isNumber(firstRow[key])) {
         count++;
@@ -332,7 +363,6 @@ export default function Home() {
     console.log("🚀🚀 count: ", count)
     setNumberOfSamples(count);
   }
-
   /*####################
   # End of FUNCTIONS --- Check number of samples
   ####################*/
@@ -341,19 +371,34 @@ export default function Home() {
   /*####################
   # FUNCTIONS --- useEffect
   ####################*/
-  // useEffect(() => {...}, []);: This is a React Hook that runs the function provided as the first argument after the component has rendered. The second argument is an array of dependencies. If any of the dependencies change, the function will run again. In this case, the array [] is empty, which means the function will only run once after the component appears on the screen.
+  // useEffect(() => {...}, []);: This is a React Hook that runs the function provided as the first argument after the component has rendered.
+  // The second argument of useEffect is an array of dependencies.
+  // If any of the dependencies change, the function will run again.
+  // In this case, the array[] is empty, which means the function will only run once after the component appears on the screen.
   useEffect(() => {
+    /*####################
+    # FUNCTIONS --- useEffect --- fetchDataFromDB
+    ####################*/
+    // Create the function "fetchDataFromDB" to get the data from the MongoDB
     const fetchDataFromDB = async () => {
       try {
+        // At here we send a POST request to the backend to get the data from the MongoDB, with the config number.
+        // When reading at here, read the file "getDataFromDB.py" in the "backend" folder to see the flow of the code in the backend
         const responseFromMongoDB = await axios.post(`${BACKEND_URL}/api/getDataFromDB`, configNumberObject);
+        // After getting the data from the MongoDB, we count the number of samples and update the csvData
         countNumberOfSamples(responseFromMongoDB.data);
         setCsvData(responseFromMongoDB.data);
 
+        // So from here to the end of the "fetchDataFromDB" function, the purpose of the code is to generate the PCA plot data and load it to the screen to make it as a default thing appearing on the screen when user clicks on the PCA plugin
+        // At here, we call the API to generate the PCA plot data
+        // While reading at here, read the file "generatePCAPlot.py" in the "backend" folder to see the flow of the code in the backend
         const responseFromGeneratePCAPlot = await axios.post(`${BACKEND_URL}/api/generate_pca`, responseFromMongoDB.data);
+        // After having the PCA plot data, we set the PCA plot data to the "pcaPlotData" state by using "setPcaPlotData" function
         setPcaPlotData(responseFromGeneratePCAPlot.data);
 
-        // Extract the names of the sample replicates in the PCA plot and put them into the "names" array
+        // Then, we extract the names of the sample replicates in the PCA plot and put them into the "names" array
         // The names are like "H2O_30m_A", "H2O_30m-B", "H2O_30m-C", "PNA79_30m_A", "PNA79_30m_B", "PNA79_30m_C", etc.
+        // The purpose of this is used for the "color groups" and "group options" in the PCA plot
         const names = []
         responseFromGeneratePCAPlot.data.data.forEach((eachItem, index) => {
           names.push({
@@ -362,8 +407,10 @@ export default function Home() {
           })
         })
         // Then set the "names" array to the "nameOfSamples" state by using "setNameOfSamples" function
+        // This is for COLORS
         setNameOfSamples(names);
         // This setColorGroups is used to reset the color groups
+        // This is for COLORS
         setColorGroups([
           {
             groupId: "1",
@@ -379,6 +426,7 @@ export default function Home() {
           },
         ]);
         // This setGroupOptions is used to reset the group options that are required to use in the antd library <Select> component
+        // This is for COLORS
         setGroupOptions([
           {
             label: "Group 1",
@@ -390,19 +438,18 @@ export default function Home() {
           },
         ]);
 
+        // Then we set the visibility of the PCA 2D plot to true, to make it appear on the screen as a default when the user clicks the PCA plugin
         setIsPCA2DVisible(true);
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
     };
+    /*####################
+    # End of FUNCTIONS --- useEffect --- fetchDataFromDB
+    ####################*/
+
+    // Call the "fetchDataFromDB" function to get the data from the MongoDB
     fetchDataFromDB();
-
-
-    // This is used to open the hamburger menu on the smaller screen when user make the screen smaller
-    window.addEventListener(
-      "resize",
-      () => window.innerWidth >= 960 && setIsNavbarMobileOpen(false)
-    );
 
     // The array [] is empty, which means the function will only run once after the component appears on the screen
   }, []);
@@ -413,6 +460,7 @@ export default function Home() {
 
   /*####################
   # FUNCTIONS --- Handle file upload
+  # This refers to the uploaded file, but the MicroMix already has the data, so this can be IGNORED
   ####################*/
   const handleFileUpload = (e) => {
     // The e.target.files[0] is used to get the first file, as the user can upload multiple files at once, but in this case, we only allow the user to upload one file at once
@@ -433,7 +481,6 @@ export default function Home() {
         },
       });
       setUploadedFileName(e.target.files[0].name)
-
     }
   };
   /*####################
@@ -443,6 +490,7 @@ export default function Home() {
 
   /*####################
   # FUNCTIONS --- Clear the uploaded file
+  # This refers to the uploaded file, but the MicroMix already has the data, so this can be IGNORED
   ####################*/
   const clearUploadedFile = () => {
     if (csvData.length === 0) {
@@ -459,7 +507,7 @@ export default function Home() {
   /*####################
    # FUNCTIONS --- Show alert message
    ####################*/
-  // This function is like a template for showing the alert message, which is used in the "isFileUploaded" function
+  // This function is like a template for showing the alert message, which is used in the "isFileUploadedOrIsHavingData" function below
   const showAlert = (title, message, icon) => {
     Swal.fire({
       title: title,
@@ -467,7 +515,6 @@ export default function Home() {
       icon: icon,
       showConfirmButton: false,
       showCancelButton: true,
-      // cancelButtonColor: '#272E3F',
     })
   }
   /*####################
@@ -477,10 +524,11 @@ export default function Home() {
 
   /*####################
   # FUNCTIONS --- Check if the file is uploaded
+  # This refers to the uploaded file, but the MicroMix already has the data, so this can be IGNORED
   ####################*/
   // This function is used to check if the file is uploaded, if not, then show the alert message and return false
   // For example, if the user clicks on the "Generate Scree plot" button, then we need to check if the file is uploaded, if not, then show the alert message and return false
-  const isFileUploaded = () => {
+  const isFileUploadedOrIsHavingData = () => {
     if (csvData.length > 0) {
       return true;
     } else {
@@ -501,7 +549,8 @@ export default function Home() {
 
 
   /*####################
-  # FUNCTIONS --- Show alert message with options, like with "Yes" button, "No" button
+  # FUNCTIONS --- Show alert message for Clear button
+  # This relates to the uploaded file also, but the MicroMix already has the data, so this can be IGNORED
   ####################*/
   const showAlertForClear = () => {
     Swal.fire({
@@ -544,6 +593,7 @@ export default function Home() {
   /*####################
   # FUNCTIONS --- Generate Scree plot
   ####################*/
+  // While reading at here, read the "generateScreePlot.py" file in the "backend" folder to see the flow of the code in the backend
   // The "generateScreePlot" function will generate the things like following:
   // {
   //    data: [
@@ -563,18 +613,22 @@ export default function Home() {
   // In which "screePlotData.data" is the "data" from backend, and "screePlotData.layout" is the "layout" from backend.
   // ==> so check the "generateScreePlot.py" file in the "backend" folder for more details of "data" and "layout"
   const generateScreePlot = async () => {
-    // Check if the file is uploaded or not
+    // Check if the file is uploaded or data having or not 
     // ==> if not, then show the alert message to tell the user to upload the file first, then return
-    if (!isFileUploaded()) {
+    if (!isFileUploadedOrIsHavingData()) {
       return;
     }
-    // if (!isScreePlotVisible) ==> if the scree plot is not visible, meaning there isn't scree plot on the screen yet, then we will call the API to generate the scree plot data
+    // if (!isScreePlotVisible) ==> if the scree plot is not visible
+    // ==> meaning there isn't scree plot on the screen yet
+    // ==> then we will call the API to generate the scree plot data
+    // ==> read the "generateScreePlot.py" file in the "backend" folder to see the flow of the code in the backend
     if (!isScreePlotVisible) {
       try {
         // Send a POST request with the "csvData" to the backend
         // ==> then backend will return the scree plot data
         // ==> then put the scree plot data to the "screePlotData" by using "setScreePlotData"
         const response = await axios.post(`${BACKEND_URL}/api/generate_scree_plot`, csvData);
+        // Update the scree plot data
         setScreePlotData(response.data);
         // Reset the color of the scree plot
         setColorForScreePlot(defaultColor);
@@ -595,7 +649,7 @@ export default function Home() {
   ####################*/
   const generatePCAPlot = async () => {
     // Check if the file is uploaded or not
-    if (!isFileUploaded()) {
+    if (!isFileUploadedOrIsHavingData()) {
       return;
     }
     try {
@@ -653,7 +707,7 @@ export default function Home() {
   ####################*/
   // The flow of the "generatePCAPlot3D" function is similar to the "generatePCAPlot" function
   const generatePCAPlot3D = async () => {
-    if (!isFileUploaded()) {
+    if (!isFileUploadedOrIsHavingData()) {
       return;
     }
     try {
@@ -708,7 +762,7 @@ export default function Home() {
   ####################*/
   // The flow of the "generateLoadingsTable" function is similar to the "generateScreePlot" function
   const generateLoadingsTable = async () => {
-    if (!isFileUploaded()) {
+    if (!isFileUploadedOrIsHavingData()) {
       return;
     }
     if (!isLoadingsTableVisible) {
@@ -731,7 +785,7 @@ export default function Home() {
   ####################*/
   // The flow of the "generateTopFiveContributors" function is similar to the "generateScreePlot" function
   const generateTopFiveContributors = async () => {
-    if (!isFileUploaded()) {
+    if (!isFileUploadedOrIsHavingData()) {
       return;
     }
     if (!isTopFiveContributorsTableVisible) {
@@ -865,7 +919,7 @@ export default function Home() {
       ),
       onClick: () => {
         // Check if the file is uploaded, if not, then show the alert message and return
-        if (!isFileUploaded()) {
+        if (!isFileUploadedOrIsHavingData()) {
           return;
         }
         // Set the selected groups to empty object, this is used to reset the selected groups
@@ -900,7 +954,7 @@ export default function Home() {
         // Set the selected groups to empty object, this is used to reset the selected groups
         setSelectedGroups({});
         // Check if the file is uploaded, if not, then show the alert message and return
-        if (!isFileUploaded()) {
+        if (!isFileUploadedOrIsHavingData()) {
           return;
         }
         // Click on the PCA 3D button --> if PCA 2D plot and PCA 3D plot not show yet --> then show PCA 3D plot
@@ -1013,6 +1067,25 @@ export default function Home() {
   # End of BUTTONS --- Render button download file
   ####################*/
 
+
+  /*####################
+  # BUTTONS --- renderButtonBeginATour
+  ####################*/
+  const renderButtonBeginATour = () => {
+    return (
+      <Button
+        variant="outline"
+        onClick={() => setIsTourOpen(true)}
+      >
+        <Rocket className='mr-2' size={sizeOfIcon} /> Begin a tour
+      </Button>
+    )
+  }
+  /*####################
+  # End of BUTTONS --- renderButtonBeginATour
+  ####################*/
+
+
   /*####################
   # End of BUTTONS
   ####################*/
@@ -1077,7 +1150,7 @@ export default function Home() {
               PCA-2D plot
             </p>
             <div
-              className='border border-gray-200 rounded-lg overflow-hidden'
+              className='border border-gray-200 rounded-lg overflow-hidden flex justify-center items-center pb-10'
               style={{ height: "500px" }}
             >
               <Plot
@@ -2230,13 +2303,8 @@ export default function Home() {
       {/* NAVBAR */}
       <div className="flex py-3 justify-between sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
         {/* NAVBAR --- Left side */}
-        <div className=''>
-          <Button
-            variant="outline"
-            onClick={() => setIsTourOpen(true)}
-          >
-            <Rocket className='mr-2' size={sizeOfIcon} /> Begin a tour
-          </Button>
+        <div>
+          {renderButtonBeginATour()}
         </div>
         {/* End of NAVBAR --- Left side */}
 
@@ -2262,73 +2330,10 @@ export default function Home() {
           {renderButtonClearUploadedFile()}
         </div>
         {/* End of NAVBAR --- Right side */}
-
-        {/* Icon Hamburger */}
-        {/* For when user use the mobile screen */}
-        <button
-          className="h-6 w-6 text-inherit lg:hidden dark:text-white"
-          onClick={() => { setIsNavbarMobileOpen(!isNavbarMobileOpen) }}
-        >
-          {isNavbarMobileOpen ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              className="h-6 w-6"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          )}
-        </button>
-        {/* End of Icon Hamburger */}
       </div>
-
-      {/* NAVBAR --- on mobile --- PUT THIS OUTSIDE THE NAV)*/}
-      {isNavbarMobileOpen && (
-        <div className="flex flex-col gap-5 p-5 border border-gray-900 rounded-xl">
-          {renderButtonUploadFile()}
-          {renderButtonGenerateScreePlot()}
-          {/* Render Button PCA 2D and 3D */}
-          {/* At here we put the DropdownAntd, which is a Dropdown component from antd library, it will take the "pcaOptions" as the things will show up when user clicks */}
-          {/* The "pcaOptions" is the "PCA 2D" and "PCA 3D" */}
-          <DropdownAntd
-            menu={{
-              items: pcaOptions,
-            }}
-            placement="bottomLeft"
-            arrow
-          >
-            {renderButtonPCAPlot()}
-          </DropdownAntd>
-          {/* End of Render Button PCA 2D and 3D */}
-          {renderButtonGenerateLoadingsTable()}
-          {renderButtonGenerateTopFiveContributorsTable()}
-          {renderButtonClearUploadedFile()}
-        </div>
-      )}
-      {/* End of NAVBAR --- on mobile --- PUT THIS OUTSIDE THE NAV)*/}
       {/* End of NAVBAR */}
 
+      {/* RENDER EVERYTHING HERE */}
       <div className='mt-16'>
         {renderFileInformation()}
         {renderDataTable()}
@@ -2338,6 +2343,7 @@ export default function Home() {
         {renderTopFiveContributorsTable()}
         {renderTopFiveContributorsPlot()}
       </div>
+      {/* End of RENDER EVERYTHING HERE */}
 
       {/* Tour */}
       {/* This is the "tour" as a tutorial for user, and this <Tour> should be put at the end */}
