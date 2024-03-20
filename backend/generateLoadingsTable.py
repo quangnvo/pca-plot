@@ -91,28 +91,29 @@ def generate_loadings_table():
     # rename(columns={'index': first_column_name}): This function renames the column labeled ‘index’ to first_column_name.
     # to_dict('records'): This function converts the DataFrame into a list of dictionaries. The ‘records’ argument means that each item in the list will be a dictionary representing a row in the DataFrame, where the "keys" are the "column names" and the "values" are the "data in the row".
     #
-    # For example, if loadings_df like this:
+    # For example, if loadings_df above looks like this:
     #       |  PC1  |  PC2  |
     # gene1 |  a0   |   b0  |
     # gene2 |  a1   |   b1  |
     #
-    # After running the code, it will be like this:
+    # Then, after running the following code, it will become like this:
     # loadings_list = [
     #   {
-    #       'Gene': "gene1",
+    #       'locus_tag': "gene1",
     #       'PC1': 'a0',
     #       'PC2': 'b0'
     #   },
     #   {
-    #       'Gene': "gene2",
-    #       'A': 'a1',
-    #       'B': 'b1'
+    #       'locus_tag': "gene2",
+    #       'PC1': 'a1',
+    #       'PC2': 'b1'
     #   }
     # ]
     loadings_list = loadings_df.reset_index().rename(
         columns={'index': first_column_name}).to_dict('records')
 
     # Then convert the list of dictionaries to a JSON object
+    # Read the frontend file "frontend/app/page.js", at the function "generateLoadingsTable" and "renderLoadingsTable" to see the flow in frontend
     result_json = jsonify(loadings_list)
     #########################
     # End of GET THE LOADINGS AND CREATE THE JSON DATA
