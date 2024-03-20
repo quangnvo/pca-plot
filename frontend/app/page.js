@@ -854,13 +854,16 @@ export default function Home() {
 
   /*####################
   # BUTTONS --- Render button to upload file
+  # This refers to the uploaded file, but the MicroMix already has the data, so this can be IGNORED
   ####################*/
   const renderButtonUploadFile = () => {
     return (
       <div>
         <Input
+          // The "inputField" is declared above
           id={inputFileId}
           type='file'
+          // The "acceptFileTypes" is declared above
           accept={acceptFileTypes}
           onChange={handleFileUpload}
           // The "hidden" is used to hide the file input, then we will use the label to trigger the file input instead
@@ -886,12 +889,16 @@ export default function Home() {
 
   /*####################
   # BUTTONS --- Render button to clear the uploaded file
+  # This refers to the uploaded file, but the MicroMix already has the data, so this can be IGNORED
   ####################*/
   const renderButtonClearUploadedFile = () => {
     return (
       <Button
         variant="outline"
         onClick={clearUploadedFile}
+        // The "refTourStep6" is used to tell the tour that this is the target of the sixth step
+        // This relate to the button "Begin a tour"
+        // Check the VARIABLE section above to see the "tourSteps" variable
         ref={refTourStep6}
       >
         <Trash className='mr-2' size={sizeOfIcon} /> Clear
@@ -909,7 +916,13 @@ export default function Home() {
   const renderButtonGenerateScreePlot = () => {
     return (
       <Button
+        // When user click on the button "Scree plot", then we will call the "generateScreePlot" function
+        // ==> so check the function "generateScreePlot" above for more details
+        // When check the "generateScreePlot" function, check the "generateScreePlot.py" file in the "backend" folder to see the flow of the code in the backend as well
         onClick={generateScreePlot}
+        // This variant is used to show the different style of the button
+        // So if the scree plot is visible, then we will show the button with the default style, which means the button is filled with dark blue color
+        // If the scree plot is not visible, then we will show the button with the outline style, which means the button is just a white button
         variant={isScreePlotVisible ? "default" : "outline"}
         ref={refTourStep2}
       >
