@@ -328,14 +328,14 @@ export default function Home() {
     return !isNaN(parseFloat(value)) && isFinite(value);
   }
   // The following are the test cases for the "isNumber" function:
-  // console.log("123", isNumber("123")) // ===> true
-  // console.log("123.123", isNumber("123.123")) // ===> true
-  // console.log("123,123", isNumber("123,123")) // ===>  true
-  // console.log("123.123.123", isNumber("123.123.123")) // ===>  false
-  // console.log("123,123,123", isNumber("123,123,123")) // ===>  false
-  // console.log("123abc", isNumber("123abc")) // ===>  false
-  // console.log("abc", isNumber("abc")) // ===>  false
-  // console.log("abc123", isNumber("abc123")) // ===>  false
+  // console.log("123", isNumber("123"))                      // ===> true
+  // console.log("123.123", isNumber("123.123"))              // ===> true
+  // console.log("123,123", isNumber("123,123"))              // ===> true
+  // console.log("123.123.123", isNumber("123.123.123"))      // ===> false
+  // console.log("123,123,123", isNumber("123,123,123"))      // ===> false
+  // console.log("123abc", isNumber("123abc"))                // ===> false
+  // console.log("abc", isNumber("abc"))                      // ===> false
+  // console.log("abc123", isNumber("abc123"))                // ===> false
   /*####################
   # End of FUNCTIONS --- Check if a string is a number
   ####################*/
