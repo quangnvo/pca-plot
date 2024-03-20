@@ -653,9 +653,14 @@ export default function Home() {
       return;
     }
     try {
+      // Send a POST request with the "csvData" to the backend
+      // ==> then backend will return the PCA plot data
+      // ==> then put the PCA plot data to the "pcaPlotData" by using "setPcaPlotData"
+      // read the "generatePCAPlot.py" file in the "backend" folder to see the flow of the code in the backend
       const response = await axios.post(`${BACKEND_URL}/api/generate_pca`, csvData);
       setPcaPlotData(response.data);
 
+      // From here to the end of the "generatePCAPlot" function, the purpose of the code is related to COLORS in the PCA plot
       // Extract the names of the sample replicates in the PCA plot and put them into the "names" array
       // The names are like "H2O_30m_A", "H2O_30m-B", "H2O_30m-C", "PNA79_30m_A", "PNA79_30m_B", "PNA79_30m_C", etc.
       const names = []
@@ -705,7 +710,8 @@ export default function Home() {
   /*####################
   # FUNCTIONS --- Generate PCA plot 3D
   ####################*/
-  // The flow of the "generatePCAPlot3D" function is similar to the "generatePCAPlot" function
+  // The flow of the "generatePCAPlot3D" function is same to the "generatePCAPlot" function above
+  // For backend, read the "generatePCAPlot3D.py" file in the "backend" folder to see the flow of the code in the backend
   const generatePCAPlot3D = async () => {
     if (!isFileUploadedOrIsHavingData()) {
       return;
@@ -760,13 +766,15 @@ export default function Home() {
   /*####################
   # FUNCTIONS --- Generate Loadings table
   ####################*/
-  // The flow of the "generateLoadingsTable" function is similar to the "generateScreePlot" function
+  // The flow of the "generateLoadingsTable" function is same to the "generateScreePlot" function
+  // For backend, read the "generateLoadingsTable.py" file in the "backend" folder to see the flow of the code in the backend
   const generateLoadingsTable = async () => {
     if (!isFileUploadedOrIsHavingData()) {
       return;
     }
     if (!isLoadingsTableVisible) {
       try {
+        // At here, read the "generateLoadingsTable.py" file in the "backend" folder to see the flow of the code in the backend
         const response = await axios.post(`${BACKEND_URL}/api/generate_loadings_table`, csvData);
         setLoadingsTableData(response.data);
       } catch (error) {
@@ -784,20 +792,31 @@ export default function Home() {
   # FUNCTIONS --- Generate Top 5 contributors table
   ####################*/
   // The flow of the "generateTopFiveContributors" function is similar to the "generateScreePlot" function
+  // Read the "generateTopFiveContributors.py" file in the "backend" folder to see the flow of the code in the backend
   const generateTopFiveContributors = async () => {
     if (!isFileUploadedOrIsHavingData()) {
       return;
     }
+    // if (!isTopFiveContributorsTableVisible) ==> if the top 5 contributors table is not visible yet, then we will call the API to generate the top 5 contributors table
     if (!isTopFiveContributorsTableVisible) {
       try {
+        // Read the "generateTopFiveContributors.py" file in the "backend" folder to see the flow of the code in the backend
         const response = await axios.post(`${BACKEND_URL}/api/generate_top_five_contributors`, csvData);
+        // After getting the top 5 contributors table data, we set the top 5 contributors table data to the "topFiveContributorsTableData" state by using "setTopFiveContributorsTableData" function
         setTopFiveContributorsTableData(response.data.top_five_contributors);
-        // The "loadingsPlotCoordinates" and "layout" are from the backend file "generateTopFiveContributors.py"
+        // The "loadingsPlotCoordinates" and "layout" are from the backend file "generateTopFiveContributors.py", so read the "generateTopFiveContributors.py" file in the "backend" folder to see in details what is return from the backend
+        // In brief, there are 3 fields in the response.data from the backend:
+        // {
+        //    "top_five_contributors",   ==> this one for the top 5 contributors TABLE
+        //    "loadingsPlotCoordinates", ==> this one for the top 5 contributors PLOT
+        //    "layout"                   ==> this one for the top 5 contributors PLOT
+        // }
         setTopFiveContributorsPlotData({
           data: response.data.loadingsPlotCoordinates,
           layout: response.data.layout
         });
 
+        // From here to the end of the "generateTopFiveContributors" function, the purpose of the code is related to COLORS in the top 5 contributors plot
         // Set the color for the top 5 contributors plot  
         const ColorDataFromBackend = response.data.loadingsPlotCoordinates.map(item => ({
           pcName: item.x[0],
@@ -815,6 +834,7 @@ export default function Home() {
         console.error(error);
       }
     }
+    // Then we will toggle the visibility of the top 5 contributors table and top 5 contributors plot
     setIsTopFiveContributorsTableVisible(!isTopFiveContributorsTableVisible);
     setIsTopFiveContributorsPlotVisible(!isTopFiveContributorsPlotVisible);
   }
