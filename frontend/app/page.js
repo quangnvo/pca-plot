@@ -360,7 +360,6 @@ export default function Home() {
         count++;
       }
     }
-    console.log("🚀🚀 count: ", count)
     setNumberOfSamples(count);
   }
   /*####################
