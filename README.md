@@ -97,7 +97,7 @@ OR
 Clone the project as following command:  
 
 ``` bash
-  git clone https://github.com/quangnvo/pca-plot.git
+git clone https://github.com/quangnvo/pca-plot.git
 ```
 
 **2. Install frontend**
@@ -116,9 +116,9 @@ node -v
 Then, go to the folder **frontend**, run `npm i` to install all the libraries, then `npm run dev` to run the application. Then you can go to http://localhost:3333/ to see the application, as the frontend is set to run on port 3333.  
 
 ``` bash
-  cd frontend/
-  npm i
-  npm run dev
+cd frontend/
+npm i
+npm run dev
 ```
 
 
@@ -187,6 +187,3 @@ API | Method|        Return type     | Description   |
 `/api/generate_scree_plot` | POST  |  `object` | aaaa|
 `/api/generate_loadings_table` | POST  |  `object` | aaaa|
 `/api/generateTopFiveContributors` | POST  |  `object` | aaaa|
-
-
-
