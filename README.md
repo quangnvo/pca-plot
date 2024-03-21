@@ -123,7 +123,51 @@ Then, go to the folder **frontend**, run `npm i` to install all the libraries, t
 
 **3. Install backend**
 
-aaaaaaaaaaaa
+Firstly, ensure that Python is installed in your system. To check that, run the following command: 
+
+``` bash
+python3  --version
+```
+
+If python3 is not installed yet, install it by the following commands:
+
+```bash
+sudo apt update
+sudo apt install python3 -y
+```
+
+Then check the `pip` 
+``` bash
+pip --version
+```
+OR
+``` bash
+pip3 --version
+```
+
+Then install the following python packages which are required for the **backend**
+``` bash
+pip install flask 
+pip install flask_cors
+pip install pandas
+pip install numpy
+pip install scikit-learn
+pip install pyarrow
+pip install fastparquet
+pip install pymongo
+```
+
+Then run the command:
+
+``` bash
+cd backend/
+python app.py
+```
+OR
+``` bash
+cd backend/
+python3 app.py
+```
 ## Backend API 
 
 The API can be found in the folder **backend**. 
