@@ -7,7 +7,7 @@ This application is designed to simplify the process of generating Principal Com
 
 
 
-## Contents
+
 
 - [Description](#description)
 - [Features](#features)
@@ -20,7 +20,7 @@ This application is designed to simplify the process of generating Principal Com
 
 ## Description
 
-Explain the flow of getting config from the URL and connect to MongoDB 
+Explain the flow of getting config from the URL and connect to MongoDB aaaaaaaaa
 
 
 ## Features
@@ -82,7 +82,7 @@ Files that are marked with the star (⭐) are the important files.
 
 - For **backend** folder, the **app.py** file is the main file, it is the backbone of backend. 
 - For **frontend** folder, the **page.js** file is the main file.
-- For **database** folder, it just contains the sample csv files for testing. 
+- For **database** folder, it just contains some sample csv files for testing. 
 ## Installation
 
 **1. Download or clone the project**
@@ -128,25 +128,18 @@ aaaaaaaaaaaa
 
 The API can be found in the folder **backend**. 
 
-#### 1. Generate PCA 2D plot data
-
-```bash
-/api/generate_pca
-```
-
-Method|        Return type     | Description   |
-:-----|  :------- | :------------------------- |
-POST  |  `object` | aaaa|
 
 
 
-#### 2. Generate PCA 3D plot data
+
+API | Method|        Return type     | Description   |
+:-----|  :-----|  :------- | :------------------------- |
+`/api/getDataFromDB` | POST  |  `object` | aaaa|
+`/api/generate_pca` | POST  |  `object` | aaaa|
+`/api/generate_pca_3d` | POST  |  `object` | aaaa|
+`/api/generate_scree_plot` | POST  |  `object` | aaaa|
+`/api/generate_loadings_table` | POST  |  `object` | aaaa|
+`/api/generateTopFiveContributors` | POST  |  `object` | aaaa|
 
 
-```bash
-/api/generate_pca_3d
-```
 
-Method|        Return type     | Description   |
-:-----|  :------- | :------------------------- |
-POST  |  `object` | bbbbb |
