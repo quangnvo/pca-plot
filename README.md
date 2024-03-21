@@ -5,6 +5,24 @@ Welcome to the PCA Plot Generator 👋!
 
 This application is designed to simplify the process of generating Principal Component Analysis (PCA) plots, scree plots, and loadings tables.
 
+
+
+## Contents
+
+- [Description](#description)
+- [Features](#features)
+- [Infrastructure](#infrastructure)
+- [Installation](#installation)
+- [Backend API](#backend-api)
+
+
+
+
+## Description
+
+Explain the flow of getting config from the URL and connect to MongoDB 
+
+
 ## Features
 
 - **PCA Plot Generation in 2D and 3D**: Visualize the 2D or 3D of PCA plot.
@@ -15,8 +33,8 @@ This application is designed to simplify the process of generating Principal Com
 
 ## Infrastructure
 
-- **Frontend:** Next.js
-- **Backend:** Flask 
+- **Frontend:** Next.js - a React framework
+- **Backend:** Flask - a Python framework
 
 The structure of the folders is as following:
 ```bash
@@ -51,10 +69,10 @@ pca-plot
     ├── public
     │   ├── next.svg
     │   ├── vercel.svg
-    │   ├── tour-loadings-table.png ⭐
-    │   ├── tour-pca-2d.png ⭐
-    │   ├── tour-scree-plot.png ⭐
-    │   └── tour-top-5-contributor-table.png ⭐
+    │   ├── tour-loadings-table.png 
+    │   ├── tour-pca-2d.png 
+    │   ├── tour-scree-plot.png 
+    │   └── tour-top-5-contributor-table.png 
     ├── tailwind.config.js
     ├── package.json
     └── etc.
@@ -104,13 +122,15 @@ Then, go to the folder **frontend**, run `npm i` to install all the libraries, t
 
 
 **3. Install backend**
-## API Reference 
-The API Reference is for backend Flask. 
+
+aaaaaaaaaaaa
+## Backend API 
+
+The API can be found in the folder **backend**. 
 
 #### 1. Generate PCA 2D plot data
 
-
-```http
+```bash
 /api/generate_pca
 ```
 
@@ -123,7 +143,7 @@ POST  |  `object` | aaaa|
 #### 2. Generate PCA 3D plot data
 
 
-```http
+```bash
 /api/generate_pca_3d
 ```
 
