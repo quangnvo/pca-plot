@@ -20,7 +20,9 @@ This application is designed to simplify the process of generating Principal Com
 
 ## Description
 
-Explain the flow of getting config from the URL and connect to MongoDB aaaaaaaaa
+aaaaaaa
+
+Explain the flow of getting config from the URL and connect to MongoDB 
 
 
 ## Features
@@ -86,6 +88,7 @@ Files that are marked with the star (⭐) are the important files.
 ## Installation
 
 **1. Download or clone the project**
+
 
 Download the project at https://github.com/quangnvo/pca-plot
 
