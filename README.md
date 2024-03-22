@@ -87,8 +87,7 @@ Files that are marked with the star (⭐) are the important files.
 - For **database** folder, it just contains some sample csv files for testing. 
 ## Installation
 
-**1. Download or clone the project**
-
+![Static Badge](https://img.shields.io/badge/Step_1-Download_or_clone_the_project-blue)
 
 Download the project at https://github.com/quangnvo/pca-plot
 
@@ -100,7 +99,7 @@ Clone the project as following command:
 git clone https://github.com/quangnvo/pca-plot.git
 ```
 
-**2. Install frontend**
+![Static Badge](https://img.shields.io/badge/Step_2-Install_frontend-blue)
 
 The frontend require **node** with version at least 18.17.1.
 
@@ -113,7 +112,13 @@ sudo apt update
 sudo apt install nodejs
 node -v
 ```
-Then, go to the folder **frontend**, run `npm i` to install all the libraries, then `npm run dev` to run the application. Then you can go to http://localhost:3333/ to see the application, as the frontend is set to run on port 3333.  
+Then, go to the folder **frontend**
+
+→ run `npm i` to install all the libraries
+
+→ then `npm run dev` to run the application
+
+→ then you can go to http://localhost:3333/ to see the application, as the frontend is set to run on port 3333.  
 
 ``` bash
 cd frontend/
@@ -124,7 +129,7 @@ npm run dev
 
 
 
-**3. Install backend**
+![Static Badge](https://img.shields.io/badge/Step_3-Install_backend-blue)
 
 Firstly, ensure that Python is installed in your system. To check that, run the following command: 
 
@@ -142,33 +147,30 @@ sudo apt install python3 -y
 Then check the `pip` 
 ``` bash
 pip --version
-```
+
 OR
-``` bash
+
 pip3 --version
 ```
 
-Then install the following python packages which are required for the **backend**
-``` bash
-pip install flask 
-pip install flask_cors
-pip install pandas
-pip install numpy
-pip install scikit-learn
-pip install pyarrow
-pip install fastparquet
-pip install pymongo
-```
+Then run `sudo apt-get install python3.8-venv` to allow virtual env
 
-Then run the command:
+→ go to backend folder: `cd pca-plot/backend/`
 
-``` bash
-cd backend/
-python app.py
-```
-OR
-``` bash
-cd backend/
+→ create python virtual environment: `python3 -m venv venv`
+
+→ enter the environment: `source venv/bin/activate`
+
+→ install the required python libraries: `pip install -r requirements.txt`
+
+→ launch flask server: `python3 app.py`
+
+```bash
+sudo apt-get install python3.8-venv
+cd pca-plot/backend/
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 python3 app.py
 ```
 ## Backend API 
@@ -187,3 +189,6 @@ API | Method|        Return type     | Description   |
 `/api/generate_scree_plot` | POST  |  `object` | aaaa|
 `/api/generate_loadings_table` | POST  |  `object` | aaaa|
 `/api/generateTopFiveContributors` | POST  |  `object` | aaaa|
+
+
+
