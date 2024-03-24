@@ -3,26 +3,19 @@
 
 Welcome to the PCA Plot Generator 👋!
 
-This application is designed to simplify the process of generating Principal Component Analysis (PCA) plots, scree plots, and loadings tables.
-
-
-
-
+This application is designed to simplify the process of generating Principal Component Analysis (PCA) plots, scree plot, and loadings table.
 
 - [Description](#description)
 - [Features](#features)
 - [Infrastructure](#infrastructure)
 - [Installation](#installation)
-- [Backend API](#backend-api)
-
-
 
 
 ## Description
 
-aaaaaaa
+This application is designed to function both as a standalone tool and as a plugin within the Micromix (http://micromix.helmholtz-hiri.de/). Detailed instructions for installation and independent operation can be found in the section below.
 
-Explain the flow of getting config from the URL and connect to MongoDB 
+When integrated into Micromix, the application operates within an `<iframe>` tag. It retrieves a `config` number from the Micromix URL, which it then uses to access the Micromix MongoDB. The data corresponding to the `config` number is fetched and loaded into the application for further use.
 
 
 ## Features
@@ -167,28 +160,13 @@ Then run `sudo apt-get install python3.8-venv` to allow virtual env
 
 ```bash
 sudo apt-get install python3.8-venv
+
 cd pca-plot/backend/
+
 python3 -m venv venv
 source venv/bin/activate
+
 pip install -r requirements.txt
+
 python3 app.py
 ```
-## Backend API 
-
-The API can be found in the folder **backend**. 
-
-
-
-
-
-API | Method|        Return type     | Description   |
-:-----|  :-----|  :------- | :------------------------- |
-`/api/getDataFromDB` | POST  |  `object` | aaaa|
-`/api/generate_pca` | POST  |  `object` | aaaa|
-`/api/generate_pca_3d` | POST  |  `object` | aaaa|
-`/api/generate_scree_plot` | POST  |  `object` | aaaa|
-`/api/generate_loadings_table` | POST  |  `object` | aaaa|
-`/api/generateTopFiveContributors` | POST  |  `object` | aaaa|
-
-
-
