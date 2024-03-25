@@ -9,9 +9,10 @@ bp = Blueprint('generatePCA', __name__)
 
 
 def is_number_or_not(s):
-    # This "is_number_or_not" function checks if a string is a number
-    # The name "is_number_or_not" is not really a nice name for this function, but "is_number" is a function already built-in in Python, and the "is_number" only check the number with dot ".", so the comma "," will not be recognized as a number.
-    # That's why we use "is_number_or_not", in which we use s.replace(',', '') to handle the data that may contain comma as the decimal delimiter
+    # This "is_number_or_not()" function checks if a string is a number
+    # Actually, there is a function called "is_number()" from pandas, but the "is_number()" only check number with dot as the decimal delimiter but not with comma
+    # ==> for example, "1.33" is considered as a number by "is_number()" but "1,33" is not
+    # That's why we have "is_number_or_not()", in which we use s.replace(',', '') to handle the data that may contain comma as the decimal delimiter
     # This function is used to identify the columns that contain non-numeric values
     try:
         # If the value is a string, then replace the comma with an empty string, then check if it is a number
