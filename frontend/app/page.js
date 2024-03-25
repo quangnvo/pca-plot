@@ -1,7 +1,8 @@
-// This "use client" is IMPORTANT and need to put on the top of the file, as it is used to run the file in the client side, not in the server side. 
+// This "use client" is IMPORTANT and need to put on the top of the file in NextJS (a React framework), as it is used to run the file in the client side, not in the server side. 
 // If we don't put "use client" at here, then it will think that this file is used in the server side, as the server side is the default.
-// Because in the following code, we use the "useState", "useRef", etc. which are the React hooks, and they are used in the client side, not in the server side, so we need to put "use client" here.
-// A server component cannot use React hooks like useState, useEffect, etc. This is because a server component is rendered once on the server and doesn't re-render. On the other hand, a client component is a normal React component with access to hooks and re-renders as the user interacts, clicks the buttons, changes the color, etc. with the app.
+// Because in this file, we use the "useState", "useEffect", etc. which are the React hooks, and they are used in the client side, not in the server side, so we need to put "use client" here.
+// A server component cannot use React hooks like useState, useEffect, etc. This is because a server component is rendered once on the server and doesn't re-render. 
+// On the other hand, a client component is a normal React component with access to hooks and re - renders as the user interacts, clicks the buttons, changes the color, etc.with the app.
 "use client"
 
 /*####################
@@ -31,7 +32,7 @@ import {
   Tour,
 } from 'antd';
 
-// The icons used in the UI
+// The icons from 'lucide-react' library
 import {
   Plus,
   Rocket,
@@ -68,19 +69,19 @@ export default function Home() {
 
   /*####################
   # GET THE CONFIG NUMBER FROM THE URL
-  # This is used to get the config number from the URL, then send it to the backend to get the data from the MongoDB
-  # This is done when the page is loaded inside the MicroMix page
-  # This part is linked with the "useEffect" part below, so when read the "useEffect" part below, come back to this part to see the flow of the code
   ####################*/
-  // By using useSearchParams, we create the "searchParams" object, which can be used to extract the query parameters from the URL
+  // This is used to get the config number from the URL, then send it to the backend to get the data from the MongoDB
+  // This is done when the page is loaded inside the MicroMix page
+  // This part is linked with the "useEffect" part below, so when read the "useEffect" part below, come back to this part to see the flow of the code
+  // By using "useSearchParams", we create the "searchParams" object, which can be used to extract the query parameters from the URL
   const searchParams = useSearchParams()
-  // Then get the config number from the URL by using "searchParams.get("config")"
+  // Then we get the config number from the URL by using "searchParams.get("config")"
   // It can be "searchParams.get("aaaaa")", "searchParams.get("bbbbb")", etc. depending on the query parameters name in the URL
-  // ==> for example, the URL "http://localhost:3000/?config=123123" has the config number is "123123"
+  // ==> for example, the URL is "http://localhost:3000/?aaaaa=123123", then searchParams.get("aaaaa") will return "123123"
   const configNumber = searchParams.get("config")
-  // Create the object that contains the config number, the purpose is to send this object to the backend to get the data from the MongoDB
-  // ==> The backend file should look at is: "getDataFromDB.py"
-  // The configNumberObject will have the format like this:
+  // Create the object "configNumberObject" that contains the config number, the purpose is to send this object to the backend to get the data from the MongoDB
+  // While reading at here, read the file "getDataFromDB.py" in the "backend" folder to see the flow of the code in the backend
+  // The "configNumberObject" will have the format like this:
   // configNumberObject = {
   //   config: "123123"
   // }
@@ -95,10 +96,10 @@ export default function Home() {
   # INITIAL VARIABLES
   ####################*/
 
-  // We have "csvData", "setCsvData" ; "pcaPlotData", "setPcaPlotData" ;  etc.
+  // Below, we have "csvData", "setCsvData" ; "pcaPlotData", "setPcaPlotData" ;  etc.
 
   // The "setSomething" function is used to update the "something"
-  // For example, at the beginning, something = "123", then setSomething("abcdef") will update something, then something = "abcdef"
+  // For example, at the beginning, if something = "123", then setSomething("abcdef") will update something, then something = "abcdef"
 
   // The "useState" function is a React hook function that is used to create the combo of "something" and "setSomething"
   // The purpose of using "useState" is that it is used to "trigger the re-render of the UI" when the "something is updated"
@@ -106,7 +107,8 @@ export default function Home() {
   // For example, at the beginning, screePlotData = null, then nothing on the screen yet,
   // ==> then when user clicks on the "Scree plot" button, it will call API to calculate the scree plot data
   // ==> then we need to store the data get from API to the screePlotData and render it to the screen.
-  // If we just simply assign the screePlotData = "data_from_API", it will not re-render the UI, so the scree plot will not be shown on the screen.
+  // If we just simply assign the screePlotData = "some_data_received_after_calling_from_API", it will not re-render the UI, so the scree plot will not be shown on the screen.
+  // ==> so we need to use setScreePlotData("some_data_received_after_calling_from_API") to update the screePlotData, then the UI will be re-rendered, and the scree plot will be shown on the screen.
   // So we need to use "useState()"
   const [csvData, setCsvData] = useState([]);
   const [screePlotData, setScreePlotData] = useState(null);
@@ -131,7 +133,7 @@ export default function Home() {
   const [uploadedFileName, setUploadedFileName] = useState("");
 
   // The number of samples
-  // The number of samples will be calculated in the "useEffect" function below, so check the "useEffect" function below 
+  // The number of samples will be calculated in the "useEffect" part, so check the "useEffect" part below 
   const [numberOfSamples, setNumberOfSamples] = useState(0);
 
   // The name of the PCA 2D and PCA 3D, just used for naming the title of the buttons
@@ -151,11 +153,11 @@ export default function Home() {
   const acceptFileTypes = ".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel";
 
   // The styles for the buttons, sections, etc.
+  const sizeOfIcon = "20px"
   const spaceBetweenSections = "mb-[75px]";
   const spaceBetweenColorSectionAndPlot = "mt-[15px]";
   const styleForSectionHeading = "mb-[15px] text-2xl md:text-3xl font-bold"
   const styleForButton = "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 cursor-pointer"
-  const sizeOfIcon = "20px"
 
   // Variables for the "Begin a Tour" button
   // The "isTourOpen" is used to control the visibility of the tour
@@ -910,7 +912,7 @@ export default function Home() {
 
 
   /*####################
-  # BUTTONS --- Render button to generate Screen plot
+  # BUTTONS --- Render button to generate Scree plot
   ####################*/
   const renderButtonGenerateScreePlot = () => {
     return (
