@@ -5,6 +5,9 @@ Welcome to the PCA Plot Generator 👋!
 
 This application is designed to simplify the process of generating Principal Component Analysis (PCA) plots, scree plot, and loadings table.
 
+[Infrastructure](infrastructure.md##infrastructure)
+
+
 - [Description](#description)
 - [Features](#features)
 - [Infrastructure](#infrastructure)
