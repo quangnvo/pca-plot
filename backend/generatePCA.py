@@ -1,3 +1,10 @@
+# --------------------------------
+#
+# 🚀 Created by Quang, 2024
+# ✉️ For any inquiries, suggestions, or discussions related to this work, feel free to reach out to me at: voquang.usth@gmail.com
+#
+# --------------------------------
+
 import pandas as pd
 from flask import Blueprint, jsonify, request
 from sklearn.decomposition import PCA

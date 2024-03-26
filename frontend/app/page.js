@@ -566,7 +566,7 @@ export default function Home() {
       if (result.isConfirmed) {
         // Clear the csvData state to make it back to empty array
         setCsvData([]);
-        // Reset the file input value to null, this is important because if we don't reset the file input value to null, then the user can't upload the same file again after they uploaded it once
+        // Reset the file input value to null, this is important because if we don't reset the file input value to null, the user can't upload the same file again after they uploaded it once
         document.getElementById(inputFileId).value = null;
         // Then we will hide the scree plot, PCA plot, loadings table, top 5 contributors table on the screen by setting the visibility to "false"
         setIsScreePlotVisible(false);
@@ -932,7 +932,7 @@ export default function Home() {
     )
   }
   /*####################
-  # End of BUTTONS --- Render button to generate Screen plot
+  # End of BUTTONS --- Render button to generate Scree plot
   ####################*/
 
 

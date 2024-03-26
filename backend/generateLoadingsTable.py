@@ -1,3 +1,10 @@
+# --------------------------------
+#
+# 🚀 Created by Quang, 2024
+# ✉️ For any inquiries, suggestions, or discussions related to this work, feel free to reach out to me at: voquang.usth@gmail.com
+#
+# --------------------------------
+
 #########################
 # NOTICE
 # Check the file "generatePCA.py" for the detail explanation, as a half of the code here is similar to the code in "generatePCA.py"
