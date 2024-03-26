@@ -1,4 +1,4 @@
-# Infrastructure
+## Infrastructure
 
 - **Frontend:** Next.js - a React framework
 - **Backend:** Flask - a Python framework
