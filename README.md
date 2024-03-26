@@ -8,8 +8,10 @@ The application can be used as a standalone tool or as a plugin within the Micro
 
 When integrated into Micromix, the application operates within an `<iframe>` tag. It retrieves a `config` number from the Micromix URL, which it then uses to access the Micromix MongoDB. The data corresponding to the `config` number is fetched and loaded into the application for further use.
 
+## Content
+
 - [Features](features.md)
-- [Infrastructure](infrastructure.md##infrastructure)
+- [Infrastructure](infrastructure.md)
 - [Install for dev](install_for_dev.md)
 - [Install for production](install_for_production.md)
 - [Integrate with Micromix](integrate_with_micromix.md)
