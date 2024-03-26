@@ -1,6 +1,6 @@
 # PCA Generator
 
-- [Features](features.md)
+- **[Features](features.md)**
 - [Infrastructure](infrastructure.md##infrastructure)
 - [Install for dev](install_for_dev.md)
 - [Install for production](install_for_production.md)
