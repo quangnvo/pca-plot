@@ -278,19 +278,23 @@ export default function Home() {
       description: <div>
         <ul className='list-disc list-inside'>
           <li>
-            The top-5-contributors table typically lists the five variables that contribute the most to each principal component.
+            The top-5-contributors typically lists the five variables that contribute the most to each principal component.
           </li>
           <li>
             The contribution of a variable is determined by its loading, with larger absolute values indicating stronger contributions.
           </li>
         </ul>
       </div>,
-      cover: (
+      cover: <div>
         <img
           alt="top 5 contributors table"
           src='tour-top-5-contributors-table.png'
         />
-      ),
+        <img
+          alt="top 5 contributors plot"
+          src='tour-top-5-contributors-plot.png'
+        />
+      </div>,
     },
     // Tour step 6
     // ==> similar to the Tour step 1
