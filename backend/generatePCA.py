@@ -1,7 +1,7 @@
 # --------------------------------
 #
 # 🚀 Created by Quang, 2024
-# ✉️ For any inquiries, suggestions, or discussions related to this work, feel free to reach out to me at: voquang.usth@gmail.com
+# ✉️ For any inquiries, suggestions, or discussions related to this work, feel free to contact me at: voquang.usth@gmail.com
 #
 # --------------------------------
 
