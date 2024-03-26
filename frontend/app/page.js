@@ -1,9 +1,22 @@
-// This "use client" is IMPORTANT and need to put on the top of the file in NextJS (a React framework), as it is used to run the file in the client side, not in the server side. 
-// If we don't put "use client" at here, then it will think that this file is used in the server side, as the server side is the default.
+/*#################################
+#
+# 🚀 Created by Quang, 2024
+# ✉️ For any inquiries, suggestions, or discussions related to this work, feel free to reach out to me at: voquang.usth@gmail.com
+#
+#################################*/
+
+/*####################
+# USING "use client"
+####################*/
+// In NextJS (a React framework), as a default, a file will run on the "server side", not on the "client side".
+// This "use client" is IMPORTANT and need to put on the top of the file in NextJS , as it is used to run the file in the "client side", not in the "server side". 
 // Because in this file, we use the "useState", "useEffect", etc. which are the React hooks, and they are used in the client side, not in the server side, so we need to put "use client" here.
 // A server component cannot use React hooks like useState, useEffect, etc. This is because a server component is rendered once on the server and doesn't re-render. 
 // On the other hand, a client component is a normal React component with access to hooks and re - renders as the user interacts, clicks the buttons, changes the color, etc.with the app.
 "use client"
+/*####################
+# End of USING "use client"
+####################*/
 
 /*####################
 # IMPORT
