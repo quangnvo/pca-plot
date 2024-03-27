@@ -2,9 +2,10 @@ import React from 'react'
 
 const Loading = () => {
     return (
-        <div class="loader"></div>
+        <div>
+            Loading ...
+        </div>
     )
 }
 
 export default Loading
-
