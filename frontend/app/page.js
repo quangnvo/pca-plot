@@ -21,11 +21,21 @@
 /*####################
 # IMPORT
 ####################*/
-// The useState, useRef are used to create the state and reference to the DOM element
-import { useState, useRef, useEffect } from 'react';
+// The "dynamic" is used to import the "Plot" component from the "react-plotly.js" library below
+import dynamic from "next/dynamic";
 
-// The Plot from the react-plotly.js library is used to render the plot
-import Plot from 'react-plotly.js';
+// The Loading component
+import Loading from "./loading";
+
+// The useState, useRef are used to create the state and reference to the DOM element
+import { useState, useRef, useEffect, Suspense } from 'react';
+
+// The "Plot" from the react-plotly.js library is used to render the plot
+// Instead of importing like this: " import Plot from 'react-plotly.js', we use the "dynamic" function from NextJS to import the Plot component
+// ==> because the "Plot" component is used in the client side, not in the server side, so we need to use the "dynamic" function to import it
+// So " const Plot = dynamic(() => import('react-plotly.js'), { ssr: false }) " is just another way to import the "Plot" component
+// If we use "import Plot from 'react-plotly.js'", it will cause the error when running "npm run build"
+const Plot = dynamic(() => import('react-plotly.js'), { ssr: false })
 
 // The Papa is used to parse the csv file
 import Papa from 'papaparse';
@@ -44,6 +54,7 @@ import {
   Dropdown as DropdownAntd,
   Tour,
 } from 'antd';
+
 
 // The icons from 'lucide-react' library
 import {
@@ -74,36 +85,22 @@ import { useSearchParams } from "next/navigation"
 # End of IMPORT
 ####################*/
 
-export default function Home() {
 
+
+export default function Home() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <Content />
+    </Suspense>
+  );
+}
+
+
+function Content() {
   // Define the backend url and port
   const BACKEND_PORT = 7000
   const BACKEND_URL = `http://localhost:${BACKEND_PORT}`
 
-  /*####################
-  # GET THE CONFIG NUMBER FROM THE URL
-  ####################*/
-  // This is used to get the config number from the URL, then send it to the backend to get the data from the MongoDB
-  // This is done when the page is loaded inside the MicroMix page
-  // This part is linked with the "useEffect" part below, so when read the "useEffect" part below, come back to this part to see the flow of the code
-  // By using "useSearchParams", we create the "searchParams" object, which can be used to extract the query parameters from the URL
-  const searchParams = useSearchParams()
-  // Then we get the config number from the URL by using "searchParams.get("config")"
-  // It can be "searchParams.get("aaaaa")", "searchParams.get("bbbbb")", etc. depending on the query parameters name in the URL
-  // ==> for example, the URL is "http://localhost:3000/?aaaaa=123123", then searchParams.get("aaaaa") will return "123123"
-  const configNumber = searchParams.get("config")
-  // Create the object "configNumberObject" that contains the config number, the purpose is to send this object to the backend to get the data from the MongoDB
-  // While reading at here, read the file "getDataFromDB.py" in the "backend" folder to see the flow of the code in the backend
-  // The "configNumberObject" will have the format like this:
-  // configNumberObject = {
-  //   config: "123123"
-  // }
-  const configNumberObject = {
-    config: configNumber
-  }
-  /*####################
-  # End of GET THE CONFIG NUMBER FROM THE URL
-  ####################*/
 
   /*####################
   # INITIAL VARIABLES
@@ -385,6 +382,22 @@ export default function Home() {
   # End of FUNCTIONS --- Check number of samples
   ####################*/
 
+  /*####################
+  # GET THE CONFIG NUMBER FROM THE URL
+  ####################*/
+  // This is used to get the config number from the URL, then send it to the backend to get the data from the MongoDB
+  // This is done when the page is loaded inside the MicroMix page
+  // This part is linked with the "useEffect" part below, so when read the "useEffect" part below, come back to this part to see the flow of the code
+  // By using "useSearchParams", we create the "searchParams" object, which can be used to extract the query parameters from the URL
+  const searchParams = useSearchParams()
+  // Then we get the config number from the URL by using "searchParams.get("config")"
+  // It can be "searchParams.get("aaaaa")", "searchParams.get("bbbbb")", etc. depending on the query parameters name in the URL
+  // ==> for example, the URL is "http://localhost:3000/?aaaaa=123123", then searchParams.get("aaaaa") will return "123123"
+  const configNumber = searchParams.get("config")
+  /*####################
+  # End of GET THE CONFIG NUMBER FROM THE URL
+  ####################*/
+
 
   /*####################
   # FUNCTIONS --- useEffect
@@ -394,6 +407,16 @@ export default function Home() {
   // If any of the dependencies change, the function will run again.
   // In this case, the array[] is empty, which means the function will only run once after the component appears on the screen.
   useEffect(() => {
+    // Create the object "configNumberObject" that contains the config number, the purpose is to send this object to the backend to get the data from the MongoDB
+    // While reading at here, read the file "getDataFromDB.py" in the "backend" folder to see the flow of the code in the backend
+    // The "configNumberObject" will have the format like this:
+    // configNumberObject = {
+    //   config: "123123"
+    // }
+    const configNumberObject = {
+      config: configNumber
+    }
+
     /*####################
     # FUNCTIONS --- useEffect --- fetchDataFromDB
     ####################*/
@@ -459,7 +482,7 @@ export default function Home() {
         // Then we set the visibility of the PCA 2D plot to true, to make it appear on the screen as a default when the user clicks the PCA plugin
         setIsPCA2DVisible(true);
       } catch (error) {
-        console.error('Error fetching data: ', error);
+        console.error(error);
       }
     };
     /*####################
@@ -1185,10 +1208,11 @@ export default function Home() {
                 style={{ width: "100%", height: "500px" }}
                 data={screePlotData.data}
                 layout={screePlotData.layout}
-                // key={Math.random()} is very IMPORTANT here, because it will force the Plot to re-render when the data is changed. 
+                // key={Math.random()} is very IMPORTANT here, because it will force the Plot to re-render when the data is changed.
                 // Otherwise, the Plot will not re-render, so the color on the plot will not be updated.
                 key={Math.random()}
               />
+
             </div>
             {/* This is the color choosing section for the scree plot */}
             {/* The code for COLORS is very below, so need to scrolling down to see the "renderColorSectionForScreePlot()" function */}
