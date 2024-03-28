@@ -27,6 +27,7 @@ cd frontend/
 npm run build
 
 ```
+After running `npm run build`, the generated index.html, css and javascript files can be deployed on any web server that can serve HTML/CSS/JS static assets. 
 
 If you use **Nginx**, refer to this link to see the configuration: 
 https://nextjs.org/docs/pages/building-your-application/deploying/static-exports#deploying 

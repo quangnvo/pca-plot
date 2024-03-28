@@ -9,6 +9,7 @@
 - [How to modify this app to create another Micromix enabled app](how_to_modify_this_app_to_create_another_micromix_enabled_app.md)
 
 ## Integrate with Micromix
+
 Create a file PCA.py in folder Website ==> folder backend ==> folder plugins
 
 Create in plugin.json
