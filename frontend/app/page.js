@@ -411,10 +411,10 @@ function HomeContent() {
 
   // ==> then check each item in the first row:
   // "gene_1" is not a number, so skip;
-  // "20.01" is a number, so increase count;
-  // "10.77" is a number, so increase count;
-  // "20.65" is a number, so increase count;
-  // "19.87" is a number, so increase count
+  // "20.01" is a number, so increase "count";
+  // "10.77" is a number, so increase "count";
+  // "20.65" is a number, so increase "count";
+  // "19.87" is a number, so increase "count"
   // ==> so the "count" will be 4
   // ==> so the number of samples is 4
 
