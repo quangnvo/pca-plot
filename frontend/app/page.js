@@ -6,6 +6,7 @@
 #################################*/
 
 
+
 /*########################################
 #####     1️⃣ USING "use client"     #####
 ########################################*/
@@ -17,6 +18,7 @@
 /*###############################################
 #####     1️⃣ End of USING "use client"     #####
 ###############################################*/
+
 
 
 /*############################
@@ -32,8 +34,8 @@ import { useState, useRef, useEffect, Suspense } from 'react';
 import dynamic from "next/dynamic";
 
 // The "Plot" from the react-plotly.js library is used to render the plot
-// Instead of importing like this: " import Plot from 'react-plotly.js', we use the "dynamic" function from NextJS to import the "Plot" component
-// ==> because the "Plot" component is used in the client side, not in the server side, so we need to use the "dynamic" function to import it
+// Instead of importing like this: " import Plot from 'react-plotly.js', we use the "dynamic()" function from NextJS to import the "Plot" component
+// ==> because the "Plot" component is used in the client side, not in the server side, so we need to use the "dynamic()" function to import it
 // So " const Plot = dynamic(() => import('react-plotly.js'), { ssr: false }) " is just another way to import the "Plot" component
 // If we use "import Plot from 'react-plotly.js'", it will cause the error when running "npm run build"
 const Plot = dynamic(() => import('react-plotly.js'), { ssr: false })
@@ -87,9 +89,10 @@ import { useSearchParams } from "next/navigation"
 ###################################*/
 
 
-/*###########################################################
-#####     3️⃣ COVER THE PAGE WITH LOADING COMPONENT     #####
-###########################################################*/
+
+/*#############################################################
+#####     3️⃣ COVER THE PAGE WITH "LOADING COMPONENT"     #####
+#############################################################*/
 export default function Home() {
   return (
     <Suspense fallback={<Loading />}>
@@ -98,9 +101,10 @@ export default function Home() {
     </Suspense>
   );
 }
-/*##################################################################
-#####     3️⃣ End of COVER THE PAGE WITH LOADING COMPONENT     #####
-##################################################################*/
+/*####################################################################
+#####     3️⃣ End of COVER THE PAGE WITH "LOADING COMPONENT"     #####
+####################################################################*/
+
 
 
 /*#########################################################
@@ -110,9 +114,19 @@ export default function Home() {
 #####     plots, tables, etc.                         #####
 #########################################################*/
 function HomeContent() {
-  // Define the backend url and port
+
+  /*########################################
+  ######     BACKEND PORT AND URL     ######
+  ########################################*/
+
+  // The backend port can be changed here
+  // If change the the "BACKEND_PORT" here, change the port in the "app.py" file in the "backend" folder to the same port
   const BACKEND_PORT = 7000
   const BACKEND_URL = `http://localhost:${BACKEND_PORT}`
+
+  /*###############################################
+  ######     End of BACKEND PORT AND URL     ######
+  ###############################################*/
 
 
   /*#####################################
@@ -121,10 +135,10 @@ function HomeContent() {
 
   // Below, we have "csvData", "setCsvData" ; "pcaPlotData", "setPcaPlotData" ;  etc.
 
-  // The "setSomething" function is used to update the "something"
+  // The "setSomething()" function is used to update the "something"
   // For example, at the beginning, if something = "123", then setSomething("abcdef") will update something, then something = "abcdef"
 
-  // The "useState" function is a React hook function that is used to create the combo of "something" and "setSomething"
+  // The "useState()" function is a React hook function that is used to create the combo of "something" and "setSomething"
   // The purpose of using "useState" is that it is used to "trigger the re-render of the UI" when the "something is updated"
 
   // For example, at the beginning, screePlotData = null, then nothing on the screen yet,
@@ -171,6 +185,7 @@ function HomeContent() {
   // The reason we need to reset the file input value to null is that if we don't reset the file input value to null, then the user can't upload the same file again after they uploaded it once
   // This is just for uploaded file function, but the MicroMix already has the data, so this can be IGNORED
   const inputFileId = "fileInput";
+
   // The acceptFileTypes is used to allow the user to upload the file with the following types, like .csv, .xlsx, .xls
   // This is just for uploaded file function, but the MicroMix already has the data, so this can be IGNORED
   const acceptFileTypes = ".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel";
@@ -331,7 +346,7 @@ function HomeContent() {
   /*####################
   # FUNCTIONS --- Check if a string is a number
   ####################*/
-  // This "isNumber" function is used to check if a string is a number or not
+  // This "isNumber()" function is used to check if a string is a number or not
   // The "value.replace(/\./g, '').replace(',', '.')" is used to replace all dot (.) in the string with nothing, and then replacing all commas (,) with dots (.).
   // ==> This is done in order to handle cases where numbers are written with commas as decimal separators
   // ==> for example: "1452.11" => this is number; "1452,11" => this is also number.
@@ -355,7 +370,7 @@ function HomeContent() {
     value = value.replace(/\./g, '').replace(',', '.');
     return !isNaN(parseFloat(value)) && isFinite(value);
   }
-  // The following are the test cases for the "isNumber" function:
+  // The following are the test cases for the "isNumber()" function:
   // console.log("123", isNumber("123"))                      // ===> true
   // console.log("123.123", isNumber("123.123"))              // ===> true
   // console.log("123,123", isNumber("123,123"))              // ===> true
@@ -372,14 +387,40 @@ function HomeContent() {
   /*####################
   # FUNCTIONS --- Count number of samples
   ####################*/
-  // This "countNumberOfSamples" function is used to count the number of samples in the data
-  // The "data" is the data that is got from the MongoDB
-  // So the idea is to check the first row of the data
-  // ==> then check each item in the first row, if it is a number, then count++; if it is not a number, then skip (like "H2O_30m_A" => not a number, so skip)
+  // This "countNumberOfSamples()" function is used to count the number of samples in the data
+  // The "data" is the data that is got from the MongoDB or the uploaded file from user
+  // So the idea is to check the first row of the data table
+  // ==> then check each item in the first row, if it is a number, then increase count; if it is not a number, then skip (like "H2O_30m_A" => not a number, so skip)
   // ==> finally, the "count" will be the number of samples
-  // Then set the "count" to the "numberOfSamples" state by using "setNumberOfSamples" function
-  // So the "numberOfSamples" will be used to show the number of samples on the screen
-  // The place where "numberOfSamples" is used can be found at the function "renderFileInformation" at very below
+  // For example, if the data like this:
+  // |-----------|-----------|-----------|-------------|-------------|
+  // | locus_tag | H2O_30m_A | H2O_30m_B | PNA79_30m_A | PNA79_30m_B |
+  // |-----------|-----------|-----------|-------------|-------------|
+  // | gene_1    | 20.01     | 10.77     | 20.65       | 19.87       |
+  // | gene_2    | 21.68     | 23.13     | 37.43       | 49.37       |
+  // | gene_3    | 41.70     | 39.89     | 41.95       | 28.21       |
+  // | gene_4    | 24.46     | 19.94     | 30.98       | 30.68       |
+  // | ...       | ...       | ...       | ...         | ...         |
+  // | gene_n    | 11.96     | 12.23     | 32.27       | 12.31       |
+  // |-----------|-----------|-----------|-------------|-------------|
+
+  // ==> so it will take the first row, which is this:
+  // |-----------|-----------|-----------|-------------|-------------|
+  // | gene_1    | 20.01     | 10.77     | 20.65       | 19.87       |
+  // |-----------|-----------|-----------|-------------|-------------|
+
+  // ==> then check each item in the first row:
+  // "gene_1" is not a number, so skip;
+  // "20.01" is a number, so increase count;
+  // "10.77" is a number, so increase count;
+  // "20.65" is a number, so increase count;
+  // "19.87" is a number, so increase count
+  // ==> so the "count" will be 4
+  // ==> so the number of samples is 4
+
+  // Then set the "count" to the "numberOfSamples" variable by using "setNumberOfSamples()" function
+  // ==> then "numberOfSamples" will be used to show the number of samples on the screen
+  // ==> then the place where "numberOfSamples" is used can be found at the function "renderFileInformation" at very below
   const countNumberOfSamples = (data) => {
     const firstRow = data[0];
     let count = 0;
@@ -414,10 +455,11 @@ function HomeContent() {
   /*####################
   # FUNCTIONS --- useEffect
   ####################*/
-  // useEffect(() => {...}, []);: This is a React Hook that runs the function provided as the first argument after the component has rendered.
+  // useEffect(() => {...}, []);: This is a React Hook that runs after the component has been rendered without needing any interaction from the user.
   // The second argument of useEffect is an array of dependencies.
   // If any of the dependencies change, the function will run again.
-  // In this case, the array[] is empty, which means the function will only run once after the component appears on the screen.
+  // ==> for example useEffect(() => {...}, [name, age]);: This will run the function again if the name OR age changes.
+  // ==> in our case, the array [] is empty, which means the function will only run once after the component appears on the screen.
   useEffect(() => {
     // Create the object "configNumberObject" that contains the config number, the purpose is to send this object to the backend to get the data from the MongoDB
     // While reading at here, read the file "getDataFromDB.py" in the "backend" folder to see the flow of the code in the backend
@@ -442,11 +484,11 @@ function HomeContent() {
         countNumberOfSamples(responseFromMongoDB.data);
         setCsvData(responseFromMongoDB.data);
 
-        // So from here to the end of the "fetchDataFromDB" function, the purpose of the code is to generate the PCA plot data and load it to the screen to make it as a default thing appearing on the screen when user clicks on the PCA plugin
+        // So from here to the end of the "fetchDataFromDB()" function, the purpose of the code is to generate the PCA plot and load it to the screen to make it as a default thing appearing on the screen
         // At here, we call the API to generate the PCA plot data
         // While reading at here, read the file "generatePCAPlot.py" in the "backend" folder to see the flow of the code in the backend
         const responseFromGeneratePCAPlot = await axios.post(`${BACKEND_URL}/api/generate_pca`, responseFromMongoDB.data);
-        // After having the PCA plot data, we set the PCA plot data to the "pcaPlotData" state by using "setPcaPlotData" function
+        // After having the PCA plot data, we set the PCA plot data to the "pcaPlotData" state by using "setPcaPlotData()" function
         setPcaPlotData(responseFromGeneratePCAPlot.data);
 
         // Then, we extract the names of the sample replicates in the PCA plot and put them into the "names" array
@@ -459,7 +501,7 @@ function HomeContent() {
             groupId: ""
           })
         })
-        // Then set the "names" array to the "nameOfSamples" state by using "setNameOfSamples" function
+        // Then set the "names" array to the "nameOfSamples" state by using "setNameOfSamples()" function
         // This is for COLORS
         setNameOfSamples(names);
         // This setColorGroups is used to reset the color groups
@@ -501,7 +543,7 @@ function HomeContent() {
     # End of FUNCTIONS --- useEffect --- fetchDataFromDB
     ####################*/
 
-    // Call the "fetchDataFromDB" function to get the data from the MongoDB
+    // Call the "fetchDataFromDB()" function to get the data from the MongoDB
     fetchDataFromDB();
 
     // The array [] is empty, which means the function will only run once after the component appears on the screen
@@ -549,7 +591,7 @@ function HomeContent() {
     if (csvData.length === 0) {
       return;
     }
-    // The real all actions to clear the uploaded file and reset the UI are in this "showAlertForClear" function, so check the "showAlertForClear" function below for more details
+    // The real all actions to clear the uploaded file and reset the UI are in this "showAlertForClear()" function, so check the "showAlertForClear()" function below for more details
     showAlertForClear();
   }
   /*####################
@@ -560,7 +602,7 @@ function HomeContent() {
   /*####################
    # FUNCTIONS --- Show alert message
    ####################*/
-  // This function is like a template for showing the alert message, which is used in the "isFileUploadedOrIsHavingData" function below
+  // This function is like a template for showing the alert message, which is used in the "isFileUploadedOrIsHavingData()" function below
   const showAlert = (title, message, icon) => {
     Swal.fire({
       title: title,
@@ -647,7 +689,7 @@ function HomeContent() {
   # FUNCTIONS --- Generate Scree plot
   ####################*/
   // While reading at here, read the "generateScreePlot.py" file in the "backend" folder to see the flow of the code in the backend
-  // The "generateScreePlot" function will generate the things like following:
+  // The "generateScreePlot()" function will generate the things like following:
   // {
   //    data: [
   //      .....
@@ -713,7 +755,7 @@ function HomeContent() {
       const response = await axios.post(`${BACKEND_URL}/api/generate_pca`, csvData);
       setPcaPlotData(response.data);
 
-      // From here to the end of the "generatePCAPlot" function, the purpose of the code is related to COLORS in the PCA plot
+      // From here to the end of the "generatePCAPlot()" function, the purpose of the code is related to COLORS in the PCA plot
       // Extract the names of the sample replicates in the PCA plot and put them into the "names" array
       // The names are like "H2O_30m_A", "H2O_30m-B", "H2O_30m-C", "PNA79_30m_A", "PNA79_30m_B", "PNA79_30m_C", etc.
       const names = []
@@ -723,7 +765,7 @@ function HomeContent() {
           groupId: ""
         })
       })
-      // Then set the "names" array to the "nameOfSamples" state by using "setNameOfSamples" function
+      // Then set the "names" array to the "nameOfSamples" state by using "setNameOfSamples()" function
       setNameOfSamples(names);
       // This setColorGroups is used to reset the color groups
       setColorGroups([
@@ -763,7 +805,7 @@ function HomeContent() {
   /*####################
   # FUNCTIONS --- Generate PCA plot 3D
   ####################*/
-  // The flow of the "generatePCAPlot3D" function is same to the "generatePCAPlot" function above
+  // The flow of the "generatePCAPlot3D()" function is same to the "generatePCAPlot()" function above
   // For backend, read the "generatePCAPlot3D.py" file in the "backend" folder to see the flow of the code in the backend
   const generatePCAPlot3D = async () => {
     if (!isFileUploadedOrIsHavingData()) {
@@ -819,7 +861,7 @@ function HomeContent() {
   /*####################
   # FUNCTIONS --- Generate Loadings table
   ####################*/
-  // The flow of the "generateLoadingsTable" function is same to the "generateScreePlot" function
+  // The flow of the "generateLoadingsTable()" function is same to the "generateScreePlot()" function
   // For backend, read the "generateLoadingsTable.py" file in the "backend" folder to see the flow of the code in the backend
   const generateLoadingsTable = async () => {
     if (!isFileUploadedOrIsHavingData()) {
@@ -844,7 +886,7 @@ function HomeContent() {
   /*####################
   # FUNCTIONS --- Generate Top 5 contributors table
   ####################*/
-  // The flow of the "generateTopFiveContributors" function is similar to the "generateScreePlot" function
+  // The flow of the "generateTopFiveContributors()" function is similar to the "generateScreePlot()" function
   // Read the "generateTopFiveContributors.py" file in the "backend" folder to see the flow of the code in the backend
   const generateTopFiveContributors = async () => {
     if (!isFileUploadedOrIsHavingData()) {
@@ -855,7 +897,7 @@ function HomeContent() {
       try {
         // Read the "generateTopFiveContributors.py" file in the "backend" folder to see the flow of the code in the backend
         const response = await axios.post(`${BACKEND_URL}/api/generate_top_five_contributors`, csvData);
-        // After getting the top 5 contributors table data, we set the top 5 contributors table data to the "topFiveContributorsTableData" state by using "setTopFiveContributorsTableData" function
+        // After getting the top 5 contributors table data, we set the top 5 contributors table data to the "topFiveContributorsTableData" state by using "setTopFiveContributorsTableData()" function
         setTopFiveContributorsTableData(response.data.top_five_contributors);
         // The "loadingsPlotCoordinates" and "layout" are from the backend file "generateTopFiveContributors.py", so read the "generateTopFiveContributors.py" file in the "backend" folder to see in details what is return from the backend
         // In brief, there are 3 fields in the response.data from the backend:
@@ -869,7 +911,7 @@ function HomeContent() {
           layout: response.data.layout
         });
 
-        // From here to the end of the "generateTopFiveContributors" function, the purpose of the code is related to COLORS in the top 5 contributors plot
+        // From here to the end of the "generateTopFiveContributors()" function, the purpose of the code is related to COLORS in the top 5 contributors plot
         // Set the color for the top 5 contributors plot  
         const ColorDataFromBackend = response.data.loadingsPlotCoordinates.map(item => ({
           pcName: item.x[0],
@@ -968,9 +1010,9 @@ function HomeContent() {
   const renderButtonGenerateScreePlot = () => {
     return (
       <Button
-        // When user click on the button "Scree plot", then we will call the "generateScreePlot" function
+        // When user click on the button "Scree plot", then we will call the "generateScreePlot()" function
         // ==> so check the function "generateScreePlot" above for more details
-        // When check the "generateScreePlot" function, check the "generateScreePlot.py" file in the "backend" folder to see the flow of the code in the backend as well
+        // When check the "generateScreePlot()" function, check the "generateScreePlot.py" file in the "backend" folder to see the flow of the code in the backend as well
         onClick={generateScreePlot}
         // This variant is used to show the different style of the button
         // So if the scree plot is visible, then we will show the button with the default style, which means the button is filled with dark blue color
@@ -1067,9 +1109,9 @@ function HomeContent() {
     },
   ];
 
-  // The "renderButtonPCAPlot" function here is used to render the button "PCA Plot" or "PCA 2D" or "PCA 3D" based on the current visibility of the PCA 2D and PCA 3D
-  // The "renderButtonPCAPlot" function is NOT related to the "pcaOptions" above
-  // The "renderButtonPCAPlot" function is also used in at very bottom of this file, in the "return" section, in the "DropdownAntd" component
+  // The "renderButtonPCAPlot()" function here is used to render the button "PCA Plot" or "PCA 2D" or "PCA 3D" based on the current visibility of the PCA 2D and PCA 3D
+  // The "renderButtonPCAPlot()" function is NOT related to the "pcaOptions" above
+  // The "renderButtonPCAPlot()" function is also used in at very bottom of this file, in the "return" section, in the "DropdownAntd" component
   // ==> so check the "DropdownAntd" component at very bottom of this file to see the "pcaOptions" and "renderButtonPCAPlot" in the "DropdownAntd" component
   const renderButtonPCAPlot = () => {
     // If the PCA 2D plot is visible, then show the button with the name "PCA 2D"
@@ -1106,13 +1148,13 @@ function HomeContent() {
   /*####################
   # BUTTONS --- Render button to generate Loadings table
   ####################*/
-  // The flow of the "renderButtonGenerateLoadingsTable" function is same to the "renderButtonGenerateScreePlot" function
+  // The flow of the "renderButtonGenerateLoadingsTable()" function is same to the "renderButtonGenerateScreePlot()" function
   const renderButtonGenerateLoadingsTable = () => {
     return (
       <Button
-        // When user click on the button "Loadings table", then we will call the "generateLoadingsTable" function
+        // When user click on the button "Loadings table", then we will call the "generateLoadingsTable()" function
         // ==> so check the function "generateLoadingsTable" above for more details
-        // When check the "generateLoadingsTable" function, check the "generateLoadingsTable.py" file in the "backend" folder to see the flow of the code in the backend as well
+        // When check the "generateLoadingsTable()" function, check the "generateLoadingsTable.py" file in the "backend" folder to see the flow of the code in the backend as well
         onClick={generateLoadingsTable}
         variant={isLoadingsTableVisible ? "default" : "outline"}
         ref={refTourStep4}
@@ -1129,13 +1171,13 @@ function HomeContent() {
   /*####################
   # BUTTONS --- Render button to generate Top 5 contributors table
   ####################*/
-  // The flow of the "renderButtonGenerateTopFiveContributorsTable" function is same to the "renderButtonGenerateScreePlot" function
+  // The flow of the "renderButtonGenerateTopFiveContributorsTable()" function is same to the "renderButtonGenerateScreePlot()" function
   const renderButtonGenerateTopFiveContributorsTable = () => {
     return (
       <Button
-        // When user click on the button "Top 5 contributors", then we will call the "generateTopFiveContributors" function
+        // When user click on the button "Top 5 contributors", then we will call the "generateTopFiveContributors()" function
         // ==> so check the function "generateTopFiveContributors" above for more details
-        // When check the "generateTopFiveContributors" function, check the "generateTopFiveContributors.py" file in the "backend" folder to see the flow of the code in the backend as well
+        // When check the "generateTopFiveContributors()" function, check the "generateTopFiveContributors.py" file in the "backend" folder to see the flow of the code in the backend as well
         onClick={generateTopFiveContributors}
         variant={isTopFiveContributorsTableVisible ? "default" : "outline"}
         ref={refTourStep5}
@@ -1175,7 +1217,7 @@ function HomeContent() {
     return (
       <Button
         variant="outline"
-        // When user click on the button "Begin a tour", then we will call the "setIsTourOpen" function to set the "isTourOpen" state to "true" to open the tour
+        // When user click on the button "Begin a tour", then we will call the "setIsTourOpen()" function to set the "isTourOpen" state to "true" to open the tour
         onClick={() => setIsTourOpen(true)}
       >
         <Rocket className='mr-2' size={sizeOfIcon} /> Begin a tour
@@ -1314,7 +1356,7 @@ function HomeContent() {
   # PLOTS --- Render Top 5 contributors Plot
   ####################*/
   const renderTopFiveContributorsPlot = () => {
-    // The flow of the "renderTopFiveContributorsPlot" function is same to the "renderScreePlot" function
+    // The flow of the "renderTopFiveContributorsPlot()" function is same to the "renderScreePlot()" function
     if (!isTopFiveContributorsTableVisible) {
       return null;
     }
@@ -1810,7 +1852,7 @@ function HomeContent() {
     },
   ]);
 
-  // The purpose for this "selectedGroups" is to link with the "resetAll" function
+  // The purpose for this "selectedGroups" is to link with the "resetAll()" function
   // ==> so when user clicks on the "Reset all" button
   // ==> then the selected group for each sample will be reset to ""
   // ==> and the color of the samples on the plot will be reset to the default color
@@ -1858,11 +1900,11 @@ function HomeContent() {
     let [groupId, colorCode] = value.split(", ");
 
     // The flow of the code here is similar to the "handleChangeColorInPlot2D" and "handleChangeColorInPlot3D", so the flow will be explained in details at here
-    // ==> Then at the "handleChangeColorInPlot2D" and "handleChangeColorInPlot3D" functions, we can see the comments at here again
+    // ==> Then at the "handleChangeColorInPlot2D" and "handleChangeColorInPlot3D()" functions, we can see the comments at here again
 
     // Firstly, we copy the "colorGroups" array to a new array.
     // Copying old array to new array is a step in update the state, as we should not update the state directly
-    // ==> we should update the state by using the "setColorGroups" function
+    // ==> we should update the state by using the "setColorGroups()" function
     // If we update the state directly, then the screen WILL NOT be re-rendered
     // ==> so the color of the samples on the plot will not be updated.
     const newColorGroups = [...colorGroups];
@@ -1897,7 +1939,7 @@ function HomeContent() {
   ####################*/
   // The function "handleChangeColorInPlot2D" is used to change the color of the sample in the 2D PCA plot
   const handleChangeColorInPlot2D = (sampleName, colorCode) => {
-    // The flow of the code here is similar to the "handleChangeGroupForEachSample" function, so check the comments in the "handleChangeGroupForEachSample" function for more details
+    // The flow of the code here is similar to the "handleChangeGroupForEachSample()" function, so check the comments in the "handleChangeGroupForEachSample()" function for more details
     const newPcaPlotData = { ...pcaPlotData }
     const index = newPcaPlotData.data.findIndex(sample => sample.name === sampleName);
     if (index !== -1) {
@@ -1915,7 +1957,7 @@ function HomeContent() {
   ####################*/
   // The function "handleChangeColorInPlot3D" is used to change the color of the sample in the 3D PCA plot
   const handleChangeColorInPlot3D = (sampleName, colorCode) => {
-    // The flow of the code here is similar to the "handleChangeGroupForEachSample" function, so check the comments in the "handleChangeGroupForEachSample" function for more details
+    // The flow of the code here is similar to the "handleChangeGroupForEachSample()" function, so check the comments in the "handleChangeGroupForEachSample()" function for more details
     const newPcaPlotData = { ...pcaPlot3DData }
     const index = newPcaPlotData.data.findIndex(sample => sample.name === sampleName);
     if (index !== -1) {
@@ -2098,7 +2140,7 @@ function HomeContent() {
   /*####################
   # COLORS --- Functions --- Change color for Scree plot
   ####################*/
-  // The function "changeColorForScreePlot" flow is similar to the "handleChangeGroupForEachSample" function above, so check the comments in the "handleChangeGroupForEachSample" function for more details
+  // The function "changeColorForScreePlot" flow is similar to the "handleChangeGroupForEachSample()" function above, so check the comments in the "handleChangeGroupForEachSample()" function for more details
   const changeColorForScreePlot = (newColor) => {
     const newScreePlotData = { ...screePlotData }
     newScreePlotData.data[0].marker.color = newColor;
@@ -2233,7 +2275,7 @@ function HomeContent() {
                     type="color"
                     className='cursor-pointer w-32 h-10 rounded-md border border-gray-300'
                     value={eachColorGroup.colorCode}
-                    // So when the user changes the color, we will call the "handleColorOfGroupChange" function to update the color of the group
+                    // So when the user changes the color, we will call the "handleColorOfGroupChange()" function to update the color of the group
                     onChange={(e) => handleColorOfGroupChange(indexOfEachColorGroup, e.target.value)}
                   />
                 </div>
@@ -2482,6 +2524,6 @@ function HomeContent() {
   ######      End of FINAL UI       ######
   ######################################*/
 }
-/*###########################################
-#####     4️⃣ HOMECONTENT COMPONENT     #####  
-###########################################*/
+/*##################################################
+#####     4️⃣ End of HOMECONTENT COMPONENT     #####  
+##################################################*/
