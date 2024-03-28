@@ -10,6 +10,23 @@
 
 ## Install for production
 
+![Static Badge](https://img.shields.io/badge/Frontend-blue)
+
+Run the following commands:
+
+```bash
+# -----------------
+# Go to "frontend" folder
+# -----------------
+cd frontend/
+
+# -----------------
+# Generate a folder that contains the HTML/CSS/JS files
+# The generated folder is "out" folder
+# -----------------
 npm run build
 
-https://nextjs.org/docs/app/building-your-application/deploying/static-exports#deploying
+```
+
+If you use **Nginx**, refer to this link to see the configuration: 
+https://nextjs.org/docs/pages/building-your-application/deploying/static-exports#deploying 
