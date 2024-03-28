@@ -6,22 +6,22 @@
 #################################*/
 
 
-/*####################
-# 1️⃣ USING "use client"
-####################*/
+/*########################################
+#####     1️⃣ USING "use client"     #####
+########################################*/
 // In NextJS (a React framework), as a default, a file will run on the "server side", not on the "client side".
 // This "use client" is IMPORTANT and need to put on the top of the file in NextJS , as it is used to run the file in the "client side", not in the "server side". 
 // Because in this "page.js" file, we use the "useState", "useEffect", etc. which are the React hooks, and they are running in the "client side", not in the "server side", so we need to put "use client" here. 
 // A client component is a React component that can be re-rendered when users interact, click the buttons, change the color, etc. with the app.
 "use client"
-/*####################
-# 1️⃣ End of USING "use client"
-####################*/
+/*###############################################
+#####     1️⃣ End of USING "use client"     #####
+###############################################*/
 
 
-/*####################
-# 2️⃣ IMPORT
-####################*/
+/*############################
+#####     2️⃣ IMPORT     #####
+############################*/
 // The Loading component
 import Loading from "./loading";
 
@@ -82,14 +82,14 @@ import { CSVLink } from 'react-csv';
 
 // This useSearchParams is used to get the query parameters from the URL
 import { useSearchParams } from "next/navigation"
-/*####################
-# 2️⃣ End of IMPORT
-####################*/
+/*###################################
+#####     2️⃣ End of IMPORT     #####
+###################################*/
 
 
-/*####################
-# 3️⃣ COVER THE PAGE WITH LOADING COMPONENT
-####################*/
+/*###########################################################
+#####     3️⃣ COVER THE PAGE WITH LOADING COMPONENT     #####
+###########################################################*/
 export default function Home() {
   return (
     <Suspense fallback={<Loading />}>
@@ -98,15 +98,17 @@ export default function Home() {
     </Suspense>
   );
 }
-/*####################
-# 3️⃣ End of COVER THE PAGE WITH LOADING COMPONENT
-####################*/
+/*##################################################################
+#####     3️⃣ End of COVER THE PAGE WITH LOADING COMPONENT     #####
+##################################################################*/
 
 
-/*####################
-# 4️⃣ HOMECONTENT COMPONENT
-# This is the main component that contains all the variables, functions, buttons, plots, tables, etc.
-####################*/
+/*#########################################################
+#####     4️⃣ HOMECONTENT COMPONENT                   #####  
+#####     This is the main component that contains    #####
+#####     all the variables, functions, buttons,      #####
+#####     plots, tables, etc.                         #####
+#########################################################*/
 function HomeContent() {
   // Define the backend url and port
   const BACKEND_PORT = 7000
@@ -2480,6 +2482,6 @@ function HomeContent() {
   ######      End of FINAL UI       ######
   ######################################*/
 }
-/*####################
-# 4️⃣ End of HOMECONTENT COMPONENT
-####################*/
+/*###########################################
+#####     4️⃣ HOMECONTENT COMPONENT     #####  
+###########################################*/
