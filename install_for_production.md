@@ -9,3 +9,7 @@
 - [How to modify this app to create another Micromix enabled app](how_to_modify_this_app_to_create_another_micromix_enabled_app.md)
 
 ## Install for production
+
+npm run build
+
+https://nextjs.org/docs/app/building-your-application/deploying/static-exports#deploying

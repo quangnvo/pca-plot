@@ -5,33 +5,34 @@
 #
 #################################*/
 
+
 /*####################
-# USING "use client"
+# 1️⃣ USING "use client"
 ####################*/
 // In NextJS (a React framework), as a default, a file will run on the "server side", not on the "client side".
 // This "use client" is IMPORTANT and need to put on the top of the file in NextJS , as it is used to run the file in the "client side", not in the "server side". 
-// Because in this file, we use the "useState", "useEffect", etc. which are the React hooks, and they are used in the client side, not in the server side, so we need to put "use client" here.
-// A server component cannot use React hooks like useState, useEffect, etc. This is because a server component is rendered once on the server and doesn't re-render. 
-// On the other hand, a client component is a normal React component with access to hooks and re - renders as the user interacts, clicks the buttons, changes the color, etc.with the app.
+// Because in this "page.js" file, we use the "useState", "useEffect", etc. which are the React hooks, and they are running in the "client side", not in the "server side", so we need to put "use client" here. 
+// A client component is a React component that can be re-rendered when users interact, click the buttons, change the color, etc. with the app.
 "use client"
 /*####################
-# End of USING "use client"
+# 1️⃣ End of USING "use client"
 ####################*/
+
 
 /*####################
-# IMPORT
+# 2️⃣ IMPORT
 ####################*/
-// The "dynamic" is used to import the "Plot" component from the "react-plotly.js" library below
-import dynamic from "next/dynamic";
-
 // The Loading component
 import Loading from "./loading";
 
 // The useState, useRef are used to create the state and reference to the DOM element
 import { useState, useRef, useEffect, Suspense } from 'react';
 
+// The "dynamic" is used to import the "Plot" component from the "react-plotly.js" library below
+import dynamic from "next/dynamic";
+
 // The "Plot" from the react-plotly.js library is used to render the plot
-// Instead of importing like this: " import Plot from 'react-plotly.js', we use the "dynamic" function from NextJS to import the Plot component
+// Instead of importing like this: " import Plot from 'react-plotly.js', we use the "dynamic" function from NextJS to import the "Plot" component
 // ==> because the "Plot" component is used in the client side, not in the server side, so we need to use the "dynamic" function to import it
 // So " const Plot = dynamic(() => import('react-plotly.js'), { ssr: false }) " is just another way to import the "Plot" component
 // If we use "import Plot from 'react-plotly.js'", it will cause the error when running "npm run build"
@@ -49,10 +50,10 @@ import { Input } from "@/components/ui/input"
 import {
   Table,
   Select,
-  // At here, we change the name from "Input" to "InputAntd", "Dropdown" to "DropdownAntd" because to avoid the conflict with the same name "Input" and "Dropdown" imported from the @/components/ui/ above 
+  Tour,
+  // At here, we change the name from "Input" to "InputAntd", "Dropdown" to "DropdownAntd" because to avoid the conflict with the same name "Input" and "Dropdown" imported from the @/components/ui/ 
   Input as InputAntd,
   Dropdown as DropdownAntd,
-  Tour,
 } from 'antd';
 
 
@@ -79,24 +80,34 @@ import Swal from 'sweetalert2'
 // The react-csv library is used to download the table as a csv file
 import { CSVLink } from 'react-csv';
 
-// This useSearchParams is used to get the query parameters from the URL, like the "123123" in the URL "http://localhost:3000/?config=123123"
+// This useSearchParams is used to get the query parameters from the URL
 import { useSearchParams } from "next/navigation"
 /*####################
-# End of IMPORT
+# 2️⃣ End of IMPORT
 ####################*/
 
 
-
+/*####################
+# 3️⃣ COVER THE PAGE WITH LOADING COMPONENT
+####################*/
 export default function Home() {
   return (
     <Suspense fallback={<Loading />}>
-      <Content />
+      {/* <HomeContent /> is the component below, where we assign variables, write functions, render buttons, plots, etc. in there */}
+      <HomeContent />
     </Suspense>
   );
 }
+/*####################
+# 3️⃣ End of COVER THE PAGE WITH LOADING COMPONENT
+####################*/
 
 
-function Content() {
+/*####################
+# 4️⃣ HOMECONTENT COMPONENT
+# This is the main component that contains all the variables, functions, buttons, plots, tables, etc.
+####################*/
+function HomeContent() {
   // Define the backend url and port
   const BACKEND_PORT = 7000
   const BACKEND_URL = `http://localhost:${BACKEND_PORT}`
@@ -2472,4 +2483,9 @@ function Content() {
   /*####################
   # End of FINAL UI
   ####################*/
+
+
 }
+/*####################
+# 4️⃣ End of HOMECONTENT COMPONENT
+####################*/
