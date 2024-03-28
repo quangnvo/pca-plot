@@ -113,9 +113,9 @@ function HomeContent() {
   const BACKEND_URL = `http://localhost:${BACKEND_PORT}`
 
 
-  /*####################
-  # INITIAL VARIABLES
-  ####################*/
+  /*#####################################
+  ######     INITIAL VARIABLES     ######
+  #####################################*/
 
   // Below, we have "csvData", "setCsvData" ; "pcaPlotData", "setPcaPlotData" ;  etc.
 
@@ -127,7 +127,7 @@ function HomeContent() {
 
   // For example, at the beginning, screePlotData = null, then nothing on the screen yet,
   // ==> then when user clicks on the "Scree plot" button, it will call API to calculate the scree plot data
-  // ==> then we need to store the data get from API to the screePlotData and render it to the screen.
+  // ==> then we need to store the data received from API to the "screePlotData" and render it to the screen.
   // If we just simply assign the screePlotData = "some_data_received_after_calling_from_API", it will not re-render the UI, so the scree plot will not be shown on the screen.
   // ==> so we need to use setScreePlotData("some_data_received_after_calling_from_API") to update the screePlotData, then the UI will be re-rendered, and the scree plot will be shown on the screen.
   // So we need to use "useState()"
@@ -316,16 +316,15 @@ function HomeContent() {
       </div>,
     },
   ];
-  /*####################
-  # End of INITIAL VARIABLES
-  ####################*/
+  /*############################################
+  ######     End of INITIAL VARIABLES     ######
+  #############################################*/
 
 
 
-  /*####################
-  # FUNCTIONS
-  # The following code is only about FUNCTIONS, such as clearUploadedFile, generateScreePlot, generatePCAPlot, etc.
-  ####################*/
+  /*#############################
+  ######     FUNCTIONS     ######
+  #############################*/
 
   /*####################
   # FUNCTIONS --- Check if a string is a number
@@ -894,15 +893,14 @@ function HomeContent() {
   # End of FUNCTIONS --- Generate Top 5 contributors table
   ####################*/
 
-  /*####################
-  # End of FUNCTIONS 
-  ####################*/
+  /*####################################
+  ######     End of FUNCTIONS     ######
+  ####################################*/
 
 
-
-  /*####################
-  # The following code is only about function used to render BUTTONS, such as renderButtonUploadFile, renderButtonClearUploadedFile, etc.
-  ####################*/
+  /*###########################
+  ######     BUTTONS     ######
+  ###########################*/
 
   /*####################
   # BUTTONS --- Render button to upload file
@@ -1186,16 +1184,15 @@ function HomeContent() {
   # End of BUTTONS --- renderButtonBeginATour
   ####################*/
 
-  /*####################
-  # End of BUTTONS
-  ####################*/
+  /*##################################
+  ######     End of BUTTONS     ######
+  ##################################*/
 
 
 
-  /*####################
-  # PLOTS 
-  # The following code is only about function used to render PLOTS, such as renderScreePlot, renderPCAPlot, etc.
-  ####################*/
+  /*#############################
+  ######       PLOTS       ######
+  #############################*/
 
   /*####################
   # PLOTS --- Render Scree plot
@@ -1353,16 +1350,15 @@ function HomeContent() {
   # End of PLOTS --- Render Top 5 contributors Plot
   ####################*/
 
-  /*####################
-  # End of PLOTS
-  ####################*/
+  /*####################################
+  ######       End of PLOTS       ######
+  ####################################*/
 
 
 
-  /*####################
-  # TABLE
-  # The following code is only about function used to render TABLE, such as renderDataTable, renderLoadingsTable, etc.
-  ####################*/
+  /*#############################
+  ######       TABLE       ######
+  #############################*/
 
   /*####################
   # TABLE --- Searching Dropdown Feature
@@ -1735,16 +1731,15 @@ function HomeContent() {
   # End of TABLE --- Top Five Contributors Table
   ####################*/
 
-  /*####################
-  # End of TABLE
-  ####################*/
+  /*####################################
+  ######       End of TABLE       ######
+  ####################################*/
 
 
 
-  /*####################
-  # COLORS
-  # The following code is only about COLORS, such as changing color of the points in the PCA plot, changing color of the groups, etc.
-  ####################*/
+  /*##############################
+  ######       COLORS       ######
+  ##############################*/
 
   /*####################
   # COLORS --- Setup variables
@@ -2377,15 +2372,16 @@ function HomeContent() {
   # End of COLORS --- Render
   ####################*/
 
-  /*####################
-  # End of COLORS
-  ####################*/
+  /*#####################################
+  ######       End of COLORS       ######
+  #####################################*/
 
 
 
-  /*####################
-  # The following code is only about the FILE INFORMATION, such as the file name, the number of samples, etc.
-  ####################*/
+  /*########################################
+  ######       FILE INFORMATION       ######
+  ########################################*/
+  // The following code is only about the FILE INFORMATION, such as the file name, the number of samples, etc.
   const renderFileInformation = () => {
     if (csvData.length === 0) {
       return null;
@@ -2409,16 +2405,16 @@ function HomeContent() {
       </div>
     )
   }
-  /*####################
-  # End of the FILE INFORMATION
-  ####################*/
+  /*###############################################
+  ######       End of FILE INFORMATION       ######
+  ###############################################*/
 
 
 
-  /*####################
-  # FINAL UI
-  # The following code is to render the FINAL UI of the page
-  ####################*/
+  /*###############################
+  ######      FINAL UI       ######
+  ###############################*/
+  // The following code is to render the FINAL UI of the page
   return (
     <div className='container mt-4 flex flex-col'>
 
@@ -2480,11 +2476,9 @@ function HomeContent() {
       {/* End of Tour */}
     </div>
   );
-  /*####################
-  # End of FINAL UI
-  ####################*/
-
-
+  /*######################################
+  ######      End of FINAL UI       ######
+  ######################################*/
 }
 /*####################
 # 4️⃣ End of HOMECONTENT COMPONENT
