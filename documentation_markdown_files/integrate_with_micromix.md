@@ -16,6 +16,18 @@ The steps for integrating PCA into Micromix:
 
 1. In Micromix , at `Website` folder, go to `backend` folder, then go to `plugins` folder, then create a file named `PCA.py`
 
+At here, for example, if you run your PCA at `http://localhost:3333/`, then the `upload_url` will be `http://localhost:3333/`
+
+```python
+##############################
+# This is the "PCA.py" file
+##############################
+
+def main(parameters):
+    upload_url = "the_url_of_PCA"
+    return upload_url+'?config='+str(parameters["db_entry_id"])
+```
+
 2. In the `Website` folder, at the `plugins.json` file, create the plugin for PCA. For example:
 
 ```jsonc
@@ -33,6 +45,9 @@ The steps for integrating PCA into Micromix:
             "image_url": "https://raw.githubusercontent.com/BarquistLab/Micromix/main/Website/backend/plugins/heatmap_hiri_logo.svg",
             "name": "Heatmap"
         },
+        // #############################
+        // # Adding the PCA plugin
+        // #############################
         {
             // The "_id" here is just an example
             "_id": "khds8fohoduskfi7syf12",
@@ -42,5 +57,8 @@ The steps for integrating PCA into Micromix:
             // So in the previous step, if you name the file as "aaaaa.py", then at here, the "name" needs to be "aaaaa"
             "name": "PCA"
         }
+        // #############################
+        // # End of adding the PCA plugin
+        // #############################
     ]
 ```
