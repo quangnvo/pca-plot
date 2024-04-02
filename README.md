@@ -5,11 +5,12 @@ Welcome to the PCA Plot Generator 👋!
 This application is designed to simplify the process of generating Principal Component Analysis (PCA) plots, scree plot, and loadings table.
 
 The application can be used as:
-- **a standalone tool** 
 
-    OR 
+- **a standalone tool**
 
-- **a plugin in Micromix** (http://micromix.helmholtz-hiri.de/). 
+  OR
+
+- **a plugin in Micromix** (http://micromix.helmholtz-hiri.de/).
 
 Detailed instructions for installation and independent operation can be found in the section below.
 
@@ -17,9 +18,9 @@ When integrated into Micromix, the application operates within an `<iframe>` tag
 
 ## Contents
 
-- [Features](documentation/features.md)
-- [Infrastructure](documentation/infrastructure.md)
-- [Install for dev](documentation/install_for_dev.md)
-- [Install for production](documentation/install_for_production.md)
-- [Integrate with Micromix](documentation/integrate_with_micromix.md)
-- [How to modify this app to create another Micromix enabled app](documentation/how_to_modify_this_app_to_create_another_micromix_enabled_app.md)
+- [Features](documentation_markdown_files/features.md)
+- [Infrastructure](documentation_markdown_files/infrastructure.md)
+- [Install for dev](documentation_markdown_files/install_for_dev.md)
+- [Install for production](documentation_markdown_files/install_for_production.md)
+- [Integrate with Micromix](documentation_markdown_files/integrate_with_micromix.md)
+- [How to modify this app to create another Micromix enabled app](documentation_markdown_files/how_to_modify_this_app_to_create_another_micromix_enabled_app.md)
