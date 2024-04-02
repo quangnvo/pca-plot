@@ -17,9 +17,9 @@ When integrated into Micromix, the application operates within an `<iframe>` tag
 
 ## Contents
 
-- [Features](features.md)
-- [Infrastructure](infrastructure.md)
-- [Install for dev](install_for_dev.md)
-- [Install for production](install_for_production.md)
-- [Integrate with Micromix](integrate_with_micromix.md)
-- [How to modify this app to create another Micromix enabled app](how_to_modify_this_app_to_create_another_micromix_enabled_app.md)
+- [Features](documentation/features.md)
+- [Infrastructure](documentation/infrastructure.md)
+- [Install for dev](documentation/install_for_dev.md)
+- [Install for production](documentation/install_for_production.md)
+- [Integrate with Micromix](documentation/integrate_with_micromix.md)
+- [How to modify this app to create another Micromix enabled app](documentation/how_to_modify_this_app_to_create_another_micromix_enabled_app.md)
