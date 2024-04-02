@@ -14,7 +14,9 @@ The github repo of Micromix can be found here: https://github.com/BarquistLab/Mi
 
 The steps for integrating PCA into Micromix:
 
-1. In Micromix , at `Website` folder, go to `backend` folder, then go to `plugins` folder, then create a file named `PCA.py`
+![Static Badge](https://img.shields.io/badge/Step_1-Create_PCA.py_file_in_the_backend_"plugins"_folder_of_Micromix-blue)
+
+In Micromix , at `Website` folder, go to `backend` folder, then go to `plugins` folder, then create a file named `PCA.py`
 
 At here, for example, if you run your PCA at `http://localhost:3333/`, then the `upload_url` will be `http://localhost:3333/`
 
@@ -28,7 +30,9 @@ def main(parameters):
     return upload_url+'?config='+str(parameters["db_entry_id"])
 ```
 
-2. In the `Website` folder, at the `plugins.json` file, create the plugin for PCA. For example:
+![Static Badge](https://img.shields.io/badge/Step_2-Create_plugin_in_the_"plugin.json"_file-blue)
+
+In the `Website` folder, at the `plugins.json` file, create the plugin for PCA. For example:
 
 ```jsonc
 {
