@@ -1,6 +1,6 @@
 # PCA Generator
 
-- [Home](README.md)
+- [Home](/README.md)
 - [Features](features.md)
 - [Infrastructure](infrastructure.md)
 - [Install for dev](install_for_dev.md)
