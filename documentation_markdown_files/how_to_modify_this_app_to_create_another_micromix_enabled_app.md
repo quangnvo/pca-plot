@@ -10,30 +10,12 @@
 
 ## How to modify this app to create another Micromix enabled app
 
-Basically, the plot will change when we change the `data` and `layout` in the `<Plot />` component.
+The PCA is built based on the [React Plotly.js](https://plotly.com/javascript/react/)
 
-So you can modify the `data` and the `layout` to make different plots such as bar chart, 
+Basically, the plot will change when we change the `data` and `layout` in the `<Plot />` component. So you can modify the `data` and the `layout` to make different plots such as bar chart, line chart, scatter plot, etc.
 
-The `<Plot />` component has the format as the following:
+More information about `data` and `layout` can be found here:
+- General information: https://github.com/plotly/react-plotly.js?tab=readme-ov-file
+- `data`: https://plotly.com/javascript/reference/
+- `layout`: https://plotly.com/javascript/reference/#layout
 
-```javascript
-<Plot
-    data={[
-          {
-            x: [1, 2, 3],
-            y: [2, 6, 3],
-            type: 'scatter',
-            mode: 'lines+markers',
-            marker: {color: 'red'},
-          },
-          {type: 'bar', x: [1, 2, 3], y: [2, 5, 3]},
-        ]},
-    layout={ {width: 320, height: 240, title: 'A Fancy Plot'} }
-
-```
-
-Things that should change
-
-Things should stay the same
-
-Refer this link to React Plotly: https://plotly.com/javascript/react/
