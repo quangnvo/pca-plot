@@ -10,7 +10,7 @@
 
 ## Features
 
-#### PCA Plot Generation in 2D and 3D 
+<mark>PCA Plot Generation in 2D and 3D</mark> 
 
 Visualize the 2D or 3D of PCA plot.
 
@@ -19,7 +19,7 @@ Visualize the 2D or 3D of PCA plot.
 
 <p>&nbsp;</p>
 
-#### Scree Plot Generation
+<mark>Scree Plot Generation</mark>
 
 Determine the number of principal components to retain in your analysis. This plot displays the proportion of total variance in the data for each principal component.
 
@@ -27,7 +27,7 @@ Determine the number of principal components to retain in your analysis. This pl
 
 <p>&nbsp;</p>
 
-#### Loadings Table Generation
+<mark>Loadings Table Generation</mark>
 
 To see which variables contribute how much to each principal component with loadings table.
 
@@ -35,7 +35,7 @@ To see which variables contribute how much to each principal component with load
 
 <p>&nbsp;</p>
 
-#### Top 5 Contributors
+<mark>Top 5 Contributors</mark>
 
 Identify the top 5 contributors to each principal component.
 
