@@ -10,7 +10,37 @@
 
 ## Features
 
-- **PCA Plot Generation in 2D and 3D**: Visualize the 2D or 3D of PCA plot.
-- **Scree Plot Generation**: Determine the number of principal components to retain in your analysis. This plot displays the proportion of total variance in the data for each principal component.
-- **Loadings Table Generation**: To see which variables contribute how much to each principal component with loadings table.
-- **Top 5 Contributors**: Identify the top 5 contributors to each principal component.
+**1. PCA Plot Generation in 2D and 3D** 
+
+Visualize the 2D or 3D of PCA plot.
+
+![pca_2d](images_for_markdown_files/md__pca_plot_2d.png)
+![pca_3d](images_for_markdown_files/md__pca_plot_3d.png)  
+
+<p>&nbsp;</p>
+
+**2. Scree Plot Generation**
+
+Determine the number of principal components to retain in your analysis. This plot displays the proportion of total variance in the data for each principal component.
+
+![scree_plot](images_for_markdown_files/md__scree_plot.png)
+
+<p>&nbsp;</p>
+
+**3. Loadings Table Generation**
+
+To see which variables contribute how much to each principal component with loadings table.
+
+![loadings_table](images_for_markdown_files/md__loadings_table.png)
+
+<p>&nbsp;</p>
+
+**4. Top 5 Contributors**
+
+Identify the top 5 contributors to each principal component.
+
+![top_5_contributors_table](images_for_markdown_files/md__top_5_contributors_table.png)
+
+![top_5_contributors_plot](images_for_markdown_files/md__top_5_contributors_plot.png)
+
+![top_5_contributors_plot_zoom](images_for_markdown_files/md__top_5_contributors_plot_zoom_view.png)
