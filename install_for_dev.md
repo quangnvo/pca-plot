@@ -55,7 +55,7 @@ Then run the following commands:
 sudo apt-get install python3.8-venv
 
 # -----------------
-# Move to the "backend" folder
+# Go to the "backend" folder
 # -----------------
 cd pca-plot/backend/
 
@@ -81,11 +81,11 @@ pip install -r requirements.txt
 python3 app.py
 ```
 
-After finishing, open another terminal window and do **step 3: Install and run frontend** on the new terminal window.
+After finishing, open another terminal window and do **step 3: Install and run frontend** on **a new terminal window**, without closing the terminal window of backend.
 
 ![Static Badge](https://img.shields.io/badge/Step_3-Install_and_run_frontend-blue)
 
-The frontend requires **node** with version at least 18.17.1.
+The frontend requires **[nodejs](https://nodejs.org/en)** with version at least 18.17.1.
 
 In case you don't have nodejs yet, run the following commands to install nodejs
 
@@ -110,14 +110,15 @@ Then, following the below commands:
 cd frontend/
 
 # -----------------
-# Install the packegaes in the "package.json file" in the folder "frontend".
+# Running "npm i" will install all packages in the "package.json" file in the folder "frontend".
 # After installing, it will generate a folder called "node_modules" inside folder "frontend"
 # -----------------
 npm i
 
 # -----------------
-# Run the application.
+# Running "npm run dev" will run the application.
 # The compiling process will start after you open the application on browser.
+# Notice: Make sure to NOT CLOSE the "backend" window in Step 2, otherwise the app will not function.
 # -----------------
 npm run dev
 ```

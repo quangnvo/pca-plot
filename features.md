@@ -10,16 +10,16 @@
 
 ## Features
 
-### PCA Plot Generation in 2D and 3D
+![Static Badge](https://img.shields.io/badge/Feature-PCA_Plot_Generation_in_2D_and_3D-blue)
 
 Visualize the 2D or 3D of PCA plot.
 
 ![pca_2d](images_for_markdown_files/md__pca_plot_2d.png)
-![pca_3d](images_for_markdown_files/md__pca_plot_3d.png)  
+![pca_3d](images_for_markdown_files/md__pca_plot_3d.png)
 
 <p>&nbsp;</p>
 
-### Scree Plot Generation
+![Static Badge](https://img.shields.io/badge/Feature-Scree_Plot_Generation-blue)
 
 Determine the number of principal components to retain in your analysis. This plot displays the proportion of total variance in the data for each principal component.
 
@@ -27,7 +27,7 @@ Determine the number of principal components to retain in your analysis. This pl
 
 <p>&nbsp;</p>
 
-### Loadings Table Generation
+![Static Badge](https://img.shields.io/badge/Feature-Loadings_Table_Generation-blue)
 
 To see which variables contribute how much to each principal component with loadings table.
 
@@ -35,7 +35,7 @@ To see which variables contribute how much to each principal component with load
 
 <p>&nbsp;</p>
 
-### Top 5 Contributors
+![Static Badge](https://img.shields.io/badge/Feature-Top_5_Contributors-blue)
 
 Identify the top 5 contributors to each principal component.
 
