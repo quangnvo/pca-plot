@@ -1,7 +1,7 @@
 # PCA Generator
 
 - [Home](/README.md)
-- **[Features](features.md)**
+- 🌟 **[Features](features.md)**
 - [Infrastructure](infrastructure.md)
 - [Install for dev](install_for_dev.md)
 - [Install for production](install_for_production.md)
