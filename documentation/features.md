@@ -14,8 +14,8 @@
 
 Visualize the 2D or 3D of PCA plot.
 
-![pca_2d](images_for_markdown_files/md__pca_plot_2d.png)
-![pca_3d](images_for_markdown_files/md__pca_plot_3d.png)
+![pca_2d](/documentation_images/md__pca_plot_2d.png)
+![pca_3d](/documentation_images/md__pca_plot_3d.png)
 
 <p>&nbsp;</p>
 
@@ -23,7 +23,7 @@ Visualize the 2D or 3D of PCA plot.
 
 Determine the number of principal components to retain in your analysis. This plot displays the proportion of total variance in the data for each principal component.
 
-![scree_plot](images_for_markdown_files/md__scree_plot.png)
+![scree_plot](/documentation_images/md__scree_plot.png)
 
 <p>&nbsp;</p>
 
@@ -31,7 +31,7 @@ Determine the number of principal components to retain in your analysis. This pl
 
 To see which variables contribute how much to each principal component with loadings table.
 
-![loadings_table](images_for_markdown_files/md__loadings_table.png)
+![loadings_table](/documentation_images/md__loadings_table.png)
 
 <p>&nbsp;</p>
 
@@ -39,8 +39,8 @@ To see which variables contribute how much to each principal component with load
 
 Identify the top 5 contributors to each principal component.
 
-![top_5_contributors_table](images_for_markdown_files/md__top_5_contributors_table.png)
+![top_5_contributors_table](/documentation_images/md__top_5_contributors_table.png)
 
-![top_5_contributors_plot](images_for_markdown_files/md__top_5_contributors_plot.png)
+![top_5_contributors_plot](/documentation_images/md__top_5_contributors_plot.png)
 
-![top_5_contributors_plot_zoom](images_for_markdown_files/md__top_5_contributors_plot_zoom_view.png)
+![top_5_contributors_plot_zoom](/documentation_images/md__top_5_contributors_plot_zoom_view.png)
