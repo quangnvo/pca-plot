@@ -10,6 +10,7 @@
 # Check the file "generatePCA.py" for the detail explanation, as almost the code here is similar to the code in "generatePCA.py"
 #########################
 
+import numpy as np
 import pandas as pd
 from flask import Blueprint, jsonify, request
 from sklearn.decomposition import PCA
