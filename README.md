@@ -12,6 +12,10 @@ The application can be used as:
 
 - **a plugin in Micromix** (http://micromix.helmholtz-hiri.de/).
 
+Detailed instructions for installation and independent operation can be found in the section below.
+
+When integrated into Micromix, the application operates within an `<iframe>` tag. It retrieves a `config` number from the Micromix URL. The `config` number is then used to access the Micromix MongoDB. The data corresponding to the `config` number is fetched and loaded into the application for further use.
+
 ![Static Badge](https://img.shields.io/badge/Used_as-Standalone_tool-blue)
 
 
