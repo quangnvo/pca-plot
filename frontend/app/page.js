@@ -2462,22 +2462,31 @@ function HomeContent() {
   return (
     <div className='container mt-4 flex flex-col'>
 
-      {/* NAVBAR */}
+      {/* ################ */}
+      {/*      NAVBAR      */}
+      {/* ################ */}
       <div className="flex py-3 justify-between sticky top-1 z-10 bg-opacity-50 backdrop-filter backdrop-blur bg-white">
-        {/* NAVBAR --- Left side */}
+        {/* ########################### */}
+        {/*    NAVBAR --- LEFT SIDE     */}
+        {/* ########################### */}
         <div>
           {renderButtonBeginATour()}
         </div>
-        {/* End of NAVBAR --- Left side */}
+        {/* ################################ */}
+        {/*    End of NAVBAR --- LEFT SIDE   */}
+        {/* ################################ */}
 
-        {/* NAVBAR --- Right side */}
-        {/* For rendering all buttons */}
+        {/* ############################ */}
+        {/*    NAVBAR --- RIGHT SIDE     */}
+        {/* ############################ */}
+        {/* This navbar right side is used to rendering all buttons */}
+        {/* If we want to hide any button, just comment the line of that button, then that button will be hide */}
         <div className="flex gap-2 justify-end">
           {renderButtonUploadFile()}
           {renderButtonGenerateScreePlot()}
-          {/* Render Button PCA 2D and 3D */}
-          {/* At here we put the DropdownAntd, which is a Dropdown component from antd library, it will take the "pcaOptions" as the things will show up when user clicks */}
-          {/* The "pcaOptions" is the "PCA 2D" and "PCA 3D" */}
+          {/* Render Button PCA Plot */}
+          {/* At here we put the <DropdownAntd>, which is a Dropdown component from antd library, it will take the "pcaOptions" as the things will show up when user clicks */}
+          {/* The "pcaOptions" is the option "PCA 2D" and "PCA 3D" */}
           <DropdownAntd
             menu={{
               items: pcaOptions,
@@ -2487,16 +2496,25 @@ function HomeContent() {
           >
             {renderButtonPCAPlot()}
           </DropdownAntd>
-          {/* End of Render Button PCA 2D and 3D */}
+          {/* End of Render Button PCA Plot */}
           {renderButtonGenerateLoadingsTable()}
           {renderButtonGenerateTopFiveContributorsTable()}
           {renderButtonClearUploadedFile()}
         </div>
-        {/* End of NAVBAR --- Right side */}
+        {/* ################################## */}
+        {/*    End of NAVBAR --- RIGHT SIDE    */}
+        {/* ################################## */}
       </div>
-      {/* End of NAVBAR */}
+      {/* ################### */}
+      {/*    End of NAVBAR    */}
+      {/* ################### */}
 
-      {/* RENDER EVERYTHING HERE */}
+
+      {/* ###################### */}
+      {/*    RENDER EVERYTHING   */}
+      {/* ###################### */}
+      {/* Here we render the file information, tables and plots */}
+      {/* So if we want to hide anything, just comment that line */}
       <div className='mt-16'>
         {renderFileInformation()}
         {renderDataTable()}
@@ -2506,18 +2524,25 @@ function HomeContent() {
         {renderTopFiveContributorsTable()}
         {renderTopFiveContributorsPlot()}
       </div>
-      {/* End of RENDER EVERYTHING HERE */}
+      {/* ############################# */}
+      {/*    End of RENDER EVERYTHING   */}
+      {/* ############################# */}
 
-      {/* Tour */}
+
+      {/* ########## */}
+      {/*    TOUR   */}
+      {/* ########## */}
       {/* This is the "tour" as a tutorial for user, and this <Tour> should be put at the end */}
-      {/* The "Tour" is hidden, until the user click the button "Begin a tour" */}
-      {/* When user clicks the button "Begin a tour", the isTourOpen will change to be "true" */}
+      {/* The "Tour" is hidden as default, until the user click the button "Begin a tour" */}
+      {/* When user clicks the button "Begin a tour", the isTourOpen will change to be "true", then the "Tour" will appear */}
       <Tour
         steps={tourSteps}
         open={isTourOpen}
         onClose={() => setIsTourOpen(false)}
       />
-      {/* End of Tour */}
+      {/* ################ */}
+      {/*    End of TOUR   */}
+      {/* ################ */}
     </div>
   );
   /*######################################
