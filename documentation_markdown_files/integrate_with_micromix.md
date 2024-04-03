@@ -10,6 +10,8 @@
 
 ## Integrate with Micromix
 
+When integrated into Micromix, the application operates within an `<iframe>` tag. It retrieves a `config` number from the Micromix URL. The `config` number is then used to access the Micromix MongoDB. The data corresponding to the `config` number is fetched and loaded into the application for further use.
+
 The github repo of Micromix can be found here: https://github.com/BarquistLab/Micromix
 
 The steps for integrating PCA into Micromix:
