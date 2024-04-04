@@ -11,7 +11,7 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
 # Create a Blueprint for the generatePCA.py file
-# The blueprint is used to define the route and will be added to the main file app.py
+# The blueprint is used to define the route and will be added to the main file "app.py"
 bp = Blueprint('generatePCA', __name__)
 
 
@@ -20,7 +20,7 @@ def is_number_or_not(s):
     # Actually, there is a function called "is_number()" from pandas, but the "is_number()" only check number with dot as the decimal delimiter but not with comma
     # ==> for example, "1.33" is considered as a number by "is_number()" but "1,33" is not
     # That's why we have "is_number_or_not()", in which we use s.replace(',', '') to handle the data that may contain comma as the decimal delimiter
-    # This function is used to identify the columns that contain non-numeric values
+    # This function is then used to identify which columns contain non-numeric value
     try:
         # If the value is a string, then replace the comma with an empty string, then check if it is a number
         if isinstance(s, str):
@@ -38,22 +38,43 @@ def generate_pca():
     #########################
     # GET INITIAL DATA, DO INITIAL PREPARATIONS
     #########################
-    # Get the data from the request
+    # Get the data from the request, which means from the frontend
     # The data is sent from the frontend as a JSON object
-    # Read the file "frontend/app/page.js", at the function "generatePCAPlot" to see how the data is sent to backend here
+    # While reading here, read the file "frontend/app/page.js", at the function "generatePCAPlot()" to see how the data is sent to the backend here
     initialData = request.json
-    # Convert the data into a DataFrame
+    # Then convert the data into a DataFrame
     convertedData = pd.DataFrame(data=initialData)
 
     # Identify columns in the first row that contain non-numeric values
+    # For example, if the data like this:
+    # |-----------|-----------|-----------|-----------|-------------|-------------|
+    # | locus_tag |  name     | H2O_30m_A | H2O_30m_B | PNA79_30m_A | PNA79_30m_B |
+    # |-----------|-----------|-----------|-----------|-------------|-------------|
+    # | gene_1    |  gene_1   | 20.01     | 10.77     | 20.65       | 19.87       |
+    # | gene_2    |  gene_2   | 21.68     | 23.13     | 37.43       | 49.37       |
+    # | gene_3    |  gene_3   | 41.70     | 39.89     | 41.95       | 28.21       |
+    # | gene_4    |  gene_4   | 24.46     | 19.94     | 30.98       | 30.68       |
+    # | ...       |  ...      | ...       | ...       | ...         | ...         |
+    # | gene_n    |  gene_n   | 11.96     | 12.23     | 32.27       | 12.31       |
+    # |-----------|-----------|-----------|-----------|-------------|-------------|
+
+    # ==> it will check the value in the first row:
+    # |-----------|-----------|-----------|-----------|-------------|-------------|
+    # | gene_1    |  gene_1   | 20.01     | 10.77     | 20.65       | 19.87       |
+    # |-----------|-----------|-----------|-----------|-------------|-------------|
+
+    # ==> then the "locus_tag" and "name" columns will be identified as non-numeric columns
+    # ==> then the result we have: non_numeric_columns = ['locus_tag', 'name']
     non_numeric_columns = [col for col in convertedData.columns if not is_number_or_not(
         convertedData[col].iloc[0])]
 
-    # If there are more than one non-numeric columns, remove all but the first one
+    # If there are more than one non-numeric columns, just keep the first one, and remove the rest
+    # ==> in the example above, the "locus_tag" and "name" columns are non-numeric columns, so only keep the "locus_tag" column, and remove the "name" column
     if len(non_numeric_columns) > 1:
         convertedData.drop(non_numeric_columns[1:], axis=1, inplace=True)
 
     # Set the first non-numeric column as the index of the DataFrame
+    # ==> in the example above, the "locus_tag" column is now set as the index
     convertedData.set_index(non_numeric_columns[0], inplace=True)
 
     # Replace comma with dot in the DataFrame
