@@ -7,6 +7,17 @@
 
 
 
+/*#################################
+#
+# ⭐⭐⭐ 
+# When reading this file, for easier to have an overview look, you can scroll down to the end, read the part "FINAL UI" first, because it's like the backbone, it contains the final UI of everything that will be shown on the screen
+# ==> then you can come back again to the top here and start to read the parts "IMPORT", "INITIAL VARIABLES", "FUNCTIONS", "BUTTONS", "COLORS", etc.
+# ⭐⭐⭐
+#
+#################################*/
+
+
+
 /*########################################
 #####     1️⃣ USING "use client"     #####
 ########################################*/
