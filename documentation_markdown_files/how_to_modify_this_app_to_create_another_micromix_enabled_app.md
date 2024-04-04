@@ -23,14 +23,14 @@ Basically, the `<Plot/>` component has the following format:
 />
 ```
 
-The `<Plot/>` component has 2 main properties, which are:
+So the `<Plot/>` component has 2 main properties, which are:
 - **`data`** 
 
 AND 
 
 - **`layout`**
 
-So in our PCA Generator app, the `{...}` things in the `data` and `layout` are the things that we calculate and generate from backend, then frontend will get them and use them in the `<Plot/>` component.
+In our PCA Generator app, the `{...}` things in the `data` and `layout` are the things that we calculate and generate from backend, then frontend will get them and use them in the `<Plot/>` component.
 
 ![Static Badge](https://img.shields.io/badge/Point_2-Examples_of_using_<Plot>_component-blue)
 
@@ -114,11 +114,22 @@ The following `<Plot/>` will generate a **line chart**
 
 ![Static Badge](https://img.shields.io/badge/Point_3-How_to_modify_this_app-blue)
 
-The plot will change when we change the `data` and `layout` in the `<Plot/>` component. So you can modify the `data` and the `layout` to make different plots such as bar chart, line chart, scatter plot, etc.
+The plot will change when we change the `data` and `layout` in the `<Plot/>` component. 
+
+So you can modify the `data` and the `layout` to make different plots such as bar chart, line chart, scatter plot, etc.
+
+As an example, you can read: 
+- The function `generateScreePlot()` in `/frontend/app/page.js` to see the way frontend sends request to backend
+
+AND 
+
+- The file `generateScreePlot.py` in `/backend/generatePCA.py` to see the way backend calculates, generates `data` and `layout` to return back to frontend  
+
+So the `data` and `layout` can be modified in the backend python files depending on what types of chart that you want to generate. 
 
 ![Static Badge](https://img.shields.io/badge/Point_4-Reference-blue)
 
-More information about `data` and `layout` can be found here:
+More information about `data` and `layout` of `<Plot/>` component can be found here:
 
 - General information: https://github.com/plotly/react-plotly.js?tab=readme-ov-file
 - `data`: https://plotly.com/javascript/reference/
