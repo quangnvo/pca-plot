@@ -23,8 +23,8 @@
 ########################################*/
 // In NextJS (a React framework), as a default, a file will run on the "server side", not on the "client side".
 // This "use client" is IMPORTANT and need to put on the top of the file in NextJS , as it is used to run the file in the "client side", not in the "server side". 
-// Because in this "page.js" file, we use the "useState", "useEffect", etc. which are the React hooks, and they are running in the "client side", not in the "server side", so we need to put "use client" here. 
-// A client component is a React component that can be re-rendered when users interact, click the buttons, change the color, etc. with the app.
+// Because in this "page.js" file, we use the "useState()", "useEffect()", etc. which are the React hooks, and they are running in the "client side", not in the "server side", so we need to put "use client" here. 
+// A "client side" or client component, is a React component that can be re-rendered when users interact, click the buttons, change the color, etc. 
 "use client"
 /*###############################################
 #####     1️⃣ End of USING "use client"     #####
@@ -768,7 +768,7 @@ function HomeContent() {
 
       // From here to the end of the "generatePCAPlot()" function, the purpose of the code is related to COLORS in the PCA plot
       // Extract the names of the sample replicates in the PCA plot and put them into the "names" array
-      // The names are like "H2O_30m_A", "H2O_30m-B", "H2O_30m-C", "PNA79_30m_A", "PNA79_30m_B", "PNA79_30m_C", etc.
+      // The names are like "H2O_30m_A", "H2O_30m_B", "H2O_30m_C", "PNA79_30m_A", "PNA79_30m_B", "PNA79_30m_C", etc.
       const names = []
       response.data.data.forEach((eachItem, index) => {
         names.push({
@@ -817,7 +817,7 @@ function HomeContent() {
   # FUNCTIONS --- Generate PCA plot 3D
   ####################*/
   // The flow of the "generatePCAPlot3D()" function is same to the "generatePCAPlot()" function above
-  // For backend, read the "generatePCAPlot3D.py" file in the "backend" folder to see the flow of the code in the backend
+  // While reading here, read the "generatePCAPlot3D.py" file in the "backend" folder to see the flow of the code in the backend
   const generatePCAPlot3D = async () => {
     if (!isFileUploadedOrIsHavingData()) {
       return;
@@ -873,7 +873,7 @@ function HomeContent() {
   # FUNCTIONS --- Generate Loadings table
   ####################*/
   // The flow of the "generateLoadingsTable()" function is same to the "generateScreePlot()" function
-  // For backend, read the "generateLoadingsTable.py" file in the "backend" folder to see the flow of the code in the backend
+  // While reading here, read the "generateLoadingsTable.py" file in the "backend" folder to see the flow of the code in the backend
   const generateLoadingsTable = async () => {
     if (!isFileUploadedOrIsHavingData()) {
       return;
