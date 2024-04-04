@@ -30,6 +30,9 @@ In this PCA Generator app, the `{...}` things in the `data` and `layout` are the
 
 ```javascript
  <Plot
+    {/* ########################## */}
+    {/* ####      "data"      #### */}
+    {/* ########################## */}
     data={[
         {
             type: 'bar',
@@ -44,6 +47,9 @@ In this PCA Generator app, the `{...}` things in the `data` and `layout` are the
             },
         },
     ]},
+    {/* ########################## */}
+    {/* ####     "layout"     #### */}
+    {/* ########################## */}
     layout={{
         width: 700,
         height: 900,
@@ -58,6 +64,7 @@ In this PCA Generator app, the `{...}` things in the `data` and `layout` are the
 />
 ```
 
+![bar_chart](/documentation_images/md__how_to_modify_app__1.png)
 
 ![Static Badge](https://img.shields.io/badge/Point_3-How_to_modify_this_app-blue)
 The plot will change when we change the `data` and `layout` in the `<Plot />` component. So you can modify the `data` and the `layout` to make different plots such as bar chart, line chart, scatter plot, etc.
