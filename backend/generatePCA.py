@@ -115,17 +115,26 @@ def generate_pca():
     #########################
 
     #########################
-    # PREPARE THE RESULT, FOLLOWED BY THE FORMAT OF PLOTLY
+    # PREPARE THE RESULT, FOLLOWED BY THE FORMAT OF REACT PLOTLY.JS
     #########################
+    # Refer to the https://plotly.com/javascript/react/ for more detailed information
+    # Briefly, the frontend <Plot> component of Plotly.js in React expects the "data" and "layout" properties as the following format:
+    #  <Plot
+    #        data={...}
+    #        layout={...}
+    #  />
+    # So the "..." above are the things from the backend we generated here, which are "pcaScatterCoordinates" and "layoutPCAPlotForReact" below
+
 
     # The default colors of the points in the PCA plot
     defaultColor = "#272E3F"
     defaultBorderColor = "#000000"
     defaultTileFontColor = "#000000"
 
-    # Prepare the data for the PCA plot
+    # Prepare the "data" for the PCA plot
     pcaScatterCoordinates = [
         {
+            # For more information about the "type", "mode", "marker", etc. refer to this link: https://plotly.com/javascript/reference/
             'type': 'scatter',
             'mode': 'markers',
             'name': convertedData.columns[i],
@@ -143,7 +152,7 @@ def generate_pca():
         } for i in range(len(convertedData.columns))
     ]
 
-    # Prepare the layout for the PCA plot
+    # Prepare the "layout" for the PCA plot
     layoutPCAPlotForReact = {
         # The title of the plot, which will be displayed above the plot
         # If we want to display the title, just uncomment the following code
@@ -178,8 +187,9 @@ def generate_pca():
         'height': 400,
     }
 
-    # Combine the data and the layout into a dictionary and return it as a JSON object
-    # So in the frontend, at the file "frontend/app/page.js", at the function "generatePCAPlot", it will receive a JSON object, which contains the "data" and the "layout" for the PCA plot
+    # Combine the "data" and the "layout" into a dictionary and return it as a JSON object
+    # While reading here, read the file "frontend/app/page.js", at the function "generatePCAPlot()" to see how the data is received from the backend here
+    # So in the frontend, at the file "frontend/app/page.js", at the function "generatePCAPlot()", it will receive a JSON object, which contains the "data" and the "layout", which we will then use to put in the <Plot> component of Plotly.js in React frontend
     result = {
         'data': pcaScatterCoordinates,
         'layout': layoutPCAPlotForReact
