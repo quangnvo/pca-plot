@@ -32,6 +32,8 @@ AND
 
 In our PCA Generator app, the `{...}` things in the `data` and `layout` are the things that we calculate and generate from backend, then frontend will get them and use them in the `<Plot/>` component.
 
+<p>&nbsp;</p>
+
 ![Static Badge](https://img.shields.io/badge/Point_2-Examples_of_using_<Plot>_component-blue)
 
 The following `<Plot/>` will generate a **bar chart**
@@ -111,6 +113,7 @@ The following `<Plot/>` will generate a **line chart**
 ```
 <img alt="line_chart" src="/documentation_images/md__how_to_modify_app__2.png" width="70%" height="70%">
 
+<p>&nbsp;</p>
 
 ![Static Badge](https://img.shields.io/badge/Point_3-How_to_modify_this_app-blue)
 
@@ -126,6 +129,8 @@ AND
 - The file `generateScreePlot.py` in `/backend/generatePCA.py` to see the way backend calculates, generates `data` and `layout` to return back to frontend  
 
 So the `data` and `layout` can be modified in the backend python files depending on what types of chart that you want to generate. 
+
+<p>&nbsp;</p>
 
 ![Static Badge](https://img.shields.io/badge/Point_4-Reference-blue)
 
