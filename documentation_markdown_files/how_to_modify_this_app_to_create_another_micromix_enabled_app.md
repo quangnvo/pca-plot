@@ -12,9 +12,7 @@
 
 ![Static Badge](https://img.shields.io/badge/Point_1-Background-blue)
 
-The PCA plot is built based on the **[React Plotly.js](https://plotly.com/javascript/react/)**
-
-In detail, in frontend, the `<Plot/>` component of React Plotly.js is used to rendered the plot. 
+The PCA plot is built based on the **[React Plotly.js](https://plotly.com/javascript/react/)**. In detail, the `<Plot/>` component of React Plotly.js is used to rendered the plot in frontend. 
 
 Basically, the `<Plot/>` component has the following format:
 
@@ -25,13 +23,18 @@ Basically, the `<Plot/>` component has the following format:
 />
 ```
 
-So the `<Plot/>` component has 2 main properties, which are `data` and `layout`.
+The `<Plot/>` component has 2 main properties, which are:
+- **`data`** 
 
-In our PCA Generator app, the `{...}` things in the `data` and `layout` are the things that we calculate and generate from backend, then frontend will get them and use them in the `<Plot/>` component.
+AND 
+
+- **`layout`**
+
+So in our PCA Generator app, the `{...}` things in the `data` and `layout` are the things that we calculate and generate from backend, then frontend will get them and use them in the `<Plot/>` component.
 
 ![Static Badge](https://img.shields.io/badge/Point_2-Examples_of_using_<Plot>_component-blue)
 
-The following <Plot/> will generate a bar chart
+The following `<Plot/>` will generate a **bar chart**
 
 ```javascript
 <Plot
@@ -72,7 +75,7 @@ The following <Plot/> will generate a bar chart
 <img alt="bar_chart" src="/documentation_images/md__how_to_modify_app__1.png" width="50%" height="50%">
 
 
-The following <Plot/> will generate a line chart
+The following `<Plot/>` will generate a **line chart**
 
 ```javascript
 <Plot
@@ -106,7 +109,7 @@ The following <Plot/> will generate a line chart
     }}
 />
 ```
-<img alt="line_chart" src="/documentation_images/md__how_to_modify_app__2.png" width="50%" height="50%">
+<img alt="line_chart" src="/documentation_images/md__how_to_modify_app__2.png" width="70%" height="70%">
 
 
 ![Static Badge](https://img.shields.io/badge/Point_3-How_to_modify_this_app-blue)
