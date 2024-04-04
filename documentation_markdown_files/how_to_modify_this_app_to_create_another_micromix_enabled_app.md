@@ -28,9 +28,9 @@ In this PCA Generator app, the `{...}` things in the `data` and `layout` are the
 
 ![Static Badge](https://img.shields.io/badge/Point_2-Examples_of_using_<Plot>_component-blue)
 
-```javascript
 The following <Plot/> will generate a bar chart
 
+```javascript
 <Plot
     {/* ########################## */}
     {/* ####      "data"      #### */}
@@ -68,9 +68,9 @@ The following <Plot/> will generate a bar chart
 
 ![bar_chart](/documentation_images/md__how_to_modify_app__1.png)
 
-```javascript
 The following <Plot/> will generate a line chart
 
+```javascript
 <Plot
     {/* ########################## */}
     {/* ####      "data"      #### */}
@@ -106,6 +106,7 @@ The following <Plot/> will generate a line chart
 ![line_chart](/documentation_images/md__how_to_modify_app__2.png)
 
 ![Static Badge](https://img.shields.io/badge/Point_3-How_to_modify_this_app-blue)
+
 The plot will change when we change the `data` and `layout` in the `<Plot/>` component. So you can modify the `data` and the `layout` to make different plots such as bar chart, line chart, scatter plot, etc.
 
 ![Static Badge](https://img.shields.io/badge/Point_4-Reference-blue)
