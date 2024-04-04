@@ -6,9 +6,14 @@
 # --------------------------------
 
 #########################
+#
+# ⭐⭐⭐
 # NOTICE
 # Check the file "generatePCA.py" for the detail explanation, as almost the code here is similar to the code in "generatePCA.py"
-# There is only one difference in this file compared to the file "generatePCA.py": the coordinates for the 3D plot is x, y, and z, instead of x and y, at "pcaScatterCoordinates" and "layoutPCAPlotForReact" variables
+# There is only one difference in this file compared to the file "generatePCA.py": the coordinates for the 3D plot is x, y, and z, instead of x and y
+# ==> so in this file, we put x, y, and z at "pcaScatterCoordinates" and "layoutPCAPlotForReact" variables
+# ⭐⭐⭐
+#
 #########################
 
 import pandas as pd

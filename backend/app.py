@@ -5,10 +5,16 @@
 #
 # --------------------------------
 
+
 #########################
+#
+# ⭐⭐⭐
 # This "app.py" file is the main file that runs the backend Flask server
 # It is responsible as a backbone to connect the API endpoints from other files
+# ⭐⭐⭐
+#
 #########################
+
 
 import generateLoadingsTable
 import generatePCA

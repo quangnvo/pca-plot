@@ -6,8 +6,12 @@
 # --------------------------------
 
 #########################
+#
+# ⭐⭐⭐
 # NOTICE
 # Check the file "generatePCA.py" for the detail explanation, as a half of the code here is similar to the code in "generatePCA.py"
+# ⭐⭐⭐
+#
 #########################
 
 import pandas as pd

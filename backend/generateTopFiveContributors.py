@@ -5,10 +5,16 @@
 #
 # --------------------------------
 
+
 #########################
+#
+# ⭐⭐⭐
 # NOTICE
-# Check the file "generatePCA.py" for the detail explanation, as almost the code here is similar to the code in "generatePCA.py"
+# Check the file "generatePCA.py" for the detail explanation, as a half of the code here is similar to the code in "generatePCA.py"
+# ⭐⭐⭐
+#
 #########################
+
 
 import pandas as pd
 from flask import Blueprint, jsonify, request
