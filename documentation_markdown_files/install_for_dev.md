@@ -22,6 +22,8 @@ Clone the project as following command:
 git clone https://github.com/quangnvo/pca-plot.git
 ```
 
+<p>&nbsp;</p>
+
 ![Static Badge](https://img.shields.io/badge/Step_2-Install_and_run_backend-blue)
 
 Firstly, open the terminal window, and ensure that Python is installed in your system by running the following command:
@@ -82,6 +84,8 @@ python3 app.py
 ```
 
 After finishing, open another terminal window and do **step 3: Install and run frontend** on **a new terminal window**, without closing the terminal window of backend.
+
+<p>&nbsp;</p>
 
 ![Static Badge](https://img.shields.io/badge/Step_3-Install_and_run_frontend-blue)
 

@@ -32,6 +32,8 @@ def main(parameters):
     return upload_url+'?config='+str(parameters["db_entry_id"])
 ```
 
+<p>&nbsp;</p>
+
 ![Static Badge](https://img.shields.io/badge/Step_2-Create_plugin_in_the_"plugin.json"_file-blue)
 
 In the `Website` folder, at the `plugins.json` file, create the plugin for PCA. For example:

@@ -22,6 +22,8 @@ Clone the project as following command:
 git clone https://github.com/quangnvo/pca-plot.git
 ```
 
+<p>&nbsp;</p>
+
 ![Static Badge](https://img.shields.io/badge/Step_2-Frontend_build-blue)
 
 The frontend requires **[nodejs](https://nodejs.org/en)** with version at least 18.17.1.

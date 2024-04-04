@@ -139,7 +139,3 @@ More information about `data` and `layout` of `<Plot/>` component can be found h
 - General information: https://github.com/plotly/react-plotly.js?tab=readme-ov-file
 - `data`: https://plotly.com/javascript/reference/
 - `layout`: https://plotly.com/javascript/reference/#layout
-
-```
-
-```
