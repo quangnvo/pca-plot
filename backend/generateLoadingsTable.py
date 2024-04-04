@@ -56,10 +56,10 @@ def generate_loadings_table():
     dataAfterStandardization = standardScalerObject.fit_transform(
         convertedData.T)
 
-    # The n_components parameter is used to specify the number of principal components to be created
-    # If not specified, then default value of n_components is min(n_samples, n_features)
-    # For example, if the number of samples is 24 and the number of genes is 1000, then the default value of n_components will be 24
-    # If the number of samples is 24 and the number of genes is 10, then the default value of n_components will be 10
+    # The "n_components" parameter is used to specify the number of principal components to be created
+    # If not specified, then default value of "n_components" is min(n_samples, n_features)
+    # For example, if the number of samples is 24 and the number of genes is 1000, then the default value of "n_components" will be 24
+    # If the number of samples is 24 and the number of genes is 10, then the default value of "n_components" will be 10
     pcaObject = PCA(n_components=4)
     pcaObject.fit_transform(dataAfterStandardization)
 

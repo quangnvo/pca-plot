@@ -55,8 +55,10 @@ def generate_scree_plot():
     dataAfterStandardization = standardScalerObject.fit_transform(
         convertedData.T)
 
-    # At here we can put the number of principal components that we want to generate
-    # For example, if we want to generate 8 principal components, then we can put n_components=8
+    # The "n_components" parameter is used to specify the number of principal components to be created
+    # If not specified, then default value of "n_components" is min(n_samples, n_features)
+    # For example, if the number of samples is 24 and the number of genes is 1000, then the default value of "n_components" will be 24
+    # If the number of samples is 24 and the number of genes is 10, then the default value of "n_components" will be 10
     pcaObject = PCA(n_components=8)
     pcaObject.fit_transform(dataAfterStandardization)
     #########################

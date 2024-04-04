@@ -8,6 +8,7 @@
 #########################
 # NOTICE
 # Check the file "generatePCA.py" for the detail explanation, as almost the code here is similar to the code in "generatePCA.py"
+# There is only one difference in this file compared to the file "generatePCA.py": the coordinates for the 3D plot is x, y, and z, instead of x and y, at "pcaScatterCoordinates" and "layoutPCAPlotForReact" variables
 #########################
 
 import pandas as pd
@@ -33,6 +34,9 @@ bp = Blueprint('generatePCA3D', __name__)
 
 @bp.route('/api/generate_pca_3d', methods=['POST'])
 def generate_pca_3d():
+    #########################
+    # CODE SIMILAR TO "generatePCA.py"
+    #########################
     initialData = request.json
     convertedData = pd.DataFrame(data=initialData)
 
@@ -50,10 +54,17 @@ def generate_pca_3d():
     dataAfterStandardization = standardScalerObject.fit_transform(
         convertedData.T)
 
+    # The "n_components" parameter is used to specify the number of principal components to be created
+    # If not specified, then default value of "n_components" is min(n_samples, n_features)
+    # For example, if the number of samples is 24 and the number of genes is 1000, then the default value of "n_components" will be 24
+    # If the number of samples is 24 and the number of genes is 10, then the default value of "n_components" will be 10
     pcaObject = PCA(n_components=3)
     pcaData = pcaObject.fit_transform(dataAfterStandardization)
 
     pcaVariancePercentage = pcaObject.explained_variance_ratio_
+    #########################
+    # End of CODE SIMILAR TO "generatePCA.py"
+    #########################
 
     defaultColor = "#272E3F"
     defaultBorderColor = "#000000"
@@ -64,8 +75,8 @@ def generate_pca_3d():
             'type': 'scatter3d',
             'mode': 'markers',
             'name': convertedData.columns[i],
-            # In the PCA 2D, we use only x and y coordinates
-            # In the PCA 3D, we use x, y, and z coordinates
+            # In the PCA 2D, at the file "generatePCA.py", we use only x and y coordinates
+            # In the PCA 3D, at this file, we use x, y, and z coordinates
             'x': [pcaData[i, 0]],
             'y': [pcaData[i, 1]],
             'z': [pcaData[i, 2]],
