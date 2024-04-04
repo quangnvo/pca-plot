@@ -14,7 +14,9 @@
 
 The PCA plot is built based on the **[React Plotly.js](https://plotly.com/javascript/react/)**
 
-In detail, in frontend, the <Plot/> component of React Plotly.js is used to rendered the plot. Basically, the <Plot/> component has the following format:
+In detail, in frontend, the `<Plot/>` component of React Plotly.js is used to rendered the plot. 
+
+Basically, the `<Plot/>` component has the following format:
 
 ```javascript
 <Plot
@@ -23,8 +25,9 @@ In detail, in frontend, the <Plot/> component of React Plotly.js is used to rend
 />
 ```
 
-So the <Plot/> component has 2 main properties, which are `data` and `layout`.
-In this PCA Generator app, the `{...}` things in the `data` and `layout` are the things that we calculate and generate from backend, then push to frontend and use at frontend.
+So the `<Plot/>` component has 2 main properties, which are `data` and `layout`.
+
+In our PCA Generator app, the `{...}` things in the `data` and `layout` are the things that we calculate and generate from backend, then frontend will get them and use them in the `<Plot/>` component.
 
 ![Static Badge](https://img.shields.io/badge/Point_2-Examples_of_using_<Plot>_component-blue)
 
@@ -67,6 +70,9 @@ The following <Plot/> will generate a bar chart
 ```
 
 ![bar_chart](/documentation_images/md__how_to_modify_app__1.png)
+
+<img src="/documentation_images/md__how_to_modify_app__1.png" width="50%" height="50%">
+
 
 The following <Plot/> will generate a line chart
 
