@@ -69,9 +69,7 @@ The following <Plot/> will generate a bar chart
 />
 ```
 
-![bar_chart](/documentation_images/md__how_to_modify_app__1.png)
-
-<img src="/documentation_images/md__how_to_modify_app__1.png" width="50%" height="50%">
+<img alt="bar_chart" src="/documentation_images/md__how_to_modify_app__1.png" width="50%" height="50%">
 
 
 The following <Plot/> will generate a line chart
@@ -108,8 +106,8 @@ The following <Plot/> will generate a line chart
     }}
 />
 ```
+<img alt="line_chart" src="/documentation_images/md__how_to_modify_app__2.png" width="50%" height="50%">
 
-![line_chart](/documentation_images/md__how_to_modify_app__2.png)
 
 ![Static Badge](https://img.shields.io/badge/Point_3-How_to_modify_this_app-blue)
 
