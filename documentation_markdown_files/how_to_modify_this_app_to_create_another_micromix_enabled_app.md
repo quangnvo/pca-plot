@@ -12,7 +12,7 @@
 
 ![Static Badge](https://img.shields.io/badge/Point_1-Background-blue)
 
-The PCA plot is built based on the **[React Plotly.js](https://plotly.com/javascript/react/)**. In detail, the `<Plot/>` component of React Plotly.js is used to rendered the plot in frontend. 
+The PCA plot is built based on the **[React Plotly.js](https://plotly.com/javascript/react/)**. In detail, the **`<Plot/>`** component of React Plotly.js is used to rendered the plot in frontend. 
 
 Basically, the `<Plot/>` component has the following format:
 
@@ -126,7 +126,7 @@ As an example, you can read:
 
 AND 
 
-- The file `generateScreePlot.py` in `/backend/generatePCA.py` to see the way backend calculates, generates `data` and `layout` to return back to frontend  
+- The file `generateScreePlot.py` in `/backend/generateScreePlot.py` to see the way backend calculates, generates `data` and `layout` to return back to frontend  
 
 So the `data` and `layout` can be modified in the backend python files depending on what types of chart that you want to generate. 
 
