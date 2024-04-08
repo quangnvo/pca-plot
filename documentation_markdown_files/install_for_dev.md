@@ -122,7 +122,7 @@ npm i
 # -----------------
 # Running "npm run dev" will run the application.
 # The compiling process will start after you open the application on browser.
-# Notice: Make sure to NOT CLOSE the "backend" window in Step 2, otherwise the app will not function.
+# Notice: Make sure to NOT CLOSE the "backend" window in Step 2 (Install and run backend), otherwise the app will not function.
 # -----------------
 npm run dev
 ```
