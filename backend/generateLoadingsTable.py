@@ -103,7 +103,7 @@ def generate_loadings_table():
     # The DataFrame "loadings_df" will look like this:
     #
     #             |---------|---------|---------|---------|
-    # locus_tag   |   PC1   |   PC2   |   PC3   |   PC4   |
+    #             |   PC1   |   PC2   |   PC3   |   PC4   |
     #             |---------|---------|---------|---------|
     # gene_1      |  0.042  |  0.021  |  -0.03  |  0.12   |
     # gene_2      |  0.563  |  0.241  |  0.123  |  0.8    |
@@ -121,20 +121,48 @@ def generate_loadings_table():
 
     # Then convert the DataFrame "loadings_df" to a list of dictionaries
     # The purpose of this is to make it easier to convert the data to a JSON object later
+    #
     # reset_index(): This function resets the index of the DataFrame and makes it a column in the DataFrame.
-    # rename(columns={'index': first_column_name}): This function renames the column labeled ‘index’ to first_column_name.
-    # to_dict('records'): This function converts the DataFrame into a list of dictionaries. The ‘records’ argument means that each item in the list will be a dictionary representing a row in the DataFrame, where the "keys" are the "column names" and the "values" are the "data in the row".
     #
-    # For example, if DataFrame "loadings_df" above looks like this:
-    #
+    # Before reset_index(), the DataFrame "loadings_df" looks like this:
     #             |---------|---------|---------|---------|
-    # locus_tag   |   PC1   |   PC2   |   PC3   |   PC4   |
+    #             |   PC1   |   PC2   |   PC3   |   PC4   |
     #             |---------|---------|---------|---------|
     # gene_1      |  0.042  |  0.021  |  -0.03  |  0.12   |
     # gene_2      |  0.563  |  0.241  |  0.123  |  0.8    |
+    # gene_3      |  0.012  |  0.222  |  0.333  |  0.011  |
+    # ...         |  ...    |  ...    |  ...    |  ...    |
+    # gene_n      |  -0.23  |  0.512  |  -0.215 |  0.033  |
     #             |---------|---------|---------|---------|
     #
-    # Then, after running the following code, it will become like this:
+    # After reset_index(), the DataFrame "loadings_df" will look like this:
+    #             |-----------|---------|---------|---------|---------|
+    #             |   index   |   PC1   |   PC2   |   PC3   |   PC4   |
+    #             |-----------|---------|---------|---------|---------|
+    #             |   gene_1  |  0.042  |  0.021  |  -0.03  |  0.12   |
+    #             |   gene_2  |  0.563  |  0.241  |  0.123  |  0.8    |
+    #             |   gene_3  |  0.012  |  0.222  |  0.333  |  0.011  |
+    #             |   ...     |  ...    |  ...    |  ...    |  ...    |
+    #             |   gene_n  |  -0.23  |  0.512  |  -0.215 |  0.033  |
+    #             |-----------|---------|---------|---------|---------|
+    #
+    # rename(columns={'index': first_column_name}): This function renames the column labeled ‘index’ to first_column_name.
+    # "first_column_name" is the name of the first column in the original data which we take at the very above code
+    # In this case, assume that the first_column_name = "locus_tag".
+    # So after rename(columns={'index': first_column_name}), the DataFrame "loadings_df" will look like this:
+    #             |---------------|---------|---------|---------|---------|
+    #             |   locus_tag   |   PC1   |   PC2   |   PC3   |   PC4   |
+    #             |---------------|---------|---------|---------|---------|
+    #             |   gene_1      |  0.042  |  0.021  |  -0.03  |  0.12   |
+    #             |   gene_2      |  0.563  |  0.241  |  0.123  |  0.8    |
+    #             |   gene_3      |  0.012  |  0.222  |  0.333  |  0.011  |
+    #             |   ...         |  ...    |  ...    |  ...    |  ...    |
+    #             |   gene_n      |  -0.23  |  0.512  |  -0.215 |  0.033  |
+    #             |---------------|---------|---------|---------|---------|
+    #
+    # to_dict('records'): This function converts the DataFrame into a list of dictionaries.
+    # The ‘records’ argument means that each item in the list will be a dictionary representing a row in the DataFrame, where the "keys" are the "column names" and the "values" are the "data in the row".
+    # So after running to_dict('records'), the DataFrame "loadings_df" will be converted to a list of dictionaries like this:
     #
     # loadings_list = [
     #   {
