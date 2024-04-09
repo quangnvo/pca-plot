@@ -103,7 +103,7 @@ def generate_pca():
     # ==> in the example above, the "locus_tag" column is now set as the index
     # So now the "convertedData" DataFrame will be like this:
     #              |-----------|-----------|-------------|-------------|
-    #  locus_tag   | H2O_30m_A | H2O_30m_B | PNA79_30m_A | PNA79_30m_B |
+    #              | H2O_30m_A | H2O_30m_B | PNA79_30m_A | PNA79_30m_B |
     #              |-----------|-----------|-------------|-------------|
     #  gene_1      | 20.01     | 10.77     | 20.65       | 19.87       |
     #  gene_2      | 21.68     | 23.13     | 37.43       | 49.37       |
@@ -151,12 +151,12 @@ def generate_pca():
     # Then pass the standardized data above into the PCA object
     # A notice is that the "dataAfterStandardization" was already transposed above, so now the "pcaData" will be like this:
     # |-----------|-----------|
-    # | PC1       | PC2       |
+    # |   PC1     |   PC2     |
     # |-----------|-----------|
-    # | -24.46    | -6.99     |   --> this is for H2O_30m_A
-    # | -26.56    | -2.47     |   --> this is for H2O_30m_B
-    # | 15.28     | -5.62     |   --> this is for PNA79_30m_A
-    # | 16.87     | -6.93     |   --> this is for PNA79_30m_B
+    # |  -24.46   |  -6.99    |   --> this is for H2O_30m_A
+    # |  -26.56   |  -2.47    |   --> this is for H2O_30m_B
+    # |  15.28    |  -5.62    |   --> this is for PNA79_30m_A
+    # |  16.87    |  -6.93    |   --> this is for PNA79_30m_B
     # |-----------|-----------|
     # So when we draw the PCA plot, we will use the "PC1" as the x-axis and the "PC2" as the y-axis with the corresponding values above as the coordinates of the points
     # ==> for example, the point for "H2O_30m_A" will be at coordinate x = -24.46, y = -6.99 in the plot
