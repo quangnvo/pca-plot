@@ -44,7 +44,7 @@ def generate_pca():
     initialData = request.json
 
     # Now we convert the data into a DataFrame
-    # So let assume that "convertedData" is like this:
+    # So let assume that after converting the "initialData" into a Dataframe, the "convertedData" is like this:
     # |-----------|-----------|-----------|-----------|-------------|-------------|
     # | locus_tag |  name     | H2O_30m_A | H2O_30m_B | PNA79_30m_A | PNA79_30m_B |
     # |-----------|-----------|-----------|-----------|-------------|-------------|
@@ -58,7 +58,7 @@ def generate_pca():
     convertedData = pd.DataFrame(data=initialData)
 
     # Identify columns in the first row that contain non-numeric values
-    # For example, if the data like above:
+    # For example, with the data above we have:
     # |-----------|-----------|-----------|-----------|-------------|-------------|
     # | locus_tag |  name     | H2O_30m_A | H2O_30m_B | PNA79_30m_A | PNA79_30m_B |
     # |-----------|-----------|-----------|-----------|-------------|-------------|
@@ -70,18 +70,19 @@ def generate_pca():
     # | gene_n    |  gene_n   | 11.96     | 12.23     | 32.27       | 12.31       |
     # |-----------|-----------|-----------|-----------|-------------|-------------|
 
-    # ==> so it take the first row and check:
+    # ==> so it will take the first row and check:
     # |-----------|-----------|-----------|-----------|-------------|-------------|
     # | gene_1    |  gene_1   | 20.01     | 10.77     | 20.65       | 19.87       |
     # |-----------|-----------|-----------|-----------|-------------|-------------|
 
     # ==> then the "locus_tag" and "name" columns will be identified as non-numeric columns
-    # ==> then the result we have: non_numeric_columns = ['locus_tag', 'name']
+    # ==> then the result we have is:
+    # non_numeric_columns = ['locus_tag', 'name']
     non_numeric_columns = [col for col in convertedData.columns if not is_number_or_not(
         convertedData[col].iloc[0])]
 
-    # If there are more than one non-numeric columns, just keep the first one, and remove the rest
-    # ==> in the example above, the "locus_tag" and "name" columns are non-numeric columns, so only keep the "locus_tag" column, and remove the "name" column
+    # At here, if there are more than one non-numeric columns, just keep the first one, and remove the rest
+    # ==> in the example above, the "locus_tag" and "name" columns are non-numeric columns, so we only keep the "locus_tag" column, and remove the "name" column
     # The "axis=1" means that we need column to be dropped, not row. Because row is axis=0, and column is axis=1
     # The "inplace=True" means that the DataFrame will be modified directly, without creating a new DataFrame
     # So now the "convertedData" DataFrame will be like this:
@@ -98,7 +99,7 @@ def generate_pca():
     if len(non_numeric_columns) > 1:
         convertedData.drop(non_numeric_columns[1:], axis=1, inplace=True)
 
-    # Set the first non-numeric column as the index of the DataFrame
+    # Now we set the first non-numeric column as the index of the DataFrame
     # ==> in the example above, the "locus_tag" column is now set as the index
     # So now the "convertedData" DataFrame will be like this:
     #              |-----------|-----------|-------------|-------------|
@@ -159,6 +160,8 @@ def generate_pca():
     # |-----------|-----------|
     # So when we draw the PCA plot, we will use the "PC1" as the x-axis and the "PC2" as the y-axis with the corresponding values above as the coordinates of the points
     # ==> for example, the point for "H2O_30m_A" will be at coordinate x = -24.46, y = -6.99 in the plot
+    #
+    #
     # NOTICE: if above, the "n_components" is set to another number, then the "pcaData" will have that number of columns, not only 2 columns
     # ==> for example, if "n_components=5", then the "pcaData" will have 5 columns, including PC1, PC2, PC3, PC4, and PC5
     # ==> so the "pcaData" will be like this:
@@ -172,7 +175,7 @@ def generate_pca():
     # |-----------|-----------|-----------|-----------|-----------|
     pcaData = pcaObject.fit_transform(dataAfterStandardization)
 
-    # Get the variance percentage of each principal component by using the "explained_variance_ratio_" attribute of the PCA object
+    # Now we get the variance percentage of each principal component by using the "explained_variance_ratio_" attribute of the PCA object
     # ==> so the "pcaVariancePercentage" will be an array, in which the first element is the variance percentage of the first principal component, the second element is the variance percentage of the second principal component, and so on
     # ==> for example, if the "pcaVariancePercentage" is [0.7419, 0.2581], it means that the first principal component explains 74.19% of the variance, and the second principal component explains 25.81% of the variance
     pcaVariancePercentage = pcaObject.explained_variance_ratio_
@@ -181,22 +184,33 @@ def generate_pca():
     #########################
 
     #########################
-    # PREPARE THE RESULT, FOLLOWED BY THE FORMAT OF REACT PLOTLY.JS
+    # PREPARE THE RESULT
     #########################
-    # Refer to the https://plotly.com/javascript/react/ for more detailed information
-    # Briefly, the frontend <Plot> component of Plotly.js in React expects the "data" and "layout" properties as the following format:
+    # The PCA plot will be drawn in the frontend using Plotly.js
+    # Briefly, the frontend <Plot/> component of Plotly.js in React frontend is used to draw the PCA plot
+    # The <Plot/> component requires the "data" and "layout" properties to draw the plot
+    # The <Plot/> component has the following format:
     #  <Plot
     #        data={...}
     #        layout={...}
     #  />
-    # So the "..." above are the things from the backend we generated here, which are "pcaScatterCoordinates" and "layoutPCAPlotForReact" below
+    # ==> in which the "{...}" above are the things from the backend we generated here, which are "pcaScatterCoordinates" and "layoutPCAPlotForReact" below
+    # So after we make the "pcaScatterCoordinates" and "layoutPCAPlotForReact" as below, we will return them as a JSON object to frontend, and in frontend, we put them into the <Plot/> component ==> so the PCA plot will be drawn
 
+    #########################
+    # PREPARE THE RESULT --- Default colors
+    #########################
     # The default colors of the points in the PCA plot
     defaultColor = "#272E3F"
     defaultBorderColor = "#000000"
     defaultTileFontColor = "#000000"
+    #########################
+    # End of PREPARE THE RESULT --- Default colors
+    #########################
 
-    # Prepare the "data" for the PCA plot
+    #########################
+    # PREPARE THE RESULT --- Prepare the "data" for the <Plot/> component in frontend
+    #########################
     pcaScatterCoordinates = [
         {
             # For more information about the "type", "mode", "marker", etc. refer to this link: https://plotly.com/javascript/reference/
@@ -218,8 +232,13 @@ def generate_pca():
             },
         } for i in range(len(convertedData.columns))
     ]
+    #########################
+    # End of PREPARE THE RESULT --- Prepare the "data" for the <Plot/> component in frontend
+    #########################
 
-    # Prepare the "layout" for the PCA plot
+    #########################
+    # PREPARE THE RESULT --- Prepare the "layout" for the <Plot/> component in frontend
+    #########################
     layoutPCAPlotForReact = {
         # The title of the plot, which will be displayed above the plot
         # If we want to display the title, just uncomment the following code
@@ -254,7 +273,13 @@ def generate_pca():
         'showlegend': True,
         'height': 400,
     }
+    #########################
+    # End of PREPARE THE RESULT --- Prepare the "layout" for the <Plot/> component in frontend
+    #########################
 
+    #########################
+    # PREPARE THE RESULT --- Combine "data" and "layout"
+    #########################
     # Combine the "data" and the "layout" into a dictionary and return it as a JSON object
     # While reading here, read the file "frontend/app/page.js", at the function "generatePCAPlot()" to see how the data is received from the backend here
     # So in the frontend, at the file "frontend/app/page.js", at the function "generatePCAPlot()", it will receive a JSON object, which contains the "data" and the "layout", which we will then use to put in the <Plot> component of Plotly.js in React frontend
@@ -263,7 +288,11 @@ def generate_pca():
         'layout': layoutPCAPlotForReact
     }
     #########################
-    # End of PREPARE THE DATA, FOLLOWED BY THE FORMAT OF PLOTLY
+    # End of PREPARE THE RESULT --- Combine "data" and "layout"
+    #########################
+
+    #########################
+    # End of PREPARE THE RESULT
     #########################
 
     # Return the result as a JSON object
