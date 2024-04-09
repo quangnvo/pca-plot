@@ -10,18 +10,21 @@
 #
 # ⭐⭐⭐
 # This "app.py" file is the main file that runs the backend Flask server
-# It is responsible as a backbone to connect the API endpoints from other files
+# It is responsible as a backbone to connect the API endpoints from other files in the folder "backend"
+# After read this file, for easier to have an overview look, you can read the file "generatePCA.py" first, then read other files in the folder "backend" later
 # ⭐⭐⭐
 #
 #########################
 
-
+# Import the API endpoints from other files in the folder "backend"
 import generateLoadingsTable
 import generatePCA
 import generatePCA3D
 import generateScreePlot
 import generateTopFiveContributors
 import getDataFromDB
+
+# Import the Flask and CORS libraries
 from flask import Flask
 from flask_cors import CORS
 
@@ -40,7 +43,7 @@ def home():
     return f"Flask server is running on port {PORT}!"
 
 # The blueprints are registered here. The term is "register", but it's just simply the connection between the API endpoints and the main Flask server
-# The blueprints are the API endpoints. So instead of writing all the code in this "app.py" file, we separate the code into different files and then put them here
+# The blueprints are the API endpoints. So instead of writing everything in this "app.py" file, we separate the code into different files and then put them here
 app.register_blueprint(getDataFromDB.bp)
 app.register_blueprint(generateScreePlot.bp)
 app.register_blueprint(generatePCA.bp)
