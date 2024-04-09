@@ -17,6 +17,10 @@ The structure of the folders is as following:
 
 ```bash
 pca-plot
+├── documentation_images
+│
+├── documentation_markdown_files
+│
 ├── backend
 │   ├── app.py ⭐
 │   ├── generatePCA.py ⭐
@@ -26,7 +30,7 @@ pca-plot
 │   ├── generateTopFiveContributors.py ⭐
 │   └── getDataFromDB.py ⭐
 │
-├── database
+├── database_for_testing
 │   ├── test_data_1.csv
 │   ├── test_data_2.csv
 │   └── test_data_3.csv
@@ -61,4 +65,4 @@ Files that are marked with the star (⭐) are the important files.
 
 - For **backend** folder, the **app.py** file is the main file, it is the backbone of backend.
 - For **frontend** folder, the **page.js** file is the main file.
-- For **database** folder, it just contains some sample csv files for testing.
+- For **database_for_testing** folder, it just contains some sample csv files for testing.
