@@ -18,7 +18,7 @@ The steps for integrating PCA into Micromix:
 
 ![Static Badge](https://img.shields.io/badge/Step_1-Create_PCA.py_file_in_the_backend_"plugins"_folder_of_Micromix-blue)
 
-In Micromix , at `Website` folder, go to `backend` folder, then go to `plugins` folder, then create a file named `PCA.py`
+In Micromix, at `Website` folder, go to `backend` folder, then go to `plugins` folder, then create a file named `PCA.py`
 
 At here, for example, if you run your PCA at `http://localhost:3333/`, then the `upload_url` will be `http://localhost:3333/`
 
@@ -28,7 +28,15 @@ At here, for example, if you run your PCA at `http://localhost:3333/`, then the 
 ##############################
 
 def main(parameters):
-    upload_url = "the_url_of_PCA"
+    # -----------------
+    # The URL that Micromix needs to connect to 
+    # This is the single place where the app's IP address or domain name is hard coded
+    # -----------------
+    upload_url = "http://localhost:3333/"
+
+    # -----------------
+    # This line of code appends the unique session ID to the url so the application can pull the correct data from MongoDB - this also aid in adding the visualisation into an iframe within the site
+    # -----------------
     return upload_url+'?config='+str(parameters["db_entry_id"])
 ```
 
