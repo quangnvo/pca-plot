@@ -34,7 +34,7 @@ CORS(app)
 # The port number is set to 7000
 # It could be changed to any other port number
 # ==> if change the port number at here, see the frontend code to make sure the port number is matched. The frontend code is located at "frontend/page.js"
-# ==> in the file "page.js", the variable for the backend port is named "BACKEND_PORT"
+# ==> in the file "page.js" in "frontend" folder, the variable for the backend port is named "BACKEND_PORT"
 PORT = 7000
 
 
@@ -42,8 +42,8 @@ PORT = 7000
 def home():
     return f"Flask server is running on port {PORT}!"
 
-# The blueprints are registered here. The term is "register", but it's just simply the connection between the API endpoints and the main Flask server
-# The blueprints are the API endpoints. So instead of writing everything in this "app.py" file, we separate the code into different files and then put them here
+# The "register_blueprint()" function is used to connect the API endpoints from other files in the folder "backend"
+# So instead of writing everything in this "app.py" file, we separate the code into different files and then put them here
 app.register_blueprint(getDataFromDB.bp)
 app.register_blueprint(generateScreePlot.bp)
 app.register_blueprint(generatePCA.bp)
