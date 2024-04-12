@@ -1,12 +1,5 @@
 # PCA Generator
 
-<style>
-    .unclickable-image {
-        pointer-events: none;
-        cursor: default;
-    }
-</style>
-
 - 🌟 **[Home](/README.md)**
 - [Features](/documentation_markdown_files/features.md)
 - [Infrastructure](/documentation_markdown_files/infrastructure.md)
@@ -45,6 +38,9 @@ When integrated into Micromix, the application operates within an `<iframe>` tag
 <span style="cursor: default;">[![used_as_a_standalone_tool](/documentation_images/Used_as-Standalone_tool-blue.svg)](#)</span>
 
 <a href="#" class="unclickable-image">![used_as_a_standalone_tool](/documentation_images/Used_as-Standalone_tool-blue.svg)</a>
+
+
+<a href="#"><img alt="used_as_a_standalone_tool" src="/documentation_images/Used_as-Standalone_tool-blue.svg" style="pointer-events: none; cursor: default;"></a>
 
 
 ![standalone_tool](/documentation_images/flow__serve_as_standalone_tool.png)
