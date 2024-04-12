@@ -31,7 +31,9 @@ When integrated into Micromix, the application operates within an `<iframe>` tag
 ![Static Badge](https://img.shields.io/badge/Used_as-Standalone_tool-blue)
 
 
-<img alt="line_chart" src="/documentation_images/Used_as-Standalone_tool-blue.svg">
+<img alt="used_as_a_standalone_tool" src="/documentation_images/Used_as-Standalone_tool-blue.svg">
+
+`<img alt="used_as_a_standalone_tool" src="/documentation_images/Used_as-Standalone_tool-blue.svg">`
 
 
 ![standalone_tool](/documentation_images/flow__serve_as_standalone_tool.png)
