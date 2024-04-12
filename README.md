@@ -33,6 +33,7 @@ When integrated into Micromix, the application operates within an `<iframe>` tag
 
 [![used_as_a_standalone_tool](/documentation_images/Used_as-Standalone_tool-blue.svg)](#)
 
+[![used_as_a_standalone_tool](/documentation_images/Used_as-Standalone_tool-blue.svg)](#) {style="cursor: default;"}
 
 
 ![standalone_tool](/documentation_images/flow__serve_as_standalone_tool.png)
