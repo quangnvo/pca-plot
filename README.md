@@ -1,5 +1,15 @@
 # PCA Generator
 
+- 🌟 **[Home](/README.md)**
+- [Features](features.md)
+- [Infrastructure](infrastructure.md)
+- [Install for dev](install_for_dev.md)
+- [Install for production](install_for_production.md)
+- [Integrate with Micromix](integrate_with_micromix.md)
+- [How to modify this app to create another Micromix enabled app](how_to_modify_this_app_to_create_another_micromix_enabled_app.md)
+
+## Home
+
 Welcome to the PCA Plot Generator 👋!
 
 This application is designed to simplify the process of generating Principal Component Analysis (PCA) plots, scree plot, and loadings table.
@@ -30,12 +40,3 @@ When integrated into Micromix, the application operates within an `<iframe>` tag
 
 ![plugin_in_micromix](/documentation_images/flow__serve_as_plugin_in_micromix.png)
 
-
-## Contents
-
-- [Features](documentation_markdown_files/features.md)
-- [Infrastructure](documentation_markdown_files/infrastructure.md)
-- [Install for dev](documentation_markdown_files/install_for_dev.md)
-- [Install for production](documentation_markdown_files/install_for_production.md)
-- [Integrate with Micromix](documentation_markdown_files/integrate_with_micromix.md)
-- [How to modify this app to create another Micromix enabled app](documentation_markdown_files/how_to_modify_this_app_to_create_another_micromix_enabled_app.md)
