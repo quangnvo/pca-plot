@@ -61,8 +61,13 @@ pca-plot
     └── etc.
 ```
 
-Files that are marked with the star (⭐) are the important files.
+Files that are marked with the star (⭐) are files that contain code for the application.
 
-- For **backend** folder, the **app.py** file is the main file, it is the backbone of backend.
+- For **backend** folder, the **app.py** file is the main file.
 - For **frontend** folder, the **page.js** file is the main file.
-- For **database_for_testing** folder, it just contains some sample csv files for testing.
+
+In a typical web application, in order to run the application, both the frontend and backend need to be running and communicating with each other for the application to function properly.
+
+- **Frontend**: This is the part of the application that users interact with directly. The frontend sends requests to the backend and displays the data it receives from backend. In this PCA application, it is built with [NextJS](https://nextjs.org/), a React framework. 
+
+- **Backend**: This is the part of the application that runs on the server. It’s responsible for processing requests from the frontend, interacting with databases, and performing any necessary computations. The backend sends responses back to the frontend. In this In this PCA application, the backend is build with [Flask](https://flask.palletsprojects.com/en/3.0.x/), a Python framework.
