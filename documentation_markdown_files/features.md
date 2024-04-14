@@ -30,6 +30,10 @@
 
 Determine the number of principal components to retain in your analysis. This plot displays the proportion of total variance in the data for each principal component.
 
+In the scree plot, the **vertical line** represents a critical point in the analysis of PCA. This line is typically drawn at the point where the cumulative variance exceeds a certain threshold, in this case, 80%.
+
+The **vertical line** is a visual aid that helps you quickly identify the number of principal components needed to capture a significant amount of the variance in the data. 
+
 ![scree_plot](/documentation_images/md__scree_plot.png)
 
 <p>&nbsp;</p>
