@@ -36,9 +36,22 @@ Determine the number of principal components to retain in your analysis. This pl
 
 ![Static Badge](https://img.shields.io/badge/Feature-PCA_Plot_Generation_in_2D_and_3D-blue)
 
-Visualize the 2D or 3D of PCA plot.
+A Principal Component Analysis (PCA) plot is a powerful tool in the field of bioinformatics and other areas of biology where large and complex datasets are common. It’s particularly useful in studies where the goal is to compare different biological conditions, such as healthy vs. diseased, treated vs. untreated, or different stages of a biological process.
 
-![pca_2d](/documentation_images/md__pca_plot_2d.png)
+PCA works by reducing the dimensionality of the data. In other words, it takes a dataset with many variables (such as gene expression levels for thousands of genes) and simplifies it into just a few “principal components” that capture the majority of the variation in the data.
+
+The PCA plot visualizes these principal components. Each point on the plot represents a sample, and the position of the point is determined by the values of the principal components. This allows you to see at a glance how similar or different the samples are.
+
+One of the key benefits of a PCA plot is that it can help to separate different biological conditions. If the conditions have distinct gene expression profiles, they will cluster separately on the PCA plot. This can provide a clear visual confirmation of the differences between the conditions.
+
+#### PCA 2D
+
+![pca_2d](/documentation_images/md__pca_plot_2d__1.png)
+
+![pca_2d](/documentation_images/md__pca_plot_2d__2.png)
+
+#### PCA 3D
+
 ![pca_3d](/documentation_images/md__pca_plot_3d.png)
 
 <p>&nbsp;</p>
