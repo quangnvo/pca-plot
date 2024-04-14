@@ -10,6 +10,12 @@
 
 ## Install for production
 
+### 1. General information
+
+This production code section is intended to be used to integrate with [Micromix](http://micromix.helmholtz-hiri.de/), an existing web-based platform designed for visualizing bacterial functional genomic data.
+
+### 2. Steps to install for production
+
 ![Static Badge](https://img.shields.io/badge/Step_1-Download_or_clone_the_project-blue)
 
 Download the project at https://github.com/quangnvo/pca-plot
@@ -67,3 +73,13 @@ After running `npm run build`, the generated index.html, css and javascript file
 
 If you use **Nginx**, refer to this link to see the configuration: 
 https://nextjs.org/docs/pages/building-your-application/deploying/static-exports#deploying 
+
+<p>&nbsp;</p>
+
+❗❗❗ ----- Notice -----  ❗❗❗
+The steps need completing: 
+- Linking up IP address to Micromix
+- Adding the app’s IP address to MongoDB within Micromix so requests can be sent and received
+- The Nginx and Gunicorn config - Regan will populate
+❗❗❗ ----- End of Notice -----  ❗❗❗
+
