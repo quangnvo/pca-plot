@@ -30,19 +30,11 @@ When integrated into Micromix, the application operates within an `<iframe>` tag
 
 ![Static Badge](https://img.shields.io/badge/Used_as-Standalone_tool-blue)
 
-
-[![used_as_a_standalone_tool](/documentation_images/Used_as-Standalone_tool-blue.svg)](#)
-
-
-<a href="#"><img alt="used_as_a_standalone_tool" src="/documentation_images/Used_as-Standalone_tool-blue.svg" style="pointer-events: none; cursor: default;"></a>
-
-
 ![standalone_tool](/documentation_images/flow__serve_as_standalone_tool.png)
 
 <p>&nbsp;</p>
 
 ![Static Badge](https://img.shields.io/badge/Used_as-Plugin_in_Micromix-blue)
-
 
 ![plugin_in_micromix](/documentation_images/flow__serve_as_plugin_in_micromix.png)
 
