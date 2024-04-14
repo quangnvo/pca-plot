@@ -14,7 +14,7 @@
 
 ![tool_bar](/documentation_images/md__tool_bar.png)
 
-Button &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Function      |       
+<div style="width:290px">Button</div> | Function      |       
 :-------------|  :------------|  
 `Begin a tour`    | This button will start a brief walkthrough, guiding you through the functionalities of each button. |
 `Upload file`     | Use this to upload your file. |
