@@ -5,13 +5,10 @@
 - 🌟 **[Infrastructure](infrastructure.md)**
 - [Install for dev](install_for_dev.md)
 - [Install for production](install_for_production.md)
-- [Integrate with Micromix](integrate_with_micromix.md)
+- [Integration with Micromix](integrate_with_micromix.md)
 - [How to modify this app to create another Micromix enabled app](how_to_modify_this_app_to_create_another_micromix_enabled_app.md)
 
 ## Infrastructure
-
-- **Frontend:** Next.js - a React framework
-- **Backend:** Flask - a Python framework
 
 The structure of the folders is as following:
 
@@ -71,3 +68,5 @@ In a typical web application, in order to run the application, both the frontend
 - **Frontend**: This is the part of the application that users interact with directly. The frontend sends requests to the backend and displays the data it receives from backend. In this PCA application, it is built with [NextJS](https://nextjs.org/), a React framework. 
 
 - **Backend**: This is the part of the application that runs on the server. It’s responsible for processing requests from the frontend, interacting with databases, and performing any necessary computations. The backend sends responses back to the frontend. In this In this PCA application, the backend is build with [Flask](https://flask.palletsprojects.com/en/3.0.x/), a Python framework.
+
+Notice: if running with Micromix, [MongoDB](https://www.mongodb.com/) needs to be installed, as the data is accessed from there.
