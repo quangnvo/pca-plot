@@ -14,7 +14,7 @@
 
 ![tool_bar](/documentation_images/md__tool_bar.png)
 
-Button        | Function      |       
+Button &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Function      |       
 :-------------|  :------------|  
 `Begin a tour`    | This button will start a brief walkthrough, guiding you through the functionalities of each button. |
 `Upload file`     | Use this to upload your file. |
