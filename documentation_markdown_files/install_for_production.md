@@ -77,9 +77,12 @@ https://nextjs.org/docs/pages/building-your-application/deploying/static-exports
 <p>&nbsp;</p>
 
 ❗❗❗ ----- Notice -----  ❗❗❗
+
 The steps need completing: 
+
 - Linking up IP address to Micromix
 - Adding the app’s IP address to MongoDB within Micromix so requests can be sent and received
 - The Nginx and Gunicorn config - Regan will populate
+
 ❗❗❗ ----- End of Notice -----  ❗❗❗
 
