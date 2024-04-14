@@ -48,11 +48,15 @@ One of the key benefits of a PCA plot is that it can help to separate different 
 
 ![pca_2d](/documentation_images/md__pca_plot_2d__1.png)
 
+🎨 You can change the color of points on the PCA plot according to your own preferences. Each point represents one sample in your data. 
+
 ![pca_2d](/documentation_images/md__pca_plot_2d__2.png)
 
 #### PCA 3D
 
-![pca_3d](/documentation_images/md__pca_plot_3d.png)
+![pca_3d](/documentation_images/md__pca_plot_3d__1.png)
+
+![pca_3d](/documentation_images/md__pca_plot_3d__2.png)
 
 <p>&nbsp;</p>
 
