@@ -12,17 +12,28 @@
 
 ### Tool bar
 
+<table>
+  <tr>
+    <th style="width:200px">Column 1</th>
+    <th style="width:500px">Column 2</th>
+  </tr>
+  <tr>
+    <td>Cell 1</td>
+    <td>Cell 2</td>
+  </tr>
+</table>
+
 ![tool_bar](/documentation_images/md__tool_bar.png)
 
 | Button | Function |
 | --- | --- |
-|`Begin a tour`    | This button will start a brief walkthrough, guiding you through the functionalities of each button. |
-|`Upload file`     | Use this to upload your file. |
-|`Scree plot`      | A scree plot in PCA is a chart that shows the eigenvalues (variances) of each principal component in descending order. It helps identify the optimal number of principal components by locating the point where the decrease in eigenvalues becomes less significant, often called the “elbow” point.  |
-|`PCA plot`        | PCA is a statistical technique used in data analysis for reducing the dimensionality of large datasets. The way PCA does this is by transforming the original variables into a new set of variables, which are called the Principal Components (PC). These PC are ordered so that the first few retain most of the variability in all of the original variables. |
-|`Loadings table`   | In PCA, a loadings table shows the contribution of each original variable to each principal component. The larger the absolute value (positive or negative) of a loading, the stronger the influence of the corresponding variable on the respective component. |
-|`Top 5 contributors`  | The top-5-contributors typically lists the five variables that contribute the most to each principal component. The contribution of a variable is determined by its loading, with larger absolute values indicating stronger contributions.  |
-|`Clear`      | Clear all the plots and tables.  |
+|`Begin a tour` | This button will start a brief walkthrough, guiding you through the functionalities of each button. |
+|`Upload file` | Use this to upload your file. |
+|`Scree plot` | A scree plot in PCA is a chart that shows the eigenvalues (variances) of each principal component in descending order. It helps identify the optimal number of principal components by locating the point where the decrease in eigenvalues becomes less significant, often called the “elbow” point.  |
+|`PCA plot` | PCA is a statistical technique used in data analysis for reducing the dimensionality of large datasets. The way PCA does this is by transforming the original variables into a new set of variables, which are called the Principal Components (PC). These PC are ordered so that the first few retain most of the variability in all of the original variables. |
+|`Loadings table` | In PCA, a loadings table shows the contribution of each original variable to each principal component. The larger the absolute value (positive or negative) of a loading, the stronger the influence of the corresponding variable on the respective component. |
+|`Top 5 contributors` | The top-5-contributors typically lists the five variables that contribute the most to each principal component. The contribution of a variable is determined by its loading, with larger absolute values indicating stronger contributions.  |
+|`Clear` | Clear all the plots and tables.  |
 
 
 <p>&nbsp;</p>
