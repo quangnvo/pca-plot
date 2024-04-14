@@ -10,6 +10,18 @@
 
 ## Install for dev
 
+### 1. General information
+
+The development version is included at here so that you can use if for different purposes, such as:
+
+- **Testing**: A development version allows you to test the features of the application. 
+
+- **Modification**: With a development version, you can modify the application to better suit your needs. You can experiment with different configurations, add new features, or make other changes without affecting the stable version of the application.
+
+- **Development template**: If you are interested in developing your own application, the development version can serve as a template. This makes your development process easier and faster.
+
+### 2. Steps to install for dev
+
 ![Static Badge](https://img.shields.io/badge/Step_1-Download_or_clone_the_project-blue)
 
 Download the project at https://github.com/quangnvo/pca-plot
