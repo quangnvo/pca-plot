@@ -28,9 +28,9 @@ When integrated into Micromix, the application operates within an `<iframe>` tag
 
 <p>&nbsp;</p>
 
-|----------|---------------------|
-|  Use as  |   Standalone tool   |   
-|----------|---------------------|
+#----------#---------------------#
+#  Use as  #   Standalone tool   #   
+#----------#---------------------#
 
 ![standalone_tool](/documentation_images/flow__serve_as_standalone_tool.png)
 
