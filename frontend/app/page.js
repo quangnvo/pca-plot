@@ -38,16 +38,16 @@
 // The Loading component
 import Loading from "./loading";
 
-// The useState, useRef are used to create the state and reference to the DOM element
+// This use... is used to import the React hooks, like useState, useEffect, useRef, etc.
 import { useState, useRef, useEffect, Suspense } from 'react';
 
-// The "dynamic" is used to import the "Plot" component from the "react-plotly.js" library below
+// The "dynamic" is then used to import the "Plot" component from the "react-plotly.js" library below
 import dynamic from "next/dynamic";
 
 // The "Plot" from the react-plotly.js library is used to render the plot
 // Instead of importing like this: " import Plot from 'react-plotly.js', we use the "dynamic()" function from NextJS to import the "Plot" component
 // ==> because the "Plot" component is used in the client side, not in the server side, so we need to use the "dynamic()" function to import it
-// So " const Plot = dynamic(() => import('react-plotly.js'), { ssr: false }) " is just another way to import the "Plot" component
+// So "const Plot = dynamic(() => import('react-plotly.js'), { ssr: false })" is just another way to import the "Plot" component
 // If we use "import Plot from 'react-plotly.js'", it will cause the error when running "npm run build"
 const Plot = dynamic(() => import('react-plotly.js'), { ssr: false })
 
@@ -463,11 +463,12 @@ function HomeContent() {
   /*####################
   # GET THE CONFIG NUMBER FROM THE URL
   ####################*/
-  // This is used to get the config number from the URL, then send it to the backend to get the data from the MongoDB
-  // This is done when the page is loaded inside the MicroMix page
-  // This part is linked with the "useEffect" part below, so when read the "useEffect" part below, come back to this part to see the flow of the code
-  // By using "useSearchParams", we create the "searchParams" object, which can be used to extract the query parameters from the URL
+  // This is used to get the "config number" from the URL
+  // This part is linked with the "useEffect()" part below, so when read the "useEffect()" part below, come back to this part to see the flow of the code
+
+  // By using "useSearchParams()" here, we create the "searchParams" object, which can be used to extract the query parameters from the URL
   const searchParams = useSearchParams()
+
   // Then we get the config number from the URL by using "searchParams.get("config")"
   // It can be "searchParams.get("aaaaa")", "searchParams.get("bbbbb")", etc. depending on the query parameters name in the URL
   // ==> for example, the URL is "http://localhost:3000/?aaaaa=123123", then searchParams.get("aaaaa") will return "123123"
@@ -481,14 +482,22 @@ function HomeContent() {
   # FUNCTIONS --- useEffect
   ####################*/
   // useEffect(() => {...}, []);: This is a React Hook that runs after the component has been rendered without needing any interaction from the user.
-  // The second argument of useEffect is an array of dependencies.
+
+  //                   This is the 1st argument of useEffect()
+  //                   | 
+  // useEffect(() => {...}, []);
+  //                        |
+  //                        This is the 2nd argument of useEffect()
+
+  // The 2nd argument of useEffect() is an array of dependencies.
   // If any of the dependencies change, the function will run again.
-  // ==> for example useEffect(() => {...}, [name, age]);: This will run the function again if the name OR age changes.
+  // ==> for example, if we have useEffect(() => {...}, [name, age]);
+  // ==> this will run the function useEffect() again if the "name" OR "age" is changed.
   // ==> in our case, the array [] is empty, which means the function will only run once after the component appears on the screen.
   useEffect(() => {
-    // Create the object "configNumberObject" that contains the config number, the purpose is to send this object to the backend to get the data from the MongoDB
+    // At here, we create the object "configNumberObject" that contains the config number, the purpose is to send this object to the backend to get the data from the MongoDB
     // While reading at here, read the file "getDataFromDB.py" in the "backend" folder to see the flow of the code in the backend
-    // The "configNumberObject" will have the format like this:
+    // After running this, the "configNumberObject" will have the format like this:
     // configNumberObject = {
     //   config: "123123"
     // }
@@ -502,7 +511,7 @@ function HomeContent() {
     // Create the function "fetchDataFromDB" to get the data from the MongoDB
     const fetchDataFromDB = async () => {
       try {
-        // At here we send a POST request to the backend to get the data from the MongoDB, with the config number.
+        // At here we send a POST request accompanying with "configNumberObject" to the backend to get the data from the MongoDB
         // While reading at here, read the file "getDataFromDB.py" in the "backend" folder to see the flow of the code in the backend
         const responseFromMongoDB = await axios.post(`${BACKEND_URL}/api/getDataFromDB`, configNumberObject);
         // After getting the data from the MongoDB, we count the number of samples and update the csvData
@@ -518,7 +527,7 @@ function HomeContent() {
 
         // Then, we extract the names of the sample replicates in the PCA plot and put them into the "names" array
         // The names are like "H2O_30m_A", "H2O_30m-B", "H2O_30m-C", "PNA79_30m_A", "PNA79_30m_B", "PNA79_30m_C", etc.
-        // The purpose of this is used for the "color groups" and "group options" in the PCA plot
+        // The purpose of this work is used for the "color groups" and "group options" in the PCA plot
         const names = []
         responseFromGeneratePCAPlot.data.data.forEach((eachItem, index) => {
           names.push({
@@ -526,11 +535,9 @@ function HomeContent() {
             groupId: ""
           })
         })
-        // Then set the "names" array to the "nameOfSamples" state by using "setNameOfSamples()" function
-        // This is for COLORS
+        // Then set the "names" array to the "nameOfSamples" by using "setNameOfSamples()" function
         setNameOfSamples(names);
-        // This setColorGroups is used to reset the color groups
-        // This is for COLORS
+        // This "setColorGroups()" is used to reset the color groups
         setColorGroups([
           {
             groupId: "1",
@@ -545,8 +552,7 @@ function HomeContent() {
             sampleNames: []
           },
         ]);
-        // This setGroupOptions is used to reset the group options that are required to use in the antd library <Select> component
-        // This is for COLORS
+        // This "setGroupOptions()" is used to reset the group options that are required to use in the antd library <Select> component
         setGroupOptions([
           {
             label: "Group 1",
@@ -558,7 +564,8 @@ function HomeContent() {
           },
         ]);
 
-        // Then we set the visibility of the PCA 2D plot to true, to make it appear on the screen as a default when the user clicks the PCA plugin
+        // Then we manually set the visibility of the PCA 2D plot to "true"
+        // ==> the purpose is to make it appear on the screen as a default when the user clicks the PCA plugin in Micromix 
         setIsPCA2DVisible(true);
       } catch (error) {
         console.error(error);
@@ -571,7 +578,7 @@ function HomeContent() {
     // Call the "fetchDataFromDB()" function to get the data from the MongoDB
     fetchDataFromDB();
 
-    // The array [] is empty, which means the function will only run once after the component appears on the screen
+    // The array [] here is empty, which means the function "useEffect()" will only run once after the component appears on the screen
   }, []);
   /*####################
   # End of FUNCTIONS --- useEffect
@@ -714,7 +721,8 @@ function HomeContent() {
   # FUNCTIONS --- Generate Scree plot
   ####################*/
   // While reading at here, read the "generateScreePlot.py" file in the "backend" folder to see the flow of the code in the backend
-  // The "generateScreePlot()" function will generate the things like following:
+  // The "generateScreePlot()" function will call API to backend, then backend will return an object like following:
+  
   // {
   //    data: [
   //      .....
@@ -723,15 +731,24 @@ function HomeContent() {
   //      .....
   //    }
   // }
-  // To see what is "....." for detail, check the "generateScreePlot.py" file in the "backend" folder
-  // This format will be used in the "Plot" component from the "react-plotly.js" library
-  // So the <Plot> will be used like this:
+  
+  // To see what is "....." in detail, check the "generateScreePlot.py" file in the "backend" folder
+  
+  // The above format (including "data" and "layout") will be used in the "<Plot/>" component from the "react-plotly.js" library
+  // So the way to use <Plot/> is like this:
+  // 
   // <Plot
-  //    data={screePlotData.data}
-  //    layout={screePlotData.layout}
+  //    data={data}
+  //          |
+  //          |==> This "data" is the "data" from the object returned from the backend
+  // 
+  //    layout={layout}
+  //            |
+  //            |==> This "layout" is the "layout" from the object returned from the backend 
   // />
-  // In which "screePlotData.data" is the "data" from backend, and "screePlotData.layout" is the "layout" from backend.
-  // ==> so check the "generateScreePlot.py" file in the "backend" folder for more details of "data" and "layout"
+  // 
+  // ==> so check the "generateScreePlot.py" file in the "backend" folder for more details of "dataFromBackend" and "layout"
+  // You can also check "How to modify this app to create another Micromix enabled app" in the documentation to see more about the "<Plot/>" component from the "react-plotly.js" library
   const generateScreePlot = async () => {
     // Check if the file is uploaded or data having or not 
     // ==> if not, then show the alert message to tell the user to upload the file first, then return
@@ -746,7 +763,7 @@ function HomeContent() {
       try {
         // Send a POST request with the "csvData" to the backend
         // ==> then backend will return the scree plot data
-        // ==> then put the scree plot data to the "screePlotData" by using "setScreePlotData"
+        // ==> then put the scree plot data to the "screePlotData" by using "setScreePlotData()"
         const response = await axios.post(`${BACKEND_URL}/api/generate_scree_plot`, csvData);
         // Update the scree plot data
         setScreePlotData(response.data);
@@ -775,7 +792,7 @@ function HomeContent() {
     try {
       // Send a POST request with the "csvData" to the backend
       // ==> then backend will return the PCA plot data
-      // ==> then put the PCA plot data to the "pcaPlotData" by using "setPcaPlotData"
+      // ==> then put the PCA plot data to the "pcaPlotData" by using "setPcaPlotData()"
       // read the "generatePCAPlot.py" file in the "backend" folder to see the flow of the code in the backend
       const response = await axios.post(`${BACKEND_URL}/api/generate_pca`, csvData);
       setPcaPlotData(response.data);
@@ -792,7 +809,7 @@ function HomeContent() {
       })
       // Then set the "names" array to the "nameOfSamples" state by using "setNameOfSamples()" function
       setNameOfSamples(names);
-      // This setColorGroups is used to reset the color groups
+      // This "setColorGroups()" is used to reset the color groups
       setColorGroups([
         {
           groupId: "1",
@@ -807,7 +824,7 @@ function HomeContent() {
           sampleNames: []
         },
       ]);
-      // This setGroupOptions is used to reset the group options that are required to use in the antd library <Select> component
+      // This "setGroupOptions()" is used to reset the group options that are required to use in the antd library <Select> component
       setGroupOptions([
         {
           label: "Group 1",
@@ -922,7 +939,7 @@ function HomeContent() {
       try {
         // Read the "generateTopFiveContributors.py" file in the "backend" folder to see the flow of the code in the backend
         const response = await axios.post(`${BACKEND_URL}/api/generate_top_five_contributors`, csvData);
-        // After getting the top 5 contributors table data, we set the top 5 contributors table data to the "topFiveContributorsTableData" state by using "setTopFiveContributorsTableData()" function
+        // After getting the top 5 contributors table data, we set the top 5 contributors table data to the "topFiveContributorsTableData" by using "setTopFiveContributorsTableData()" function
         setTopFiveContributorsTableData(response.data.top_five_contributors);
         // The "loadingsPlotCoordinates" and "layout" are from the backend file "generateTopFiveContributors.py", so read the "generateTopFiveContributors.py" file in the "backend" folder to see in details what is return from the backend
         // In brief, there are 3 fields in the response.data from the backend:
@@ -993,7 +1010,7 @@ function HomeContent() {
           // The "htmlFor" must be the same as the "id" of the file input, then when we click on the label, it will trigger the file input
           htmlFor={inputFileId}
           className={`${styleForButton}`}
-          // The ref={refTourStep1} is used to tell the tour that this is the target of the first step, the "Tour" is like the tutorial for the user
+          // The ref={refTourStep1} is used to tell the tour that this is the target of the first step, the "Tour" is like the walkthrough for the user
           ref={refTourStep1}
         >
           <Upload className='mr-2' size={sizeOfIcon} /> Upload file
@@ -1242,7 +1259,7 @@ function HomeContent() {
     return (
       <Button
         variant="outline"
-        // When user click on the button "Begin a tour", then we will call the "setIsTourOpen()" function to set the "isTourOpen" state to "true" to open the tour
+        // When user click on the button "Begin a tour", then we will call the "setIsTourOpen()" function to set the "isTourOpen" to "true" to open the tour
         onClick={() => setIsTourOpen(true)}
       >
         <Rocket className='mr-2' size={sizeOfIcon} /> Begin a tour
