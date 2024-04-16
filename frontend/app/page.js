@@ -104,6 +104,7 @@ import { useSearchParams } from "next/navigation"
 /*#############################################################
 #####     3️⃣ COVER THE PAGE WITH "LOADING COMPONENT"     #####
 #############################################################*/
+// The loading component here is from the "loading.js" file
 export default function Home() {
   return (
     <Suspense fallback={<Loading />}>
@@ -148,15 +149,16 @@ function HomeContent() {
 
   // The "setSomething()" function is used to update the "something"
   // For example, at the beginning, if something = "123", then setSomething("abcdef") will update something, then something = "abcdef"
+  // const [csvData, setCsvData] = useState([]);  ==> "setCsvData" is used to update the "csvData"
 
   // The "useState()" function is a React hook function that is used to create the combo of "something" and "setSomething"
   // The purpose of using "useState" is that it is used to "trigger the re-render of the UI" when the "something is updated"
 
   // For example, at the beginning, screePlotData = null, then nothing on the screen yet,
-  // ==> then when user clicks on the "Scree plot" button, it will call API to calculate the scree plot data
-  // ==> then we need to store the data received from API to the "screePlotData" and render it to the screen.
-  // If we just simply assign the screePlotData = "some_data_received_after_calling_from_API", it will not re-render the UI, so the scree plot will not be shown on the screen.
-  // ==> so we need to use setScreePlotData("some_data_received_after_calling_from_API") to update the screePlotData, then the UI will be re-rendered, and the scree plot will be shown on the screen.
+  // ==> then when user clicks on the "Scree plot" button, it will call backend API to calculate the scree plot data and return it to the frontend
+  // ==> then we need to store the received data from backend API to the "screePlotData" and render it to the screen.
+  // In order to to store the data into "screePlotData", if we just simply assign the screePlotData = "some_data_received_from_backend_API" like this, it will not re-render the UI, so the scree plot will not be shown on the screen.
+  // ==> so we need to use setScreePlotData("some_data_received_from_backend_API") to update the screePlotData, then the UI will be re-rendered, and the scree plot will be shown on the screen.
   // So we need to use "useState()"
   const [csvData, setCsvData] = useState([]);
   const [screePlotData, setScreePlotData] = useState(null);
@@ -168,6 +170,7 @@ function HomeContent() {
 
   // The following variables are used to control the visibility of the things, like the bulb light switch on and off.
   // For example, if isScreePlotVisible = true, then the scree plot will be visible, if isScreePlotVisible = false, then the scree plot will be invisible
+  // The default is "false", so at the beginning, the scree plot will be invisible
   // This is controlled by the buttons in the BUTTONS section below (very below)
   const [isScreePlotVisible, setIsScreePlotVisible] = useState(false);
   const [isPCA2DVisible, setIsPCA2DVisible] = useState(false);
@@ -177,28 +180,28 @@ function HomeContent() {
   const [isTopFiveContributorsPlotVisible, setIsTopFiveContributorsPlotVisible] = useState(false);
 
   // This is the name of uploaded file, it will be used to show the name of the uploaded file on the screen
-  // This is just for uploaded file, but the MicroMix already has the data, so this can be IGNORED
+  // Notice: This is just for uploaded file, but the MicroMix already has the data, so this can be IGNORED
   const [uploadedFileName, setUploadedFileName] = useState("");
 
   // The number of samples
-  // The number of samples will be calculated in the "useEffect" part, so check the "useEffect" part below 
+  // The number of samples will be calculated in the "useEffect()" part, so check the "useEffect()" part below 
   const [numberOfSamples, setNumberOfSamples] = useState(0);
 
-  // The name of the PCA 2D and PCA 3D, just used for naming the title of the buttons
+  // The name of the PCA 2D and PCA 3D, these are used for naming the title of the buttons
   const namePCA2D = "PCA 2D";
   const namePCA3D = "PCA 3D";
 
   // The "defaultColor" is used to set the default color on the plots, like the scree plot, PCA plot, etc.
-  // The hexcode for many color can be found at https://htmlcolorcodes.com/
+  // The hexcode for many colors can be found at https://htmlcolorcodes.com/
   const defaultColor = "#272E3F";
 
   // The id for the file input, which will be used later to reset the file input value to null
   // The reason we need to reset the file input value to null is that if we don't reset the file input value to null, then the user can't upload the same file again after they uploaded it once
-  // This is just for uploaded file function, but the MicroMix already has the data, so this can be IGNORED
+  // Notice: This is just for uploaded file function, but the MicroMix already has the data, so this can be IGNORED
   const inputFileId = "fileInput";
 
   // The acceptFileTypes is used to allow the user to upload the file with the following types, like .csv, .xlsx, .xls
-  // This is just for uploaded file function, but the MicroMix already has the data, so this can be IGNORED
+  // Notice: This is just for uploaded file function, but the MicroMix already has the data, so this can be IGNORED
   const acceptFileTypes = ".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel";
 
   // The styles for the buttons, sections, etc.
@@ -208,9 +211,10 @@ function HomeContent() {
   const styleForSectionHeading = "mb-[15px] text-2xl md:text-3xl font-bold"
   const styleForButton = "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 cursor-pointer"
 
-  // Variables for the "Begin a Tour" button
+  // Variables for the "Begin a tour" button
   // The "isTourOpen" is used to control the visibility of the tour
   // The "setIsTourOpen" is used to update the "isTourOpen"
+  // The default is "false", so at the beginning, the tour will be invisible
   const [isTourOpen, setIsTourOpen] = useState(false);
   // This refTourStep1, refTourStep2, etc. are used to tell the "Tour" that this is the target of which step
   const refTourStep1 = useRef(null);
@@ -357,22 +361,29 @@ function HomeContent() {
   /*####################
   # FUNCTIONS --- Check if a string is a number
   ####################*/
+
   // This "isNumber()" function is used to check if a string is a number or not
-  // The "value.replace(/\./g, '').replace(',', '.')" is used to replace all dot (.) in the string with nothing, and then replacing all commas (,) with dots (.).
+
+  // The "value.replace(/\./g, '').replace(',', '.')" is used to replace all dot (.) in the string with nothing (meaning to remove the dots), and then replacing all commas (,) with dots (.).
   // ==> This is done in order to handle cases where numbers are written with commas as decimal separators
-  // ==> for example: "1452.11" => this is number; "1452,11" => this is also number.
+  // ==> for example: "1452.11" => this is a number; "1452,11" => this is also a number.
+
   // parseFloat(value) is used to convert the modified string to a float number.
-  // !isNaN(parseFloat(value)) checks if the result of parseFloat is not a NaN (Not a Number) value
-  // ==> If the string can be converted to a number, parseFloat will return that number and isNaN will return false.
-  // ==> so parseFloat(value) will return a number, and isNaN(parseFloat(value)) will return false
+
+  // !isNaN(parseFloat(value)) checks whether the result of parseFloat is not a NaN (Not a Number) value
+  // ==> If a string can be converted to a number, parseFloat will return that number, and isNaN will return false.
+  // ==> so parseFloat(value) will return a number, then isNaN(parseFloat(value)) will return false
   // ==> so !isNaN(parseFloat(value)) will return true
-  // For example, if value = "152,2"
-  // ==> value.replace(/\./g, '').replace(',', '.') will return "152.2"
-  // ==> parseFloat(value) will return 152.2
-  // ==> isNaN(parseFloat(value)) will return false
-  // ==> !isNaN(parseFloat(value)) will return true
-  // ==> so finally, 152,2 is a number
-  // isFinite(value) checks if the converted number is a finite number.
+
+  // For example, if the value = "152,2"
+  // ==> value.replace(/\./g, '').replace(',', '.')    will return "152.2"
+  // ==> parseFloat(value)                             will return 152.2
+  // ==> isNaN(parseFloat(value))                      will return false
+  // ==> !isNaN(parseFloat(value))                     will return true
+  // ==> so finally, "152,2" is a number
+
+  // isFinite(value) checks whether the converted number is a finite number.
+
   const isNumber = (value) => {
     // If the value is not a string, then convert it to a string
     if (typeof value !== 'string') {
@@ -381,15 +392,16 @@ function HomeContent() {
     value = value.replace(/\./g, '').replace(',', '.');
     return !isNaN(parseFloat(value)) && isFinite(value);
   }
+
   // The following are the test cases for the "isNumber()" function:
-  // console.log("123", isNumber("123"))                      // ===> true
-  // console.log("123.123", isNumber("123.123"))              // ===> true
-  // console.log("123,123", isNumber("123,123"))              // ===> true
-  // console.log("123.123.123", isNumber("123.123.123"))      // ===> false
-  // console.log("123,123,123", isNumber("123,123,123"))      // ===> false
-  // console.log("123abc", isNumber("123abc"))                // ===> false
-  // console.log("abc", isNumber("abc"))                      // ===> false
-  // console.log("abc123", isNumber("abc123"))                // ===> false
+  // console.log(isNumber("123"))                // ===> true
+  // console.log(isNumber("123.123"))            // ===> true
+  // console.log(isNumber("123,123"))            // ===> true
+  // console.log(isNumber("123.123.123"))        // ===> false
+  // console.log(isNumber("123,123,123"))        // ===> false
+  // console.log(isNumber("123abc"))             // ===> false
+  // console.log(isNumber("abc"))                // ===> false
+  // console.log(isNumber("abc123"))             // ===> false
   /*####################
   # End of FUNCTIONS --- Check if a string is a number
   ####################*/
@@ -400,9 +412,11 @@ function HomeContent() {
   ####################*/
   // This "countNumberOfSamples()" function is used to count the number of samples in the data
   // The "data" is the data that is got from the MongoDB or the uploaded file from user
-  // So the idea is to check the first row of the data table
+
+  // So the idea here is to check the first row of the data table
   // ==> then check each item in the first row, if it is a number, then increase count; if it is not a number, then skip (like "H2O_30m_A" => not a number, so skip)
   // ==> finally, the "count" will be the number of samples
+
   // For example, if the data like this:
   // |-----------|-----------|-----------|-------------|-------------|
   // | locus_tag | H2O_30m_A | H2O_30m_B | PNA79_30m_A | PNA79_30m_B |
@@ -421,17 +435,17 @@ function HomeContent() {
   // |-----------|-----------|-----------|-------------|-------------|
 
   // ==> then check each item in the first row:
-  // "gene_1" is not a number, so skip;
-  // "20.01" is a number, so increase "count";
-  // "10.77" is a number, so increase "count";
-  // "20.65" is a number, so increase "count";
-  // "19.87" is a number, so increase "count"
+  // "gene_1" is not a number     // ===> skip
+  // "20.01"  is a number         // ===> increase "count"
+  // "10.77"  is a number         // ===> increase "count"
+  // "20.65"  is a number         // ===> increase "count"
+  // "19.87"  is a number         // ===> increase "count"
   // ==> so the "count" will be 4
   // ==> so the number of samples is 4
 
   // Then set the "count" to the "numberOfSamples" variable by using "setNumberOfSamples()" function
   // ==> then "numberOfSamples" will be used to show the number of samples on the screen
-  // ==> then the place where "numberOfSamples" is used can be found at the function "renderFileInformation" at very below
+  // ==> then the place where "numberOfSamples" is used can be found at the function "renderFileInformation()" at very below
   const countNumberOfSamples = (data) => {
     const firstRow = data[0];
     let count = 0;
