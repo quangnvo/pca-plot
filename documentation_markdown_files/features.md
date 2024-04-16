@@ -52,7 +52,7 @@ One of the key benefits of a PCA plot is that it can help to separate different 
 
 ![pca_2d](/documentation_images/md__pca_plot_2d__1.png)
 
-🎨 You can change the color of points on the PCA plot according to your own preferences. Each point represents one sample in your data. 
+🎨 You can change the colour of points on the PCA plot according to your own preferences. Each point represents one sample (column) in your data, and similar conditions and replicates are typically expected to cluster together. Therefore, defining groups based upon custom colours makes the data more interpretable.  
 
 ![pca_2d](/documentation_images/md__pca_plot_2d__2.png)
 
