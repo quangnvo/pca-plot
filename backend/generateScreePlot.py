@@ -175,7 +175,7 @@ def generate_scree_plot():
 
     # Return the result in JSON format to frontend
     # Check the frontend file "frontend/app/page.js", at the function "generateScreePlot", to see how the frontend will receive the data and used it to generate the scree plot
-    # In brief, in frontend, weuse <Plot> component from "react-plotly.js", and we put the "data" and "layout" which received from backend here into the <Plot> component, then the scree plot will be displayed
+    # In brief, in frontend, we use <Plot> component from "react-plotly.js", and we put the "data" and "layout" which received from backend here into the <Plot> component, then the scree plot will be displayed
     result = {
         'data': screePlotFormatData,
         'layout': layoutScreePlotForReact
